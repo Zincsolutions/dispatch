@@ -1,3 +1,4 @@
+import { createAdminClient } from "@/lib/supabase/admin"
 import { createClient } from "@/lib/supabase/server"
 import type { Agent } from "@/lib/types"
 
@@ -9,9 +10,24 @@ interface AgentFilters {
 
 export async function getAgents(filters?: AgentFilters): Promise<Agent[]> {
   const supabase = await createClient()
-  let query = supabase
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const admin = createAdminClient()
+
+  // Get user's org
+  const { data: membership } = await admin
+    .from("organization_members")
+    .select("organization_id")
+    .eq("user_id", user.id)
+    .single()
+
+  if (!membership) return []
+
+  let query = admin
     .from("agents")
     .select("*")
+    .eq("organization_id", membership.organization_id)
     .order("created_at", { ascending: false })
     .limit(50)
 
@@ -34,7 +50,12 @@ export async function getAgents(filters?: AgentFilters): Promise<Agent[]> {
 
 export async function getAgentById(id: string) {
   const supabase = await createClient()
-  const { data, error } = await supabase
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+
+  const admin = createAdminClient()
+
+  const { data, error } = await admin
     .from("agents")
     .select("*")
     .eq("id", id)
@@ -42,7 +63,7 @@ export async function getAgentById(id: string) {
 
   if (error || !data) return null
 
-  const { data: profile } = await supabase
+  const { data: profile } = await admin
     .from("profiles")
     .select("full_name")
     .eq("id", data.created_by)

@@ -142,12 +142,15 @@ CREATE INDEX idx_workflow_agents_workflow ON public.workflow_agents(workflow_id)
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION public.get_user_org_id()
-RETURNS uuid AS $$
+RETURNS uuid
+LANGUAGE sql
+STABLE
+AS $$
   SELECT organization_id
   FROM public.organization_members
   WHERE user_id = auth.uid()
   LIMIT 1;
-$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
+$$;
 
 -- ============================================================
 -- Auto-update updated_at trigger
@@ -236,10 +239,10 @@ CREATE POLICY "Users can update own profile"
   USING (id = auth.uid())
   WITH CHECK (id = auth.uid());
 
--- Organization Members: see own org members
+-- Organization Members: users can see memberships for orgs they belong to
 CREATE POLICY "Users can view own org members"
   ON public.organization_members FOR SELECT
-  USING (organization_id = public.get_user_org_id());
+  USING (user_id = auth.uid());
 
 -- Core entities (prompts, context_assets, agents, workflows): full CRUD scoped to org
 -- Prompts

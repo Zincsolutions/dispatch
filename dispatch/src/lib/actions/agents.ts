@@ -1,19 +1,18 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { agentSchema } from "@/lib/validations/agents"
-import type { AgentInsert, AgentUpdate } from "@/lib/types"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function createAgent(formData: FormData) {
-  const supabase = await createClient()
+  const admin = createAdminClient()
   const { user, organizationId } = await getCurrentUserWithOrg()
 
   const parsed = agentSchema.safeParse({
     name: formData.get("name"),
-    description: formData.get("description") || null,
+    description: formData.get("description"),
     purpose: formData.get("purpose") || null,
     platform: formData.get("platform") || null,
     setup_notes: formData.get("setup_notes") || null,
@@ -25,11 +24,11 @@ export async function createAgent(formData: FormData) {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
-  const { error } = await supabase.from("agents").insert({
+  const { error } = await admin.from("agents").insert({
     ...parsed.data,
     organization_id: organizationId,
     created_by: user.id,
-  } as AgentInsert)
+  })
 
   if (error) {
     return { error: { _form: [error.message] } }
@@ -40,12 +39,12 @@ export async function createAgent(formData: FormData) {
 }
 
 export async function updateAgent(id: string, formData: FormData) {
-  const supabase = await createClient()
+  const admin = createAdminClient()
   await getCurrentUserWithOrg()
 
   const parsed = agentSchema.safeParse({
     name: formData.get("name"),
-    description: formData.get("description") || null,
+    description: formData.get("description"),
     purpose: formData.get("purpose") || null,
     platform: formData.get("platform") || null,
     setup_notes: formData.get("setup_notes") || null,
@@ -57,9 +56,9 @@ export async function updateAgent(id: string, formData: FormData) {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
-  const { error } = await supabase
+  const { error } = await admin
     .from("agents")
-    .update(parsed.data as AgentUpdate)
+    .update(parsed.data)
     .eq("id", id)
 
   if (error) {
@@ -72,10 +71,10 @@ export async function updateAgent(id: string, formData: FormData) {
 }
 
 export async function deleteAgent(id: string) {
-  const supabase = await createClient()
+  const admin = createAdminClient()
   await getCurrentUserWithOrg()
 
-  const { error } = await supabase.from("agents").delete().eq("id", id)
+  const { error } = await admin.from("agents").delete().eq("id", id)
 
   if (error) {
     return { error: error.message }

@@ -31,8 +31,8 @@ export function Sidebar({ orgName }: SidebarProps) {
   return (
     <aside className="hidden md:flex md:w-64 md:flex-col border-r bg-card">
       <div className="flex h-14 items-center border-b px-4">
-        <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-          <span className="text-lg">Dispatch</span>
+        <Link href="/dashboard" className="flex items-center">
+          <img src="/logo-dispatch.svg" alt="Dispatch" style={{ height: 28 }} />
         </Link>
       </div>
       <div className="px-4 py-3">

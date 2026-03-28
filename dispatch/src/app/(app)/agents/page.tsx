@@ -3,6 +3,7 @@ import { getAgents } from "@/lib/queries/agents"
 import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { StatusBadge } from "@/components/shared/status-badge"
+import { Badge } from "@/components/ui/badge"
 import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
 import { AGENT_PLATFORMS } from "@/lib/constants"
@@ -62,12 +63,17 @@ export default async function AgentsPage({ searchParams }: Props) {
                     {agent.description}
                   </p>
                 )}
-                <div className="flex items-center gap-2 mt-1.5">
+                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                   {agent.platform && (
-                    <span className="text-xs text-muted-foreground capitalize">
+                    <Badge variant="outline" className="capitalize text-xs">
                       {agent.platform}
-                    </span>
+                    </Badge>
                   )}
+                  {agent.tags?.map((tag: string) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
               </div>
               <StatusBadge status={agent.status} />

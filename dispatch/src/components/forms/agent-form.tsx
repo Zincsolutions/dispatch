@@ -68,6 +68,7 @@ export function AgentForm({ action, defaultValues }: AgentFormProps) {
           name="description"
           defaultValue={defaultValues?.description || ""}
           rows={2}
+          required
         />
       </div>
 

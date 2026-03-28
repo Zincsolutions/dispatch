@@ -33,17 +33,22 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isPublicRoute = ["/login", "/signup", "/auth/callback"].some((path) =>
-    request.nextUrl.pathname.startsWith(path)
+  const path = request.nextUrl.pathname
+  console.log("[proxy]", path, user ? `user=${user.id}` : "no-user")
+
+  const isPublicRoute = ["/login", "/signup", "/auth/callback"].some((p) =>
+    path.startsWith(p)
   )
 
   if (!user && !isPublicRoute) {
+    console.log("[proxy] No user on protected route, redirecting to /login")
     const url = request.nextUrl.clone()
     url.pathname = "/login"
     return NextResponse.redirect(url)
   }
 
-  if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/signup")) {
+  if (user && path === "/login") {
+    console.log("[proxy] Authenticated user on /login, redirecting to /dashboard")
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
     return NextResponse.redirect(url)
