@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server"
-import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 
 export async function getCurrentUserWithOrg() {
@@ -12,13 +11,9 @@ export async function getCurrentUserWithOrg() {
     redirect("/login")
   }
 
-  // Use the admin client for these lookups because the RLS policies on
-  // organization_members and organizations depend on get_user_org_id(),
-  // which itself reads organization_members — causing infinite recursion
-  // if the database has the original (unfixed) policies.
-  const admin = createAdminClient()
-
-  const { data: membership } = await admin
+  // Query membership directly — the RLS policy on organization_members
+  // uses user_id = auth.uid() (no recursion, fixed in migration 00002).
+  const { data: membership } = await supabase
     .from("organization_members")
     .select("organization_id, role")
     .eq("user_id", user.id)
@@ -28,10 +23,10 @@ export async function getCurrentUserWithOrg() {
     redirect("/signup")
   }
 
-  const { data: organization } = await admin
+  const { data: organization } = await supabase
     .from("organizations")
     .select("*")
-    .eq("id", membership.organization_id)
+    .eq("id", membership.organization_id as string)
     .single()
 
   if (!organization) {

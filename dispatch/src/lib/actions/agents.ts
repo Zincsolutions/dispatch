@@ -1,13 +1,13 @@
 "use server"
 
-import { createAdminClient } from "@/lib/supabase/admin"
+import { createClient } from "@/lib/supabase/server"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { agentSchema } from "@/lib/validations/agents"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function createAgent(formData: FormData) {
-  const admin = createAdminClient()
+  const supabase = await createClient()
   const { user, organizationId } = await getCurrentUserWithOrg()
 
   const parsed = agentSchema.safeParse({
@@ -24,7 +24,7 @@ export async function createAgent(formData: FormData) {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
-  const { error } = await admin.from("agents").insert({
+  const { error } = await supabase.from("agents").insert({
     ...parsed.data,
     organization_id: organizationId,
     created_by: user.id,
@@ -39,7 +39,7 @@ export async function createAgent(formData: FormData) {
 }
 
 export async function updateAgent(id: string, formData: FormData) {
-  const admin = createAdminClient()
+  const supabase = await createClient()
   await getCurrentUserWithOrg()
 
   const parsed = agentSchema.safeParse({
@@ -56,7 +56,7 @@ export async function updateAgent(id: string, formData: FormData) {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
-  const { error } = await admin
+  const { error } = await supabase
     .from("agents")
     .update(parsed.data)
     .eq("id", id)
@@ -71,10 +71,10 @@ export async function updateAgent(id: string, formData: FormData) {
 }
 
 export async function deleteAgent(id: string) {
-  const admin = createAdminClient()
+  const supabase = await createClient()
   await getCurrentUserWithOrg()
 
-  const { error } = await admin.from("agents").delete().eq("id", id)
+  const { error } = await supabase.from("agents").delete().eq("id", id)
 
   if (error) {
     return { error: error.message }
