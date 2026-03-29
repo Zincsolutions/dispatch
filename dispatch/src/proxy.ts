@@ -1,8 +1,10 @@
-import { type NextRequest } from "next/server"
-import { updateSession } from "@/lib/supabase/proxy"
+import { NextResponse, type NextRequest } from "next/server"
 
-export async function proxy(request: NextRequest) {
-  return await updateSession(request)
+// Auth checks are handled in server components (app layout + page wrappers),
+// not in middleware. This avoids depending on Supabase env vars at the
+// middleware/edge layer, which aren't available in all deployment environments.
+export function proxy(request: NextRequest) {
+  return NextResponse.next()
 }
 
 export const config = {
