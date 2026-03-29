@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Topbar } from "@/components/layout/topbar"
