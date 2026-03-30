@@ -10,6 +10,17 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --font-dm-sans: var(--font-dm-sans);
+  --color-dispatch-navy: #141414;
+  --color-dispatch-blue: #FDFF60;
+  --color-dispatch-blue-light: #FDFF60;
+  --color-dispatch-teal: #9DDAD7;
+  --color-dispatch-slate: #333333;
+  --color-dispatch-gray-600: #666666;
+  --color-dispatch-gray-400: #999999;
+  --color-dispatch-gray-100: #EDECEC;
+  --color-dispatch-gray-50: #F7F7F6;
+  --color-dispatch-peach: #F5B48C;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -127,4 +138,32 @@
   html {
     @apply font-sans;
   }
+}
+
+.gradient-text {
+  background-color: #FDFF60;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+  padding: 2px 6px;
+  border-radius: 4px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.gradient-text-dark {
+  color: #FDFF60;
+}
+
+.gradient-wash-1 {
+  background: linear-gradient(135deg, rgba(157,218,215,0.4) 0%, rgba(253,255,96,0.3) 50%, rgba(245,180,140,0.25) 100%);
+}
+.gradient-wash-2 {
+  background: linear-gradient(135deg, rgba(253,255,96,0.35) 0%, rgba(245,170,120,0.3) 50%, rgba(230,140,120,0.25) 100%);
+}
+.gradient-wash-3 {
+  background: linear-gradient(135deg, rgba(245,170,120,0.3) 0%, rgba(230,130,110,0.25) 50%, rgba(157,218,215,0.3) 100%);
+}
+.gradient-banner {
+  background: linear-gradient(135deg, rgba(157,218,215,0.3) 0%, rgba(253,255,96,0.2) 40%, rgba(245,180,140,0.15) 70%, rgba(157,218,215,0.1) 100%);
 }
