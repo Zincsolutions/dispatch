@@ -32,7 +32,7 @@ export function Sidebar({ orgName }: SidebarProps) {
     <aside className="hidden md:flex md:w-64 md:flex-col border-r bg-card">
       <div className="flex h-14 items-center border-b px-4">
         <Link href="/dashboard" className="flex items-center">
-          <img src="/logo-dispatch.svg" alt="Dispatch" style={{ height: 28 }} />
+          <img src="/dispatch-logo.svg" alt="Dispatch" className="h-7 w-auto" />
         </Link>
       </div>
       <div className="px-4 py-3">

@@ -43,7 +43,7 @@ export function MobileNav({ orgName }: MobileNavProps) {
       </SheetTrigger>
       <SheetContent side="left" className="w-64 p-0">
         <div className="flex h-14 items-center border-b px-4">
-          <img src="/logo-dispatch.svg" alt="Dispatch" style={{ height: 28 }} />
+          <img src="/dispatch-logo.svg" alt="Dispatch" className="h-7 w-auto" />
         </div>
         <div className="px-4 py-3">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
