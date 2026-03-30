@@ -31,8 +31,8 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[72px]">
-        <Link href="/" className="flex items-center gap-2.5">
-          <img src="/logo-dispatch.svg" alt="Dispatch" className="h-7" />
+        <Link href="/" className="flex items-center">
+          <img src="/dispatch-logo.svg" alt="Dispatch" className="h-9 w-auto" />
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
