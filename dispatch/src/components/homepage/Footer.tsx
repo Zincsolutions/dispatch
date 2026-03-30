@@ -32,7 +32,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="inline-block mb-4">
-              <img src="/dispatch-logo.svg" alt="Dispatch" className="h-9 w-auto brightness-0 invert opacity-90" />
+              <img src="/dispatch-logo-footer.svg" alt="Dispatch" className="h-9 w-auto" />
             </Link>
             <p className="text-[13px] text-white/40 italic leading-relaxed mb-6">
               The system of record for AI.
