@@ -9,7 +9,7 @@ const tools = [
 
 export function IntegrationsPanel() {
   return (
-    <section className="py-32 bg-[#EDECEC]">
+    <section id="integrations" className="py-32 bg-[#EDECEC]">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <AnimateOnScroll>
           <h2 className="text-3xl sm:text-4xl md:text-[42px] font-extrabold text-[#141414] leading-tight mb-5">

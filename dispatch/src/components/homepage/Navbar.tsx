@@ -8,8 +8,7 @@ import { AnimatePresence, motion } from "framer-motion"
 const navLinks = [
   { label: "Product", href: "#product" },
   { label: "Use Cases", href: "#use-cases" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Resources", href: "#resources" },
+  { label: "Integrations", href: "#integrations" },
 ]
 
 export function Navbar() {
@@ -53,12 +52,6 @@ export function Navbar() {
             className="px-4 py-2 rounded-lg text-sm font-medium text-[#333] hover:text-[#141414] hover:bg-[#EDECEC] transition-all duration-200"
           >
             Log in
-          </Link>
-          <Link
-            href="#"
-            className="px-4 py-2 rounded-lg text-sm font-medium text-[#333] hover:text-[#141414] hover:bg-[#EDECEC] transition-all duration-200"
-          >
-            Get a Demo
           </Link>
           <Link
             href="/signup"

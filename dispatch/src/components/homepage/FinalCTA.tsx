@@ -26,12 +26,6 @@ export function FinalCTA() {
               href="/signup"
               className="bg-[#FDFF60] text-[#141414] px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-[#FDFF60]/90 active:scale-[0.98] transition-all duration-200 shadow-[0_4px_24px_rgba(253,255,96,0.2)]"
             >
-              Get a Free Demo
-            </Link>
-            <Link
-              href="/signup"
-              className="border border-[#FDFF60]/30 text-[#FDFF60] px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-[#FDFF60]/[0.07] hover:border-[#FDFF60]/40 active:scale-[0.98] transition-all duration-200"
-            >
               Start Free Trial
             </Link>
           </div>

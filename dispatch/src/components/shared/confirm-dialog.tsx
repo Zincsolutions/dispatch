@@ -11,11 +11,12 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { toast } from "sonner"
 
 interface ConfirmDialogProps {
   title: string
   description: string
-  onConfirm: () => void | Promise<void>
+  onConfirm: () => void | Promise<void | { error?: string } | null>
   trigger: React.ReactNode
   variant?: "destructive" | "default"
 }
@@ -32,9 +33,21 @@ export function ConfirmDialog({
 
   async function handleConfirm() {
     setLoading(true)
-    await onConfirm()
-    setLoading(false)
-    setOpen(false)
+    try {
+      const result = await onConfirm()
+      if (result && typeof result === "object" && result.error) {
+        toast.error(result.error)
+        return
+      }
+      setOpen(false)
+    } catch (e) {
+      // Server actions that redirect on success throw internally — let
+      // navigation proceed. Anything else is a real failure to surface.
+      if (e instanceof Error && e.message.includes("NEXT_REDIRECT")) throw e
+      toast.error("Something went wrong. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

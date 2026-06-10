@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { sanitizeSearchTerm } from "@/lib/utils"
 import type { Agent } from "@/lib/types"
 
 interface AgentFilters {
@@ -17,9 +18,10 @@ export async function getAgents(filters?: AgentFilters): Promise<Agent[]> {
     .order("created_at", { ascending: false })
     .limit(50)
 
-  if (filters?.search) {
+  const search = sanitizeSearchTerm(filters?.search)
+  if (search) {
     query = query.or(
-      `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`
+      `name.ilike.%${search}%,description.ilike.%${search}%`
     )
   }
   if (filters?.status) {

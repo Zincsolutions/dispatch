@@ -22,16 +22,29 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "Dispatch — Turn AI chaos into a system your team can run on",
+  metadataBase: new URL("https://www.dispatchvault.com"),
+  title: {
+    default: "Dispatch — Turn AI chaos into a system your team can run on",
+    template: "%s | Dispatch",
+  },
   description:
     "Dispatch centralizes your prompts, workflows, tools, and outputs into one structured platform. Organize, amplify, and protect how your team uses AI.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Dispatch — The AI Operating System for Your Business",
+    title: "Dispatch — Turn AI chaos into a system your team can run on",
     description:
       "One platform to organize, amplify, and protect how your team uses AI.",
-    url: "https://dispatchvault.com",
+    url: "https://www.dispatchvault.com",
     siteName: "Dispatch",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dispatch — Turn AI chaos into a system your team can run on",
+    description:
+      "One platform to organize, amplify, and protect how your team uses AI.",
   },
 }
 

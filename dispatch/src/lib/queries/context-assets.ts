@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { sanitizeSearchTerm } from "@/lib/utils"
 import type { ContextAsset } from "@/lib/types"
 
 interface ContextAssetFilters {
@@ -16,9 +17,10 @@ export async function getContextAssets(filters?: ContextAssetFilters): Promise<C
     .order("created_at", { ascending: false })
     .limit(50)
 
-  if (filters?.search) {
+  const search = sanitizeSearchTerm(filters?.search)
+  if (search) {
     query = query.or(
-      `title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`
+      `title.ilike.%${search}%,description.ilike.%${search}%`
     )
   }
   if (filters?.status) {

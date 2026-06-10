@@ -1,6 +1,13 @@
+import type { Metadata } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { SignupForm } from "./signup-form"
 import { SetupOrgForm } from "./setup-org-form"
+
+export const metadata: Metadata = {
+  title: "Start your free trial",
+  description:
+    "Create your Dispatch workspace — organize your team's prompts, workflows, and AI assets in one place.",
+}
 
 export default async function SignupPage() {
   const supabase = await createClient()

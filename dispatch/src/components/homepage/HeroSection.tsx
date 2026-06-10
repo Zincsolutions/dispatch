@@ -51,14 +51,14 @@ export function HeroSection() {
             href="/signup"
             className="bg-[#141414] text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-[#333] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_24px_rgba(20,20,20,0.2)]"
           >
-            Get a Free Demo
-          </Link>
-          <Link
-            href="/signup"
-            className="border border-[#141414]/20 text-[#141414] px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-[#141414]/[0.04] hover:border-[#141414]/30 active:scale-[0.98] transition-all duration-200"
-          >
             Start Free Trial
           </Link>
+          <a
+            href="#product"
+            className="border border-[#141414]/20 text-[#141414] px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-[#141414]/[0.04] hover:border-[#141414]/30 active:scale-[0.98] transition-all duration-200"
+          >
+            See how it works
+          </a>
         </motion.div>
 
         <motion.p {...fadeUp(0.7)} className="text-[13px] text-[#999]">

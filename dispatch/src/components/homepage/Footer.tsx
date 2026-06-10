@@ -4,23 +4,18 @@ const columns = [
   {
     title: "Product",
     links: [
-      { label: "Prompts", href: "#" }, { label: "Workflows", href: "#" },
-      { label: "Images", href: "#" }, { label: "Ratings", href: "#" },
-      { label: "Integrations", href: "#" },
+      { label: "Product Tour", href: "/#product" },
+      { label: "Use Cases", href: "/#use-cases" },
+      { label: "Integrations", href: "/#integrations" },
+      { label: "Start Free Trial", href: "/signup" },
+      { label: "Log in", href: "/login" },
     ],
   },
   {
-    title: "Company",
+    title: "Legal",
     links: [
-      { label: "About", href: "#" }, { label: "Blog", href: "#" },
-      { label: "Careers", href: "#" }, { label: "Contact", href: "#" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Documentation", href: "#" }, { label: "Help Center", href: "#" },
-      { label: "Privacy Policy", href: "/privacy" }, { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
     ],
   },
 ]
@@ -30,25 +25,13 @@ export function Footer() {
     <footer className="bg-[#141414]">
       <div className="max-w-7xl mx-auto px-6 pt-20 pb-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-2">
             <Link href="/" className="inline-block mb-4">
               <img src="/dispatch-logo-footer.svg" alt="Dispatch" className="h-9 w-auto" />
             </Link>
-            <p className="text-[13px] text-white/40 italic leading-relaxed mb-6">
+            <p className="text-[13px] text-white/40 italic leading-relaxed">
               The system of record for AI.
             </p>
-            <div className="flex gap-3">
-              {[{ label: "X" }, { label: "in" }, { label: "GH" }].map((social) => (
-                <a
-                  key={social.label}
-                  href="#"
-                  className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.06] flex items-center justify-center hover:bg-white/10 transition-colors duration-200"
-                  aria-label={social.label}
-                >
-                  <span className="text-xs text-white/40 font-medium">{social.label}</span>
-                </a>
-              ))}
-            </div>
           </div>
 
           {columns.map((col) => (
@@ -71,7 +54,7 @@ export function Footer() {
 
         <div className="border-t border-white/[0.06] mt-16 pt-8">
           <p className="text-[12px] text-white/30 text-center">
-            &copy; 2026 Dispatch. All rights reserved.
+            &copy; {new Date().getFullYear()} Dispatch. All rights reserved.
           </p>
         </div>
       </div>
