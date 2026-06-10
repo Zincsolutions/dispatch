@@ -100,23 +100,37 @@ async function createOrgAndMembership(userId: string, orgName: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "")
 
-  // Check if an orphaned org with this slug exists (from a previous partial attempt)
+  // Check if an org with this slug already exists
   const { data: existingOrg } = await admin
     .from("organizations")
     .select("id")
     .eq("slug", slug)
     .single()
 
-  let orgId: string
+  let orgId: string | null = null
 
   if (existingOrg) {
-    // Reuse the orphaned org
-    orgId = existingOrg.id
-  } else {
-    // Create new org
+    // Only reuse an existing org if it is orphaned (zero members, from a
+    // previous partial signup). An org with members belongs to someone else —
+    // reusing it would hand this user owner access to their data.
+    const { count: memberCount } = await admin
+      .from("organization_members")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", existingOrg.id)
+
+    if ((memberCount ?? 0) === 0) {
+      orgId = existingOrg.id
+    }
+  }
+
+  if (!orgId) {
+    // On a slug collision with an occupied org, disambiguate with a
+    // per-user suffix so each signup gets its own tenant.
+    const finalSlug = existingOrg ? `${slug}-${userId.slice(0, 8)}` : slug
+
     const { data: newOrg, error: orgError } = await admin
       .from("organizations")
-      .insert({ name: orgName, slug })
+      .insert({ name: orgName, slug: finalSlug })
       .select("id")
       .single()
 

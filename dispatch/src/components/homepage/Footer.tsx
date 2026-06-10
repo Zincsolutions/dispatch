@@ -20,7 +20,7 @@ const columns = [
     title: "Resources",
     links: [
       { label: "Documentation", href: "#" }, { label: "Help Center", href: "#" },
-      { label: "Privacy Policy", href: "#" }, { label: "Terms of Service", href: "#" },
+      { label: "Privacy Policy", href: "/privacy" }, { label: "Terms of Service", href: "/terms" },
     ],
   },
 ]

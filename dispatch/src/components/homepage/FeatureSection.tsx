@@ -1,16 +1,12 @@
 "use client"
 
 import { AnimateOnScroll } from "./AnimateOnScroll"
-import { CountUp } from "./CountUp"
 
 interface FeatureSectionProps {
   index: number
   headline: string
   body: string
   soWhat: string
-  metric: number
-  metricSuffix: string
-  metricDesc: string
   screenshotLabel: string
   screenshotGradient: string
 }
@@ -47,9 +43,6 @@ export function FeatureSection({
   headline,
   body,
   soWhat,
-  metric,
-  metricSuffix,
-  metricDesc,
   screenshotLabel,
 }: FeatureSectionProps) {
   const isEven = index % 2 === 0
@@ -70,23 +63,13 @@ export function FeatureSection({
               <p className="text-lg text-[#666] leading-relaxed mb-8">{body}</p>
             </AnimateOnScroll>
             <AnimateOnScroll delay={0.14}>
-              <div className="border-l-[3px] border-[#FDFF60] pl-6 py-5 bg-[#FDFF60]/[0.06] rounded-r-xl mb-10">
+              <div className="border-l-[3px] border-[#FDFF60] pl-6 py-5 bg-[#FDFF60]/[0.06] rounded-r-xl">
                 <p className="text-[15px] text-[#333] leading-relaxed">
                   <span className="font-bold text-[#141414] tracking-wide text-xs uppercase">
                     So what:{" "}
                   </span>
                   {soWhat}
                 </p>
-              </div>
-            </AnimateOnScroll>
-            <AnimateOnScroll delay={0.2}>
-              <div className="flex items-baseline gap-3">
-                <CountUp
-                  target={metric}
-                  suffix={metricSuffix}
-                  className="text-5xl sm:text-6xl font-extrabold text-[#141414] tracking-tight"
-                />
-                <span className="text-base text-[#666]">{metricDesc}</span>
               </div>
             </AnimateOnScroll>
           </div>

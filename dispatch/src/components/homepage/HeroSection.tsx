@@ -9,8 +9,6 @@ const fadeUp = (delay: number) => ({
   transition: { duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] as const },
 })
 
-const trustLogos = Array.from({ length: 5 }, (_, i) => `Partner ${i + 1}`)
-
 export function HeroSection() {
   return (
     <section className="bg-white">
@@ -63,27 +61,9 @@ export function HeroSection() {
           </Link>
         </motion.div>
 
-        <motion.p {...fadeUp(0.7)} className="text-[13px] text-[#999] mb-20">
+        <motion.p {...fadeUp(0.7)} className="text-[13px] text-[#999]">
           No credit card needed ✦ Free plan available
         </motion.p>
-
-        <motion.div {...fadeUp(0.8)}>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[#999] font-medium mb-8">
-            Trusted by teams at
-          </p>
-          <div className="flex flex-wrap justify-center gap-6 sm:gap-10 items-center">
-            {trustLogos.map((label, i) => (
-              <div
-                key={i}
-                className="w-20 sm:w-24 h-8 rounded-md bg-[#141414]/[0.04] border border-[#141414]/[0.06] flex items-center justify-center opacity-50 hover:opacity-80 transition-opacity duration-300"
-              >
-                <span className="text-[10px] text-[#999] font-medium tracking-wide">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   )

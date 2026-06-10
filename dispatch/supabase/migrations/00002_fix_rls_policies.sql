@@ -23,3 +23,4 @@ DROP POLICY IF EXISTS "Users can view own org members" ON public.organization_me
 CREATE POLICY "Users can view own org members"
   ON public.organization_members FOR SELECT
   USING (user_id = auth.uid());
+

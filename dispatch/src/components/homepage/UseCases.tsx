@@ -34,8 +34,8 @@ const useCases = [
   {
     tab: "Agencies",
     headline: "Multi-client output without losing quality.",
-    body: "Templatized systems that maintain consistency across every account — with half the onboarding time for new clients.",
-    bullets: ["Client-specific workspaces", "Templatized workflows", "50% faster client onboarding"],
+    body: "Templatized systems that maintain consistency across every account — and make onboarding new clients dramatically faster.",
+    bullets: ["Client-specific workspaces", "Templatized workflows", "Faster client onboarding"],
   },
 ]
 

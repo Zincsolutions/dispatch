@@ -2,7 +2,7 @@
 
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from "./AnimateOnScroll"
 
-const SHOW_BLOG = true
+const SHOW_BLOG = false
 
 const articles = [
   {
