@@ -101,9 +101,14 @@ export default async function WorkflowDetailPage({ params }: Props) {
           </h2>
           <div className="flex flex-wrap gap-1.5">
             {workflow.tags.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
+              <Link key={tag} href={`/workflows?tag=${encodeURIComponent(tag)}`}>
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-secondary/80 cursor-pointer"
+                >
+                  {tag}
+                </Badge>
+              </Link>
             ))}
           </div>
         </div>

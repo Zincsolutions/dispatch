@@ -1,6 +1,11 @@
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
+import { getPendingInvitations } from "@/lib/queries/invitations"
 import { createClient } from "@/lib/supabase/server"
+import { signout } from "@/lib/actions/auth"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { SettingsForm } from "./settings-form"
+import { InviteMembers } from "./invite-members"
 
 export default async function SettingsPage() {
   const { user, organization, role } = await getCurrentUserWithOrg()
@@ -17,16 +22,27 @@ export default async function SettingsPage() {
     .select("*, profiles(*)")
     .order("created_at", { ascending: true })
 
+  const invitations = role === "owner" ? await getPendingInvitations() : []
+
   return (
     <div className="max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight mb-6">Settings</h1>
-      <SettingsForm
-        organization={organization}
-        profile={profile!}
-        members={members || []}
-        role={role}
-        userEmail={user.email || ""}
-      />
+      <div className="space-y-6">
+        <SettingsForm
+          organization={organization}
+          profile={profile!}
+          members={members || []}
+          role={role}
+          userEmail={user.email || ""}
+        />
+        {role === "owner" && <InviteMembers invitations={invitations} />}
+        <Separator />
+        <form action={signout}>
+          <Button variant="outline" type="submit">
+            Sign out
+          </Button>
+        </form>
+      </div>
     </div>
   )
 }

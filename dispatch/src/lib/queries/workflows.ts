@@ -4,6 +4,7 @@ import type { Workflow } from "@/lib/types"
 interface WorkflowFilters {
   search?: string
   status?: string
+  tag?: string
 }
 
 export async function getWorkflows(filters?: WorkflowFilters): Promise<Workflow[]> {
@@ -21,6 +22,9 @@ export async function getWorkflows(filters?: WorkflowFilters): Promise<Workflow[
   }
   if (filters?.status) {
     query = query.eq("status", filters.status)
+  }
+  if (filters?.tag) {
+    query = query.contains("tags", [filters.tag])
   }
 
   const { data, error } = await query

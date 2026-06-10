@@ -5,10 +5,11 @@ import { EmptyState } from "@/components/shared/empty-state"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
+import { TagFilterChip } from "@/components/lists/tag-filter-chip"
 import { Suspense } from "react"
 
 interface Props {
-  searchParams: Promise<{ search?: string; status?: string }>
+  searchParams: Promise<{ search?: string; status?: string; tag?: string }>
 }
 
 export default async function WorkflowsPage({ searchParams }: Props) {
@@ -16,7 +17,9 @@ export default async function WorkflowsPage({ searchParams }: Props) {
   const workflows = await getWorkflows({
     search: params.search,
     status: params.status,
+    tag: params.tag,
   })
+  const hasFilters = Boolean(params.search || params.status || params.tag)
 
   return (
     <div>
@@ -33,11 +36,16 @@ export default async function WorkflowsPage({ searchParams }: Props) {
         <Suspense>
           <FilterControls />
         </Suspense>
+        {params.tag && <TagFilterChip tag={params.tag} basePath="/workflows" />}
       </div>
       {workflows.length === 0 ? (
         <EmptyState
-          title="No workflows found"
-          description="Create your first workflow to start organizing your processes."
+          title={hasFilters ? "No workflows match your filters" : "No workflows found"}
+          description={
+            hasFilters
+              ? "Try clearing your search or filters."
+              : "Create your first workflow to start organizing your processes."
+          }
           createHref="/workflows/new"
           createLabel="New Workflow"
         />

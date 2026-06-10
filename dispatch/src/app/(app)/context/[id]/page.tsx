@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { buttonVariants } from "@/components/ui/button-variants"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
+import { CopyButton } from "@/components/shared/copy-button"
 import { Pencil, Trash2, ArrowLeft } from "lucide-react"
 
 interface Props {
@@ -72,9 +73,18 @@ export default async function ContextAssetDetailPage({ params }: Props) {
       </div>
 
       <div className="rounded-lg border p-4 mb-6">
-        <h2 className="text-sm font-medium text-muted-foreground mb-2">
-          Content
-        </h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-sm font-medium text-muted-foreground">
+            Content
+          </h2>
+          <CopyButton
+            text={contextAsset.content}
+            label="Copy"
+            variant="ghost"
+            entityType="context_asset"
+            entityId={id}
+          />
+        </div>
         <pre className="whitespace-pre-wrap text-sm font-mono leading-relaxed">
           {contextAsset.content}
         </pre>
@@ -87,9 +97,14 @@ export default async function ContextAssetDetailPage({ params }: Props) {
           </h2>
           <div className="flex flex-wrap gap-1.5">
             {contextAsset.tags.map((tag: string) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
+              <Link key={tag} href={`/context?tag=${encodeURIComponent(tag)}`}>
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-secondary/80 cursor-pointer"
+                >
+                  {tag}
+                </Badge>
+              </Link>
             ))}
           </div>
         </div>

@@ -30,3 +30,12 @@ export type WorkflowStep = {
 }
 
 export type Status = "draft" | "approved" | "archived"
+
+export type Invitation = Database["public"]["Tables"]["invitations"]["Row"]
+export type InvitationInsert = Database["public"]["Tables"]["invitations"]["Insert"]
+
+export type UsageEvent = Database["public"]["Tables"]["usage_events"]["Row"]
+export type UsageEventInsert = Database["public"]["Tables"]["usage_events"]["Insert"]
+
+export type UsageEntityType = "prompt" | "workflow" | "agent" | "context_asset"
+export type UsageAction = "copy" | "run_chatgpt" | "run_claude"

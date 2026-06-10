@@ -5,6 +5,7 @@ interface PromptFilters {
   search?: string
   status?: string
   category?: string
+  tag?: string
 }
 
 export async function getPrompts(filters?: PromptFilters): Promise<Prompt[]> {
@@ -25,6 +26,9 @@ export async function getPrompts(filters?: PromptFilters): Promise<Prompt[]> {
   }
   if (filters?.category) {
     query = query.eq("category", filters.category)
+  }
+  if (filters?.tag) {
+    query = query.contains("tags", [filters.tag])
   }
 
   const { data, error } = await query

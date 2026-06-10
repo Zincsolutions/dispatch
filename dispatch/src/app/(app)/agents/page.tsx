@@ -6,11 +6,12 @@ import { StatusBadge } from "@/components/shared/status-badge"
 import { Badge } from "@/components/ui/badge"
 import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
+import { TagFilterChip } from "@/components/lists/tag-filter-chip"
 import { AGENT_PLATFORMS } from "@/lib/constants"
 import { Suspense } from "react"
 
 interface Props {
-  searchParams: Promise<{ search?: string; status?: string; platform?: string }>
+  searchParams: Promise<{ search?: string; status?: string; platform?: string; tag?: string }>
 }
 
 export default async function AgentsPage({ searchParams }: Props) {
@@ -19,7 +20,9 @@ export default async function AgentsPage({ searchParams }: Props) {
     search: params.search,
     status: params.status,
     platform: params.platform,
+    tag: params.tag,
   })
+  const hasFilters = Boolean(params.search || params.status || params.platform || params.tag)
 
   return (
     <div>
@@ -40,11 +43,16 @@ export default async function AgentsPage({ searchParams }: Props) {
             categoryParam="platform"
           />
         </Suspense>
+        {params.tag && <TagFilterChip tag={params.tag} basePath="/agents" />}
       </div>
       {agents.length === 0 ? (
         <EmptyState
-          title="No agents found"
-          description="Create your first agent to start building your agent library."
+          title={hasFilters ? "No agents match your filters" : "No agents found"}
+          description={
+            hasFilters
+              ? "Try clearing your search or filters."
+              : "Create your first agent to start building your agent library."
+          }
           createHref="/agents/new"
           createLabel="New Agent"
         />

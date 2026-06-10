@@ -5,6 +5,7 @@ interface ContextAssetFilters {
   search?: string
   status?: string
   asset_type?: string
+  tag?: string
 }
 
 export async function getContextAssets(filters?: ContextAssetFilters): Promise<ContextAsset[]> {
@@ -25,6 +26,9 @@ export async function getContextAssets(filters?: ContextAssetFilters): Promise<C
   }
   if (filters?.asset_type) {
     query = query.eq("asset_type", filters.asset_type)
+  }
+  if (filters?.tag) {
+    query = query.contains("tags", [filters.tag])
   }
 
   const { data, error } = await query

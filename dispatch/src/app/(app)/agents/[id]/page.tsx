@@ -98,9 +98,14 @@ export default async function AgentDetailPage({ params }: Props) {
           </h2>
           <div className="flex flex-wrap gap-1.5">
             {agent.tags.map((tag: string) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
+              <Link key={tag} href={`/agents?tag=${encodeURIComponent(tag)}`}>
+                <Badge
+                  variant="secondary"
+                  className="hover:bg-secondary/80 cursor-pointer"
+                >
+                  {tag}
+                </Badge>
+              </Link>
             ))}
           </div>
         </div>

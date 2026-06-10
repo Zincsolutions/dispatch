@@ -5,6 +5,7 @@ interface AgentFilters {
   search?: string
   status?: string
   platform?: string
+  tag?: string
 }
 
 export async function getAgents(filters?: AgentFilters): Promise<Agent[]> {
@@ -26,6 +27,9 @@ export async function getAgents(filters?: AgentFilters): Promise<Agent[]> {
   }
   if (filters?.platform) {
     query = query.eq("platform", filters.platform)
+  }
+  if (filters?.tag) {
+    query = query.contains("tags", [filters.tag])
   }
 
   const { data, error } = await query

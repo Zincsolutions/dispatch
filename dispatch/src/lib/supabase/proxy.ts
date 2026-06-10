@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server"
 
 // Routes reachable without a session. Everything else requires auth.
 const PUBLIC_PATHS = ["/", "/privacy", "/terms"]
-const PUBLIC_PREFIXES = ["/login", "/signup", "/auth"]
+const PUBLIC_PREFIXES = ["/login", "/signup", "/auth", "/invite"]
 
 function isPublicPath(path: string) {
   return (
@@ -51,12 +51,14 @@ export async function updateSession(request: NextRequest) {
   if (!user && !isPublicPath(path)) {
     const url = request.nextUrl.clone()
     url.pathname = "/login"
+    url.search = ""
     return NextResponse.redirect(url)
   }
 
   if (user && (path === "/login" || path === "/signup")) {
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
+    url.search = ""
     return NextResponse.redirect(url)
   }
 

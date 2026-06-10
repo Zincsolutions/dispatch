@@ -293,6 +293,70 @@ export interface Database {
           agent_id?: string
         }
       }
+      invitations: {
+        Row: {
+          id: string
+          organization_id: string
+          email: string
+          role: string
+          token: string
+          status: string
+          invited_by: string
+          created_at: string
+          expires_at: string
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          email: string
+          role?: string
+          token?: string
+          status?: string
+          invited_by: string
+          created_at?: string
+          expires_at?: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          email?: string
+          role?: string
+          token?: string
+          status?: string
+          invited_by?: string
+          created_at?: string
+          expires_at?: string
+        }
+      }
+      usage_events: {
+        Row: {
+          id: string
+          organization_id: string
+          user_id: string
+          entity_type: string
+          entity_id: string
+          action: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          user_id: string
+          entity_type: string
+          entity_id: string
+          action: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          user_id?: string
+          entity_type?: string
+          entity_id?: string
+          action?: string
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

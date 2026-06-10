@@ -5,11 +5,12 @@ import { EmptyState } from "@/components/shared/empty-state"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
+import { TagFilterChip } from "@/components/lists/tag-filter-chip"
 import { CONTEXT_ASSET_TYPES } from "@/lib/constants"
 import { Suspense } from "react"
 
 interface Props {
-  searchParams: Promise<{ search?: string; status?: string; asset_type?: string }>
+  searchParams: Promise<{ search?: string; status?: string; asset_type?: string; tag?: string }>
 }
 
 export default async function ContextAssetsPage({ searchParams }: Props) {
@@ -18,7 +19,9 @@ export default async function ContextAssetsPage({ searchParams }: Props) {
     search: params.search,
     status: params.status,
     asset_type: params.asset_type,
+    tag: params.tag,
   })
+  const hasFilters = Boolean(params.search || params.status || params.asset_type || params.tag)
 
   return (
     <div>
@@ -39,11 +42,16 @@ export default async function ContextAssetsPage({ searchParams }: Props) {
             categoryParam="asset_type"
           />
         </Suspense>
+        {params.tag && <TagFilterChip tag={params.tag} basePath="/context" />}
       </div>
       {contextAssets.length === 0 ? (
         <EmptyState
-          title="No context assets found"
-          description="Create your first context asset to start building your context library."
+          title={hasFilters ? "No context assets match your filters" : "No context assets found"}
+          description={
+            hasFilters
+              ? "Try clearing your search or filters."
+              : "Create your first context asset to start building your context library."
+          }
           createHref="/context/new"
           createLabel="New Context Asset"
         />

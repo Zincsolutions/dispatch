@@ -5,11 +5,12 @@ import { EmptyState } from "@/components/shared/empty-state"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
+import { TagFilterChip } from "@/components/lists/tag-filter-chip"
 import { PROMPT_CATEGORIES } from "@/lib/constants"
 import { Suspense } from "react"
 
 interface Props {
-  searchParams: Promise<{ search?: string; status?: string; category?: string }>
+  searchParams: Promise<{ search?: string; status?: string; category?: string; tag?: string }>
 }
 
 export default async function PromptsPage({ searchParams }: Props) {
@@ -18,7 +19,9 @@ export default async function PromptsPage({ searchParams }: Props) {
     search: params.search,
     status: params.status,
     category: params.category,
+    tag: params.tag,
   })
+  const hasFilters = Boolean(params.search || params.status || params.category || params.tag)
 
   return (
     <div>
@@ -39,11 +42,16 @@ export default async function PromptsPage({ searchParams }: Props) {
             categoryParam="category"
           />
         </Suspense>
+        {params.tag && <TagFilterChip tag={params.tag} basePath="/prompts" />}
       </div>
       {prompts.length === 0 ? (
         <EmptyState
-          title="No prompts found"
-          description="Create your first prompt to start building your prompt library."
+          title={hasFilters ? "No prompts match your filters" : "No prompts found"}
+          description={
+            hasFilters
+              ? "Try clearing your search or filters."
+              : "Create your first prompt to start building your prompt library."
+          }
           createHref="/prompts/new"
           createLabel="New Prompt"
         />

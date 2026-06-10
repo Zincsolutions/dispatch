@@ -2,12 +2,10 @@
 
 import { useState } from "react"
 import { updateOrganization, updateProfile } from "@/lib/actions/settings"
-import { signout } from "@/lib/actions/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 import type { Organization, Profile } from "@/lib/types"
@@ -134,12 +132,6 @@ export function SettingsForm({
           </div>
         </CardContent>
       </Card>
-
-      <Separator />
-
-      <Button variant="outline" onClick={() => signout()}>
-        Sign out
-      </Button>
     </div>
   )
 }
