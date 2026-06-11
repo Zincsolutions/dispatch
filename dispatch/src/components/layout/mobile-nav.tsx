@@ -12,6 +12,7 @@ import {
   FileText,
   Bot,
   Workflow,
+  Images,
   Settings,
 } from "lucide-react"
 import { useState } from "react"
@@ -22,6 +23,7 @@ const navItems = [
   { label: "Context", href: "/context", icon: FileText },
   { label: "Agents", href: "/agents", icon: Bot },
   { label: "Workflows", href: "/workflows", icon: Workflow },
+  { label: "Library", href: "/library", icon: Images },
   { label: "Settings", href: "/settings", icon: Settings },
 ]
 
