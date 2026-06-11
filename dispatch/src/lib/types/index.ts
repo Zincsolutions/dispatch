@@ -37,5 +37,16 @@ export type InvitationInsert = Database["public"]["Tables"]["invitations"]["Inse
 export type UsageEvent = Database["public"]["Tables"]["usage_events"]["Row"]
 export type UsageEventInsert = Database["public"]["Tables"]["usage_events"]["Insert"]
 
-export type UsageEntityType = "prompt" | "workflow" | "agent" | "context_asset"
+export type UsageEntityType =
+  | "prompt"
+  | "workflow"
+  | "agent"
+  | "context_asset"
+  | "library_image"
 export type UsageAction = "copy" | "run_chatgpt" | "run_claude"
+
+export type ImageCollection = Database["public"]["Tables"]["image_collections"]["Row"]
+
+export type LibraryImage = Database["public"]["Tables"]["library_images"]["Row"]
+export type LibraryImageInsert = Database["public"]["Tables"]["library_images"]["Insert"]
+export type LibraryImageUpdate = Database["public"]["Tables"]["library_images"]["Update"]

@@ -328,6 +328,76 @@ export interface Database {
           expires_at?: string
         }
       }
+      image_collections: {
+        Row: {
+          id: string
+          organization_id: string
+          created_by: string
+          name: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          created_by: string
+          name: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          created_by?: string
+          name?: string
+          created_at?: string
+        }
+      }
+      library_images: {
+        Row: {
+          id: string
+          organization_id: string
+          created_by: string
+          collection_id: string | null
+          storage_path: string
+          title: string | null
+          prompt: string
+          sref: string | null
+          parameters: string | null
+          tool: string
+          tags: string[]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          created_by: string
+          collection_id?: string | null
+          storage_path: string
+          title?: string | null
+          prompt?: string
+          sref?: string | null
+          parameters?: string | null
+          tool?: string
+          tags?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          created_by?: string
+          collection_id?: string | null
+          storage_path?: string
+          title?: string | null
+          prompt?: string
+          sref?: string | null
+          parameters?: string | null
+          tool?: string
+          tags?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+      }
       usage_events: {
         Row: {
           id: string
