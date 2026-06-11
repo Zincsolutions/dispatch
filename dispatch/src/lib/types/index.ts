@@ -45,6 +45,17 @@ export type UsageEntityType =
   | "library_image"
 export type UsageAction = "copy" | "run_chatgpt" | "run_claude"
 
+export type GovDocument = Database["public"]["Tables"]["documents"]["Row"]
+export type GovDocumentInsert = Database["public"]["Tables"]["documents"]["Insert"]
+export type GovDocumentUpdate = Database["public"]["Tables"]["documents"]["Update"]
+
+export type DocumentAcknowledgment =
+  Database["public"]["Tables"]["document_acknowledgments"]["Row"]
+
+export type RegistryTool = Database["public"]["Tables"]["tool_registry"]["Row"]
+export type RegistryToolInsert = Database["public"]["Tables"]["tool_registry"]["Insert"]
+export type RegistryToolUpdate = Database["public"]["Tables"]["tool_registry"]["Update"]
+
 export type ImageCollection = Database["public"]["Tables"]["image_collections"]["Row"]
 
 export type LibraryImage = Database["public"]["Tables"]["library_images"]["Row"]

@@ -398,6 +398,105 @@ export interface Database {
           updated_at?: string
         }
       }
+      documents: {
+        Row: {
+          id: string
+          organization_id: string
+          created_by: string
+          title: string
+          content: string
+          doc_type: string
+          status: string
+          tags: string[]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          created_by: string
+          title: string
+          content?: string
+          doc_type?: string
+          status?: string
+          tags?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          created_by?: string
+          title?: string
+          content?: string
+          doc_type?: string
+          status?: string
+          tags?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      document_acknowledgments: {
+        Row: {
+          id: string
+          document_id: string
+          user_id: string
+          acknowledged_at: string
+        }
+        Insert: {
+          id?: string
+          document_id: string
+          user_id: string
+          acknowledged_at?: string
+        }
+        Update: {
+          id?: string
+          document_id?: string
+          user_id?: string
+          acknowledged_at?: string
+        }
+      }
+      tool_registry: {
+        Row: {
+          id: string
+          organization_id: string
+          created_by: string
+          name: string
+          status: string
+          owner: string | null
+          url: string | null
+          rationale: string | null
+          data_notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          created_by: string
+          name: string
+          status?: string
+          owner?: string | null
+          url?: string | null
+          rationale?: string | null
+          data_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          created_by?: string
+          name?: string
+          status?: string
+          owner?: string | null
+          url?: string | null
+          rationale?: string | null
+          data_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
       usage_events: {
         Row: {
           id: string
