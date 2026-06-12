@@ -12,30 +12,40 @@ const useCases = [
     headline: "Scale campaigns faster with shared prompts and on-brand imagery.",
     body: "Your whole marketing team running on the same playbook — shared prompt libraries, consistent brand visuals, and repeatable content workflows that anyone can follow.",
     bullets: ["Shared prompt library for campaigns", "On-brand AI image management", "Repeatable content workflows"],
+    screenshot: "/screenshots/library.jpg",
+    alt: "Dispatch brand library keeping marketing imagery on-brand",
   },
   {
     tab: "Sales",
     headline: "Make every rep perform like your best rep.",
     body: "Standardize outreach, proposals, and follow-up sequences so your entire sales team operates at the level of your top performer.",
     bullets: ["Standardized outreach templates", "Proposal workflows", "Performance-rated sequences"],
+    screenshot: "/screenshots/prompts.jpg",
+    alt: "Dispatch prompt library with standardized, approved templates",
   },
   {
     tab: "Operations",
     headline: "Build processes that scale without you.",
     body: "Document and connect repeatable workflows that reduce manual effort and scale with confidence — even when you're not in the room.",
     bullets: ["Documented AI workflows", "Tool-connected processes", "Team-wide adoption tracking"],
+    screenshot: "/screenshots/workflow-detail.jpg",
+    alt: "Dispatch workflow with documented step-by-step process",
   },
   {
     tab: "Leadership",
     headline: "See what's working. Invest in what compounds.",
     body: "For the first time, visibility into how your teams are using AI — what's performing, what's wasted, and where to double down.",
     bullets: ["AI usage visibility", "Performance analytics", "Investment prioritization"],
+    screenshot: "/screenshots/governance.jpg",
+    alt: "Dispatch governance overview showing policy acknowledgments and tool registry",
   },
   {
     tab: "Agencies",
     headline: "Multi-client output without losing quality.",
     body: "Templatized systems that maintain consistency across every account — and make onboarding new clients dramatically faster.",
     bullets: ["Client-specific workspaces", "Templatized workflows", "Faster client onboarding"],
+    screenshot: "/screenshots/prompt-detail.jpg",
+    alt: "Dispatch templatized prompt with client variables, ready to run",
   },
 ]
 
@@ -96,24 +106,26 @@ export function UseCases() {
             </div>
 
             <div
-              className={`aspect-[16/10] rounded-2xl overflow-hidden ${washes[active]} flex flex-col p-6 sm:p-10 border border-[#E5E5E3]`}
+              className={`rounded-2xl ${washes[active]} p-5 sm:p-7 border border-[#E5E5E3]`}
               style={{ boxShadow: "0 24px 64px -16px rgba(20,20,20,0.06)" }}
             >
-              <div className="flex items-center gap-2 mb-5">
+              <div className="flex items-center gap-2 mb-4">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/10" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/[0.06]" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/[0.06]" />
               </div>
-              <div className="h-3 bg-[#141414]/[0.05] rounded w-1/3 mb-2" />
-              <div className="h-5 bg-[#141414]/[0.06] rounded w-2/3 mb-6" />
-              <div className="grid grid-cols-2 gap-3 flex-1">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="rounded-xl bg-white/50 border border-white/60" />
-                ))}
+              <div
+                className="aspect-[16/10] rounded-xl overflow-hidden border border-white/60 bg-white"
+                style={{ boxShadow: "0 12px 32px -8px rgba(20,20,20,0.12)" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={useCases[active].screenshot}
+                  alt={useCases[active].alt}
+                  className="w-full h-full object-cover object-top"
+                  loading="lazy"
+                />
               </div>
-              <p className="text-center text-[#141414]/25 text-sm font-semibold mt-5">
-                {useCases[active].tab} Dashboard
-              </p>
             </div>
           </motion.div>
         </AnimatePresence>
