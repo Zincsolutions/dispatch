@@ -4,38 +4,31 @@ import { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 
 const tabs = [
-  { label: "Prompts", screenshotLabel: "Prompt Library Interface", caption: "Your team's best prompts, organized and accessible.", wash: "gradient-wash-1" },
-  { label: "Workflows", screenshotLabel: "Workflow Builder", caption: "Turn your best processes into repeatable systems.", wash: "gradient-wash-2" },
-  { label: "Images", screenshotLabel: "Image Management System", caption: "AI imagery that stays on-brand, every time.", wash: "gradient-wash-3" },
-  { label: "Insights", screenshotLabel: "Analytics Dashboard", caption: "See what's working. Double down on it.", wash: "gradient-wash-1" },
+  {
+    label: "Prompts",
+    src: "/screenshots/prompt-detail.jpg",
+    alt: "Dispatch prompt detail with Run in ChatGPT and Run in Claude buttons",
+    caption: "Your team's best prompts — run them in ChatGPT or Claude with one click.",
+  },
+  {
+    label: "Workflows",
+    src: "/screenshots/workflow-detail.jpg",
+    alt: "Dispatch workflow with documented step-by-step process",
+    caption: "Turn your best processes into repeatable systems.",
+  },
+  {
+    label: "Images",
+    src: "/screenshots/library.jpg",
+    alt: "Dispatch brand library with images and their sref recipes",
+    caption: "AI imagery that stays on-brand — every image stored with its prompt and sref.",
+  },
+  {
+    label: "Governance",
+    src: "/screenshots/governance.jpg",
+    alt: "Dispatch governance overview with policy acknowledgments and tool registry",
+    caption: "Policies your team acknowledges, and a registry of which tools are approved.",
+  },
 ]
-
-function WireframeUI({ label, wash }: { label: string; wash: string }) {
-  return (
-    <div className={`w-full h-full flex flex-col p-6 sm:p-10 ${wash}`}>
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-3 h-3 rounded-full bg-[#141414]/10" />
-        <div className="w-3 h-3 rounded-full bg-[#141414]/[0.06]" />
-        <div className="w-3 h-3 rounded-full bg-[#141414]/[0.06]" />
-        <div className="flex-1" />
-        <div className="h-3 w-20 rounded bg-[#141414]/[0.06]" />
-      </div>
-      <div className="flex gap-4 mb-6">
-        <div className="h-8 w-24 rounded-lg bg-[#141414]/[0.06]" />
-        <div className="h-8 w-20 rounded-lg bg-[#141414]/[0.04]" />
-        <div className="h-8 w-28 rounded-lg bg-[#141414]/[0.04]" />
-      </div>
-      <div className="h-4 w-48 rounded bg-[#141414]/[0.06] mb-3" />
-      <div className="h-3 w-64 rounded bg-[#141414]/[0.04] mb-8" />
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 flex-1">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="rounded-xl bg-white/40 border border-white/60 min-h-[56px]" />
-        ))}
-      </div>
-      <p className="text-center text-[#141414]/30 text-sm font-medium mt-6">{label}</p>
-    </div>
-  )
-}
 
 export function ProductShowcase() {
   const [activeTab, setActiveTab] = useState(0)
@@ -84,9 +77,15 @@ export function ProductShowcase() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] as const }}
-              className="aspect-[16/10]"
+              className="aspect-[16/10] bg-white"
             >
-              <WireframeUI label={tabs[activeTab].screenshotLabel} wash={tabs[activeTab].wash} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={tabs[activeTab].src}
+                alt={tabs[activeTab].alt}
+                className="w-full h-full object-cover object-top"
+                loading={activeTab === 0 ? "eager" : "lazy"}
+              />
             </motion.div>
           </AnimatePresence>
         </div>
