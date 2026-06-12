@@ -7,33 +7,23 @@ interface FeatureSectionProps {
   headline: string
   body: string
   soWhat: string
-  screenshotLabel: string
-  screenshotGradient: string
+  screenshotSrc: string
+  screenshotAlt: string
 }
 
-const washes = ["gradient-wash-1", "gradient-wash-2", "gradient-wash-3", "gradient-wash-1"]
-
-function ScreenPlaceholder({ label, washIndex }: { label: string; washIndex: number }) {
+function Screenshot({ src, alt }: { src: string; alt: string }) {
   return (
     <div
-      className={`aspect-[16/10] rounded-2xl overflow-hidden ${washes[washIndex % washes.length]} border border-[#E5E5E3] flex flex-col p-6 sm:p-10`}
+      className="aspect-[16/10] rounded-2xl overflow-hidden border border-[#E5E5E3] bg-white"
       style={{ boxShadow: "0 24px 64px -16px rgba(20,20,20,0.08)" }}
     >
-      <div className="flex items-center gap-2 mb-5">
-        <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/10" />
-        <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/[0.06]" />
-        <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/[0.06]" />
-        <div className="flex-1" />
-        <div className="h-2.5 w-16 rounded bg-[#141414]/[0.06]" />
-      </div>
-      <div className="h-3 bg-[#141414]/[0.05] rounded w-2/5 mb-2" />
-      <div className="h-5 bg-[#141414]/[0.06] rounded w-3/4 mb-6" />
-      <div className="space-y-2.5 flex-1">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-10 bg-white/50 rounded-xl border border-white/60" />
-        ))}
-      </div>
-      <p className="text-center text-[#141414]/25 text-sm font-semibold mt-5">{label}</p>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        className="w-full h-full object-cover object-top"
+        loading="lazy"
+      />
     </div>
   )
 }
@@ -43,7 +33,8 @@ export function FeatureSection({
   headline,
   body,
   soWhat,
-  screenshotLabel,
+  screenshotSrc,
+  screenshotAlt,
 }: FeatureSectionProps) {
   const isEven = index % 2 === 0
   const slideDirection = isEven ? "right" as const : "left" as const
@@ -76,7 +67,7 @@ export function FeatureSection({
 
           <div className={isEven ? "order-2" : "order-1 lg:order-2"}>
             <AnimateOnScroll direction={slideDirection} delay={0.15}>
-              <ScreenPlaceholder label={screenshotLabel} washIndex={index} />
+              <Screenshot src={screenshotSrc} alt={screenshotAlt} />
             </AnimateOnScroll>
           </div>
         </div>

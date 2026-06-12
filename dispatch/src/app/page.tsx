@@ -15,35 +15,35 @@ import { Footer } from "@/components/homepage/Footer"
 const features = [
   {
     headline: "Stop guessing. Start engineering your prompts.",
-    body: "Create, refine, and share prompts that consistently produce high-quality output — stored in a centralized system your team can trust.",
+    body: "Create, refine, and share prompts that consistently produce high-quality output — then run them in ChatGPT or Claude with one click.",
     soWhat:
       "Without this, your best prompts live in one person's ChatGPT history. When they leave, take PTO, or just forget — that knowledge vanishes. Dispatch means your team's prompt intelligence is an organizational asset, not a personal secret.",
-    screenshotLabel: "Prompt Library Interface",
-    screenshotGradient: "from-dispatch-blue/30 to-dispatch-teal/20",
+    screenshotSrc: "/screenshots/prompts.jpg",
+    screenshotAlt: "Dispatch prompt library with categorized, approved prompts",
   },
   {
     headline: "AI imagery that actually stays on brand.",
-    body: "Manage prompts, references, and outputs so your visuals are consistent, repeatable, and aligned — without losing track of source inputs.",
+    body: "Every image lives next to the prompt, style reference, and parameters that created it — so your visuals are consistent and repeatable.",
     soWhat:
       "Every brand team has experienced this: someone generates a great AI image, but nobody can recreate it because the prompt is gone. Dispatch keeps the recipe next to the result — so your team can reproduce, iterate, and maintain visual consistency at scale.",
-    screenshotLabel: "Image Management System",
-    screenshotGradient: "from-purple-500/20 to-dispatch-blue/20",
+    screenshotSrc: "/screenshots/library.jpg",
+    screenshotAlt: "Dispatch brand library with image collections and sref recipes",
   },
   {
     headline: "Turn AI into a repeatable process.",
     body: "Build structured workflows that connect tools and steps into systems your team can follow — and scale with confidence.",
     soWhat:
       "Right now, your top performer's process lives in their head. If they're sick on launch day, the team scrambles. Dispatch externalizes expertise into documented, shareable workflows — so your team's capability doesn't depend on any single person.",
-    screenshotLabel: "Workflow Builder",
-    screenshotGradient: "from-dispatch-teal/20 to-emerald-500/20",
+    screenshotSrc: "/screenshots/workflow-detail.jpg",
+    screenshotAlt: "Dispatch workflow with documented step-by-step process",
   },
   {
-    headline: "Finally know what works.",
-    body: "Rate and refine prompts, workflows, and tools so your best-performing systems rise to the top.",
+    headline: "Put guardrails around AI — without slowing anyone down.",
+    body: "Policies and SOPs your team actually acknowledges, plus a living registry of which AI tools are approved, experimental, or off-limits.",
     soWhat:
-      "Most teams have no idea which AI processes actually perform and which waste time. Dispatch surfaces this — so you double down on what delivers and stop investing in what doesn't. That's how AI becomes a compounding advantage instead of a cost center.",
-    screenshotLabel: "Ratings Dashboard",
-    screenshotGradient: "from-dispatch-blue/20 to-indigo-500/20",
+      "Most companies have no idea which AI tools their teams use or what data goes into them. Dispatch gives you one page that answers both — with proof your team has read the rules. That's the difference between using AI and governing it.",
+    screenshotSrc: "/screenshots/tools.jpg",
+    screenshotAlt: "Dispatch tool registry showing approved and not-allowed AI tools with data rules",
   },
 ]
 
