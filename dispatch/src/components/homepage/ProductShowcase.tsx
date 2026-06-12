@@ -30,6 +30,8 @@ const tabs = [
   },
 ]
 
+const washes = ["gradient-wash-1", "gradient-wash-2", "gradient-wash-3", "gradient-wash-1"]
+
 export function ProductShowcase() {
   const [activeTab, setActiveTab] = useState(0)
 
@@ -67,9 +69,14 @@ export function ProductShowcase() {
         </div>
 
         <div
-          className="relative rounded-2xl overflow-hidden border border-[#E5E5E3]"
+          className={`relative rounded-2xl border border-[#E5E5E3] transition-colors duration-300 ${washes[activeTab % washes.length]} p-5 sm:p-8`}
           style={{ boxShadow: "0 24px 48px -12px rgba(20,20,20,0.08)" }}
         >
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/10" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/[0.06]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#141414]/[0.06]" />
+          </div>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -77,7 +84,8 @@ export function ProductShowcase() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] as const }}
-              className="aspect-[16/10] bg-white"
+              className="aspect-[16/10] rounded-xl overflow-hidden border border-white/60 bg-white"
+              style={{ boxShadow: "0 12px 32px -8px rgba(20,20,20,0.12)" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
