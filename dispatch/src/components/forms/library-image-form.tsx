@@ -31,9 +31,17 @@ const TOOLS = [
 interface LibraryImageFormProps {
   action: (formData: FormData) => Promise<{ error?: Record<string, string[]> } | void>
   collections: ImageCollection[]
-  // Required in create mode: uploads go to {orgId}/{uuid}.{ext}
+  // Needed wherever a file is uploaded: paths go to {orgId}/{uuid}.{ext}.
+  // Required in create mode (generated image) and whenever a reference
+  // image is added — including from the edit form.
   orgId?: string
   defaultValues?: LibraryImage
+  // Signed URL for an already-saved reference image (edit mode).
+  defaultReferenceUrl?: string | null
+}
+
+function fileExt(f: File) {
+  return (f.name.split(".").pop() || "png").toLowerCase()
 }
 
 export function LibraryImageForm({
@@ -41,6 +49,7 @@ export function LibraryImageForm({
   collections,
   orgId,
   defaultValues,
+  defaultReferenceUrl,
 }: LibraryImageFormProps) {
   const router = useRouter()
   const isEdit = Boolean(defaultValues)
@@ -52,6 +61,17 @@ export function LibraryImageForm({
     defaultValues?.collection_id || NO_COLLECTION
   )
   const [loading, setLoading] = useState(false)
+
+  // Reference image: optional original the user worked from.
+  const existingReferencePath = defaultValues?.reference_storage_path ?? null
+  const [referenceFile, setReferenceFile] = useState<File | null>(null)
+  const [referencePreviewUrl, setReferencePreviewUrl] = useState<string | null>(
+    null
+  )
+  // Keep the already-saved reference unless the user replaces or removes it.
+  const [keepExistingReference, setKeepExistingReference] = useState(true)
+  // Bumped to remount (and thus clear) the file input after a remove.
+  const [referenceInputKey, setReferenceInputKey] = useState(0)
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0] ?? null
@@ -69,6 +89,34 @@ export function LibraryImageForm({
     setPreviewUrl(selected ? URL.createObjectURL(selected) : null)
   }
 
+  function handleReferenceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const selected = e.target.files?.[0] ?? null
+    if (selected && !selected.type.startsWith("image/")) {
+      toast.error("Please choose an image file")
+      e.target.value = ""
+      return
+    }
+    if (selected && selected.size > MAX_FILE_MB * 1024 * 1024) {
+      toast.error(`Images must be under ${MAX_FILE_MB} MB`)
+      e.target.value = ""
+      return
+    }
+    setReferenceFile(selected)
+    setReferencePreviewUrl(selected ? URL.createObjectURL(selected) : null)
+    // A new selection supersedes any previously-saved reference.
+    if (selected) setKeepExistingReference(false)
+  }
+
+  function handleReferenceRemove() {
+    setReferenceFile(null)
+    setReferencePreviewUrl(null)
+    setKeepExistingReference(false)
+    setReferenceInputKey((k) => k + 1)
+  }
+
+  const showExistingReference = keepExistingReference && Boolean(defaultReferenceUrl)
+  const referenceThumb = referencePreviewUrl ?? (showExistingReference ? defaultReferenceUrl : null)
+
   async function handleSubmit(formData: FormData) {
     formData.set("tags", JSON.stringify(tags))
     formData.set("tool", tool)
@@ -78,7 +126,9 @@ export function LibraryImageForm({
     )
 
     setLoading(true)
-    let uploadedPath: string | null = null
+    const supabase = createClient()
+    // Files uploaded in this submit — removed if the save ultimately fails.
+    const uploadedPaths: string[] = []
 
     if (!isEdit) {
       if (!file || !orgId) {
@@ -86,27 +136,56 @@ export function LibraryImageForm({
         setLoading(false)
         return
       }
-      const supabase = createClient()
-      const ext = (file.name.split(".").pop() || "png").toLowerCase()
-      uploadedPath = `${orgId}/${crypto.randomUUID()}.${ext}`
+      const storagePath = `${orgId}/${crypto.randomUUID()}.${fileExt(file)}`
       const { error: uploadError } = await supabase.storage
         .from("library")
-        .upload(uploadedPath, file)
+        .upload(storagePath, file)
 
       if (uploadError) {
         toast.error("Upload failed: " + uploadError.message)
         setLoading(false)
         return
       }
-      formData.set("storage_path", uploadedPath)
+      uploadedPaths.push(storagePath)
+      formData.set("storage_path", storagePath)
     }
+
+    // Reference image (optional, in both create and edit).
+    let referencePath = ""
+    if (referenceFile) {
+      if (!orgId) {
+        toast.error("Unable to upload reference image")
+        if (uploadedPaths.length) {
+          await supabase.storage.from("library").remove(uploadedPaths)
+        }
+        setLoading(false)
+        return
+      }
+      const refPath = `${orgId}/${crypto.randomUUID()}.${fileExt(referenceFile)}`
+      const { error: refError } = await supabase.storage
+        .from("library")
+        .upload(refPath, referenceFile)
+
+      if (refError) {
+        toast.error("Reference upload failed: " + refError.message)
+        if (uploadedPaths.length) {
+          await supabase.storage.from("library").remove(uploadedPaths)
+        }
+        setLoading(false)
+        return
+      }
+      uploadedPaths.push(refPath)
+      referencePath = refPath
+    } else if (keepExistingReference && existingReferencePath) {
+      referencePath = existingReferencePath
+    }
+    formData.set("reference_storage_path", referencePath)
 
     const result = await action(formData)
     if (result?.error) {
-      // Don't leave an orphaned file behind if the metadata insert failed.
-      if (uploadedPath) {
-        const supabase = createClient()
-        await supabase.storage.from("library").remove([uploadedPath])
+      // Don't leave orphaned files behind if the metadata write failed.
+      if (uploadedPaths.length) {
+        await supabase.storage.from("library").remove(uploadedPaths)
       }
       const errors = result.error
       const message =
@@ -227,6 +306,41 @@ export function LibraryImageForm({
       <div className="space-y-2">
         <Label>Tags</Label>
         <TagInput value={tags} onChange={setTags} />
+      </div>
+
+      {/* Reference image — sits below the rest so it's never confused with
+          the generated image. Optional, and addable in both create and edit. */}
+      <div className="space-y-2 border-t pt-6">
+        <Label htmlFor="reference-file">Reference image (optional)</Label>
+        <p className="text-xs text-muted-foreground">
+          The original image you worked from. Kept separate from the generated
+          image — pull it in alongside the prompt when you need to match a look.
+        </p>
+        {referenceThumb && (
+          <div className="flex items-center gap-3 pt-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={referenceThumb}
+              alt="Reference image"
+              className="h-20 w-20 rounded-lg border object-cover"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleReferenceRemove}
+            >
+              Remove
+            </Button>
+          </div>
+        )}
+        <Input
+          key={referenceInputKey}
+          id="reference-file"
+          type="file"
+          accept="image/*"
+          onChange={handleReferenceChange}
+        />
       </div>
 
       <div className="flex gap-3">

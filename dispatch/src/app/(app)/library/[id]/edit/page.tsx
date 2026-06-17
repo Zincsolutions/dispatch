@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { getLibraryImageById, getCollections } from "@/lib/queries/library"
 import { updateLibraryImage } from "@/lib/actions/library"
 import { LibraryImageForm } from "@/components/forms/library-image-form"
@@ -9,9 +10,10 @@ interface Props {
 
 export default async function EditLibraryImagePage({ params }: Props) {
   const { id } = await params
-  const [image, collections] = await Promise.all([
+  const [image, collections, { organizationId }] = await Promise.all([
     getLibraryImageById(id),
     getCollections(),
+    getCurrentUserWithOrg(),
   ])
   if (!image) return notFound()
 
@@ -23,7 +25,9 @@ export default async function EditLibraryImagePage({ params }: Props) {
       <LibraryImageForm
         action={action}
         collections={collections}
+        orgId={organizationId}
         defaultValues={image}
+        defaultReferenceUrl={image.reference_url}
       />
     </div>
   )
