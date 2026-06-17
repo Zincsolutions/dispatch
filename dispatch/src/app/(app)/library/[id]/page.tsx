@@ -183,30 +183,43 @@ export default async function LibraryImageDetailPage({ params }: Props) {
         </div>
       )}
 
-      {image.reference_url && (
-        <div className="mb-6 border-t pt-6">
-          <h2 className="text-sm font-medium text-muted-foreground mb-1">
-            Reference image
-          </h2>
-          <p className="text-xs text-muted-foreground mb-3">
-            The original image used as a reference — pull it in alongside the
-            prompt to get closer to the look you&apos;re after.
+      <div className="mb-6 border-t pt-6">
+        <h2 className="text-sm font-medium text-muted-foreground mb-1">
+          Reference image
+        </h2>
+        {image.reference_url ? (
+          <>
+            <p className="text-xs text-muted-foreground mb-3">
+              The original image used as a reference — pull it in alongside the
+              prompt to get closer to the look you&apos;re after.
+            </p>
+            <a
+              href={image.reference_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={image.reference_url}
+                alt="Reference image"
+                className="h-40 w-40 rounded-lg border object-cover hover:opacity-90 transition-opacity"
+              />
+            </a>
+          </>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            No reference image yet.{" "}
+            <Link
+              href={`/library/${id}/edit`}
+              className="text-foreground underline underline-offset-2 hover:no-underline"
+            >
+              Add one
+            </Link>{" "}
+            to keep the original you worked from alongside this prompt.
           </p>
-          <a
-            href={image.reference_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image.reference_url}
-              alt="Reference image"
-              className="h-40 w-40 rounded-lg border object-cover hover:opacity-90 transition-opacity"
-            />
-          </a>
-        </div>
-      )}
+        )}
+      </div>
 
       <div className="text-xs text-muted-foreground space-y-1">
         <p>Added by {image.created_by_name}</p>
