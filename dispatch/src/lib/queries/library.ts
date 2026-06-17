@@ -68,18 +68,26 @@ export async function getLibraryImageById(id: string) {
 
   if (error || !data) return null
 
-  const { data: signed } = await supabase.storage
-    .from("library")
-    .createSignedUrl(data.storage_path as string, SIGNED_URL_TTL)
-
   const image = data as LibraryImage & {
     image_collections: { name: string } | null
     profiles: { full_name: string } | null
   }
 
+  // Sign the generated image and (when present) the reference image together.
+  const pathsToSign = [image.storage_path, image.reference_storage_path].filter(
+    Boolean
+  ) as string[]
+  const { data: signed } = await supabase.storage
+    .from("library")
+    .createSignedUrls(pathsToSign, SIGNED_URL_TTL)
+  const urlByPath = new Map((signed || []).map((s) => [s.path, s.signedUrl]))
+
   return {
     ...image,
-    url: signed?.signedUrl ?? null,
+    url: urlByPath.get(image.storage_path) ?? null,
+    reference_url: image.reference_storage_path
+      ? urlByPath.get(image.reference_storage_path) ?? null
+      : null,
     collection_name: image.image_collections?.name ?? null,
     created_by_name: image.profiles?.full_name ?? "Unknown",
   }

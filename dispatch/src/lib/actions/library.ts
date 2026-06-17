@@ -13,6 +13,8 @@ import { redirect } from "next/navigation"
 
 function parseImageFields(formData: FormData) {
   return {
+    reference_storage_path:
+      (formData.get("reference_storage_path") as string) || null,
     title: (formData.get("title") as string) || null,
     prompt: (formData.get("prompt") as string) || "",
     sref: (formData.get("sref") as string) || null,
@@ -52,6 +54,12 @@ export async function createLibraryImage(formData: FormData) {
   if (!parsed.data.storage_path.startsWith(`${organizationId}/`)) {
     return { error: { _form: ["Invalid storage path"] } }
   }
+  if (
+    parsed.data.reference_storage_path &&
+    !parsed.data.reference_storage_path.startsWith(`${organizationId}/`)
+  ) {
+    return { error: { _form: ["Invalid reference storage path"] } }
+  }
 
   const { error } = await supabase.from("library_images").insert({
     ...parsed.data,
@@ -69,13 +77,29 @@ export async function createLibraryImage(formData: FormData) {
 
 export async function updateLibraryImage(id: string, formData: FormData) {
   const supabase = await createClient()
-  await getCurrentUserWithOrg()
+  const { organizationId } = await getCurrentUserWithOrg()
 
   const parsed = libraryImageUpdateSchema.safeParse(parseImageFields(formData))
 
   if (!parsed.success) {
     return { error: { _form: [parsed.error.issues[0]?.message || "Invalid input"] } }
   }
+
+  if (
+    parsed.data.reference_storage_path &&
+    !parsed.data.reference_storage_path.startsWith(`${organizationId}/`)
+  ) {
+    return { error: { _form: ["Invalid reference storage path"] } }
+  }
+
+  // Grab the previous reference file so we can clean it up if it was
+  // replaced or removed in this edit.
+  const { data: existing } = await supabase
+    .from("library_images")
+    .select("reference_storage_path")
+    .eq("id", id)
+    .single()
+  const oldReferencePath = existing?.reference_storage_path as string | null
 
   const { error } = await supabase
     .from("library_images")
@@ -84,6 +108,11 @@ export async function updateLibraryImage(id: string, formData: FormData) {
 
   if (error) {
     return { error: { _form: [error.message] } }
+  }
+
+  if (oldReferencePath && oldReferencePath !== parsed.data.reference_storage_path) {
+    // Best-effort: an orphaned file is preferable to a failed save.
+    await supabase.storage.from("library").remove([oldReferencePath])
   }
 
   revalidatePath("/library")
@@ -97,7 +126,7 @@ export async function deleteLibraryImage(id: string) {
 
   const { data: image } = await supabase
     .from("library_images")
-    .select("storage_path")
+    .select("storage_path, reference_storage_path")
     .eq("id", id)
     .single()
 
@@ -106,9 +135,13 @@ export async function deleteLibraryImage(id: string) {
     return { error: error.message }
   }
 
-  if (image?.storage_path) {
-    // Best-effort: an orphaned file is preferable to a phantom row.
-    await supabase.storage.from("library").remove([image.storage_path as string])
+  // Best-effort: an orphaned file is preferable to a phantom row.
+  const pathsToRemove = [
+    image?.storage_path,
+    image?.reference_storage_path,
+  ].filter(Boolean) as string[]
+  if (pathsToRemove.length > 0) {
+    await supabase.storage.from("library").remove(pathsToRemove)
   }
 
   revalidatePath("/library")

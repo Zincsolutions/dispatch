@@ -358,6 +358,7 @@ export interface Database {
           created_by: string
           collection_id: string | null
           storage_path: string
+          reference_storage_path: string | null
           title: string | null
           prompt: string
           sref: string | null
@@ -373,6 +374,7 @@ export interface Database {
           created_by: string
           collection_id?: string | null
           storage_path: string
+          reference_storage_path?: string | null
           title?: string | null
           prompt?: string
           sref?: string | null
@@ -388,6 +390,7 @@ export interface Database {
           created_by?: string
           collection_id?: string | null
           storage_path?: string
+          reference_storage_path?: string | null
           title?: string | null
           prompt?: string
           sref?: string | null
