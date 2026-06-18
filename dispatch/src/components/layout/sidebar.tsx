@@ -35,7 +35,7 @@ const navItems = [
   { label: "Prompts", href: "/prompts", icon: MessageSquareText },
   { label: "Context", href: "/context", icon: FileText },
   { label: "Agents", href: "/agents", icon: Bot },
-  { label: "Workflows", href: "/workflows", icon: Workflow },
+  { label: "Workflows and Loops", href: "/workflows", icon: Workflow },
   { label: "Library", href: "/library", icon: Images },
   { label: "Governance", href: "/governance", icon: ShieldCheck },
   { label: "Settings", href: "/settings", icon: Settings },
