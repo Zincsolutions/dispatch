@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TagInput } from "@/components/forms/tag-input"
+import { cn } from "@/lib/utils"
+import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import type { ImageCollection, LibraryImage } from "@/lib/types"
 
@@ -198,7 +200,11 @@ export function LibraryImageForm({
   }
 
   return (
-    <form action={handleSubmit} className="space-y-6 max-w-2xl">
+    <form
+      action={handleSubmit}
+      aria-busy={loading}
+      className={cn("space-y-6 max-w-2xl", loading && "cursor-progress")}
+    >
       {!isEdit && (
         <div className="space-y-2">
           <Label htmlFor="file">Image</Label>
@@ -345,6 +351,7 @@ export function LibraryImageForm({
 
       <div className="flex gap-3">
         <Button type="submit" disabled={loading}>
+          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           {loading
             ? isEdit
               ? "Saving..."

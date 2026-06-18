@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import Link, { useLinkStatus } from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
@@ -12,7 +12,23 @@ import {
   Images,
   ShieldCheck,
   Settings,
+  Loader2,
 } from "lucide-react"
+
+// Spinner that appears on the clicked nav item while its page loads.
+// Fixed-size + opacity toggle so it never shifts the layout.
+function NavPending() {
+  const { pending } = useLinkStatus()
+  return (
+    <Loader2
+      aria-hidden
+      className={cn(
+        "ml-auto h-3.5 w-3.5 animate-spin transition-opacity",
+        pending ? "opacity-100" : "opacity-0"
+      )}
+    />
+  )
+}
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -61,6 +77,7 @@ export function Sidebar({ orgName }: SidebarProps) {
             >
               <item.icon className="h-4 w-4" />
               {item.label}
+              <NavPending />
             </Link>
           )
         })}
