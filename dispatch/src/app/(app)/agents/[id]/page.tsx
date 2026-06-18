@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { buttonVariants } from "@/components/ui/button-variants"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
+import { DEPARTMENTS, RISK_LEVELS } from "@/lib/constants"
 import { Pencil, Trash2, ArrowLeft } from "lucide-react"
 
 interface Props {
@@ -19,6 +20,18 @@ export default async function AgentDetailPage({ params }: Props) {
   if (!agent) return notFound()
 
   const createdByName = agent.created_by_name
+  const departmentLabel =
+    DEPARTMENTS.find((d) => d.value === agent.department)?.label ??
+    agent.department
+  const riskLabel = RISK_LEVELS.find((r) => r.value === agent.risk_level)?.label
+  const subtitle = [departmentLabel, agent.category].filter(Boolean).join(" • ")
+  const lastReviewed = agent.last_reviewed
+    ? new Date(`${agent.last_reviewed}T00:00:00`).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null
 
   return (
     <div className="max-w-3xl">
@@ -35,6 +48,9 @@ export default async function AgentDetailPage({ params }: Props) {
             <h1 className="text-2xl font-semibold tracking-tight">
               {agent.name}
             </h1>
+            {subtitle && (
+              <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
+            )}
             {agent.description && (
               <p className="text-muted-foreground mt-1">{agent.description}</p>
             )}
@@ -70,6 +86,38 @@ export default async function AgentDetailPage({ params }: Props) {
           </Badge>
         )}
       </div>
+
+      {(agent.version || lastReviewed || riskLabel) && (
+        <div className="rounded-lg border p-4 mb-6">
+          <h2 className="text-sm font-medium text-muted-foreground mb-2">
+            Governance
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+            <div>
+              <p className="text-xs text-muted-foreground">Owner</p>
+              <p>{createdByName}</p>
+            </div>
+            {agent.version && (
+              <div>
+                <p className="text-xs text-muted-foreground">Version</p>
+                <p>{agent.version}</p>
+              </div>
+            )}
+            {lastReviewed && (
+              <div>
+                <p className="text-xs text-muted-foreground">Last reviewed</p>
+                <p>{lastReviewed}</p>
+              </div>
+            )}
+            {riskLabel && (
+              <div>
+                <p className="text-xs text-muted-foreground">Risk</p>
+                <p>{riskLabel}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {agent.purpose && (
         <div className="rounded-lg border p-4 mb-6">

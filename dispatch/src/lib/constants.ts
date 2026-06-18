@@ -32,3 +32,32 @@ export const AGENT_PLATFORMS = [
   { value: "custom", label: "Custom" },
   { value: "other", label: "Other" },
 ] as const
+
+// Expanded status set for agents (governance lifecycle).
+export const AGENT_STATUSES = [
+  { value: "draft", label: "Draft" },
+  { value: "experimental", label: "Experimental" },
+  { value: "needs_review", label: "Needs Review" },
+  { value: "approved", label: "Approved" },
+  { value: "archived", label: "Archived" },
+] as const
+
+export const DEPARTMENTS = [
+  { value: "marketing", label: "Marketing" },
+  { value: "sales", label: "Sales" },
+  { value: "operations", label: "Operations" },
+  { value: "product", label: "Product" },
+  { value: "engineering", label: "Engineering" },
+  { value: "finance", label: "Finance" },
+  { value: "people", label: "People / HR" },
+  { value: "legal", label: "Legal" },
+  { value: "customer_success", label: "Customer Success" },
+  { value: "executive", label: "Executive" },
+  { value: "other", label: "Other" },
+] as const
+
+export const RISK_LEVELS = [
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
+] as const

@@ -15,7 +15,12 @@ import {
 } from "@/components/ui/select"
 import { TagInput } from "@/components/forms/tag-input"
 import { StatusSelect } from "@/components/forms/status-select"
-import { AGENT_PLATFORMS } from "@/lib/constants"
+import {
+  AGENT_PLATFORMS,
+  AGENT_STATUSES,
+  DEPARTMENTS,
+  RISK_LEVELS,
+} from "@/lib/constants"
 import { toast } from "sonner"
 import type { Agent } from "@/lib/types"
 
@@ -29,12 +34,16 @@ export function AgentForm({ action, defaultValues }: AgentFormProps) {
   const [tags, setTags] = useState<string[]>(defaultValues?.tags || [])
   const [status, setStatus] = useState(defaultValues?.status || "draft")
   const [platform, setPlatform] = useState(defaultValues?.platform || "")
+  const [department, setDepartment] = useState(defaultValues?.department || "")
+  const [riskLevel, setRiskLevel] = useState(defaultValues?.risk_level || "")
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(formData: FormData) {
     formData.set("tags", JSON.stringify(tags))
     formData.set("status", status)
     if (platform) formData.set("platform", platform)
+    if (department) formData.set("department", department)
+    if (riskLevel) formData.set("risk_level", riskLevel)
 
     setLoading(true)
     const result = await action(formData)
@@ -101,7 +110,74 @@ export function AgentForm({ action, defaultValues }: AgentFormProps) {
 
         <div className="space-y-2">
           <Label>Status</Label>
-          <StatusSelect value={status} onValueChange={setStatus} />
+          <StatusSelect
+            value={status}
+            onValueChange={setStatus}
+            options={AGENT_STATUSES}
+          />
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label>Department</Label>
+          <Select value={department} onValueChange={(v) => setDepartment(v ?? "")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select department" />
+            </SelectTrigger>
+            <SelectContent>
+              {DEPARTMENTS.map((d) => (
+                <SelectItem key={d.value} value={d.value}>
+                  {d.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="category">Category</Label>
+          <Input
+            id="category"
+            name="category"
+            defaultValue={defaultValues?.category || ""}
+            placeholder="e.g. Website Strategy"
+          />
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="space-y-2">
+          <Label htmlFor="version">Version</Label>
+          <Input
+            id="version"
+            name="version"
+            defaultValue={defaultValues?.version || ""}
+            placeholder="1.0"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="last_reviewed">Last reviewed</Label>
+          <Input
+            id="last_reviewed"
+            name="last_reviewed"
+            type="date"
+            defaultValue={defaultValues?.last_reviewed || ""}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Risk level</Label>
+          <Select value={riskLevel} onValueChange={(v) => setRiskLevel(v ?? "")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select risk" />
+            </SelectTrigger>
+            <SelectContent>
+              {RISK_LEVELS.map((r) => (
+                <SelectItem key={r.value} value={r.value}>
+                  {r.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

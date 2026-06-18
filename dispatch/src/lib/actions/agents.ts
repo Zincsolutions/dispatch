@@ -6,11 +6,8 @@ import { agentSchema } from "@/lib/validations/agents"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-export async function createAgent(formData: FormData) {
-  const supabase = await createClient()
-  const { user, organizationId } = await getCurrentUserWithOrg()
-
-  const parsed = agentSchema.safeParse({
+function parseAgentFields(formData: FormData) {
+  return {
     name: formData.get("name"),
     description: formData.get("description"),
     purpose: formData.get("purpose") || null,
@@ -18,7 +15,19 @@ export async function createAgent(formData: FormData) {
     setup_notes: formData.get("setup_notes") || null,
     tags: JSON.parse((formData.get("tags") as string) || "[]"),
     status: formData.get("status") || "draft",
-  })
+    department: (formData.get("department") as string) || null,
+    category: (formData.get("category") as string) || null,
+    version: (formData.get("version") as string) || null,
+    last_reviewed: (formData.get("last_reviewed") as string) || null,
+    risk_level: (formData.get("risk_level") as string) || null,
+  }
+}
+
+export async function createAgent(formData: FormData) {
+  const supabase = await createClient()
+  const { user, organizationId } = await getCurrentUserWithOrg()
+
+  const parsed = agentSchema.safeParse(parseAgentFields(formData))
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
@@ -42,15 +51,7 @@ export async function updateAgent(id: string, formData: FormData) {
   const supabase = await createClient()
   await getCurrentUserWithOrg()
 
-  const parsed = agentSchema.safeParse({
-    name: formData.get("name"),
-    description: formData.get("description"),
-    purpose: formData.get("purpose") || null,
-    platform: formData.get("platform") || null,
-    setup_notes: formData.get("setup_notes") || null,
-    tags: JSON.parse((formData.get("tags") as string) || "[]"),
-    status: formData.get("status") || "draft",
-  })
+  const parsed = agentSchema.safeParse(parseAgentFields(formData))
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
