@@ -14,12 +14,15 @@ interface FilterControlsProps {
   categoryOptions?: { value: string; label: string }[]
   categoryLabel?: string
   categoryParam?: string
+  // Defaults to the shared STATUSES; pass a custom set (e.g. AGENT_STATUSES).
+  statusOptions?: readonly { value: string; label: string }[]
 }
 
 export function FilterControls({
   categoryOptions,
   categoryLabel = "Category",
   categoryParam = "category",
+  statusOptions = STATUSES,
 }: FilterControlsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -45,7 +48,7 @@ export function FilterControls({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All statuses</SelectItem>
-          {STATUSES.map((s) => (
+          {statusOptions.map((s) => (
             <SelectItem key={s.value} value={s.value}>
               {s.label}
             </SelectItem>

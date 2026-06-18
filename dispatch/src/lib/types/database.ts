@@ -175,6 +175,11 @@ export interface Database {
           setup_notes: string | null
           tags: string[]
           status: string
+          department: string | null
+          category: string | null
+          version: string | null
+          last_reviewed: string | null
+          risk_level: string | null
           created_at: string
           updated_at: string
         }
@@ -189,6 +194,11 @@ export interface Database {
           setup_notes?: string | null
           tags?: string[]
           status?: string
+          department?: string | null
+          category?: string | null
+          version?: string | null
+          last_reviewed?: string | null
+          risk_level?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -203,6 +213,11 @@ export interface Database {
           setup_notes?: string | null
           tags?: string[]
           status?: string
+          department?: string | null
+          category?: string | null
+          version?: string | null
+          last_reviewed?: string | null
+          risk_level?: string | null
           created_at?: string
           updated_at?: string
         }

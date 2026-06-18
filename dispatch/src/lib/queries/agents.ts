@@ -6,10 +6,15 @@ interface AgentFilters {
   search?: string
   status?: string
   platform?: string
+  department?: string
   tag?: string
 }
 
-export async function getAgents(filters?: AgentFilters): Promise<Agent[]> {
+export type AgentWithOwner = Agent & { owner_name: string | null }
+
+export async function getAgents(
+  filters?: AgentFilters
+): Promise<AgentWithOwner[]> {
   const supabase = await createClient()
 
   let query = supabase
@@ -30,13 +35,32 @@ export async function getAgents(filters?: AgentFilters): Promise<Agent[]> {
   if (filters?.platform) {
     query = query.eq("platform", filters.platform)
   }
+  if (filters?.department) {
+    query = query.eq("department", filters.department)
+  }
   if (filters?.tag) {
     query = query.contains("tags", [filters.tag])
   }
 
   const { data, error } = await query
   if (error) throw error
-  return (data as Agent[]) || []
+  const agents = (data as Agent[]) || []
+  if (agents.length === 0) return []
+
+  // Resolve owner names in one batch instead of per-agent.
+  const creatorIds = [...new Set(agents.map((a) => a.created_by))]
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, full_name")
+    .in("id", creatorIds)
+  const nameById = new Map(
+    (profiles || []).map((p) => [p.id as string, p.full_name as string])
+  )
+
+  return agents.map((a) => ({
+    ...a,
+    owner_name: nameById.get(a.created_by) ?? null,
+  }))
 }
 
 export async function getAgentById(id: string) {
