@@ -232,6 +232,18 @@ export interface Database {
           steps: Json
           tags: string[]
           status: string
+          type: string
+          department: string | null
+          category: string | null
+          version: string | null
+          risk_level: string | null
+          estimated_run_time: string | null
+          output_format: string | null
+          success_criteria: string | null
+          verification_method: string | null
+          stop_condition: string | null
+          escalation_condition: string | null
+          last_reviewed: string | null
           created_at: string
           updated_at: string
         }
@@ -244,6 +256,18 @@ export interface Database {
           steps?: Json
           tags?: string[]
           status?: string
+          type?: string
+          department?: string | null
+          category?: string | null
+          version?: string | null
+          risk_level?: string | null
+          estimated_run_time?: string | null
+          output_format?: string | null
+          success_criteria?: string | null
+          verification_method?: string | null
+          stop_condition?: string | null
+          escalation_condition?: string | null
+          last_reviewed?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -256,6 +280,18 @@ export interface Database {
           steps?: Json
           tags?: string[]
           status?: string
+          type?: string
+          department?: string | null
+          category?: string | null
+          version?: string | null
+          risk_level?: string | null
+          estimated_run_time?: string | null
+          output_format?: string | null
+          success_criteria?: string | null
+          verification_method?: string | null
+          stop_condition?: string | null
+          escalation_condition?: string | null
+          last_reviewed?: string | null
           created_at?: string
           updated_at?: string
         }

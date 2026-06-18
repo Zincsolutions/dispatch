@@ -61,3 +61,9 @@ export const RISK_LEVELS = [
   { value: "medium", label: "Medium" },
   { value: "high", label: "High" },
 ] as const
+
+// Phase one offers Workflow + Loop; checklist/sop reserved for later.
+export const WORKFLOW_TYPES = [
+  { value: "workflow", label: "Workflow" },
+  { value: "loop", label: "Loop" },
+] as const

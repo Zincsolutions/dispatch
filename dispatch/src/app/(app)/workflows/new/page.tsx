@@ -5,18 +5,26 @@ import { getPrompts } from "@/lib/queries/prompts"
 import { getContextAssets } from "@/lib/queries/context-assets"
 import { getAgents } from "@/lib/queries/agents"
 
-export default async function NewWorkflowPage() {
+interface Props {
+  searchParams: Promise<{ type?: string }>
+}
+
+export default async function NewWorkflowPage({ searchParams }: Props) {
+  const { type } = await searchParams
   const [prompts, contextAssets, agents] = await Promise.all([
     getPrompts(),
     getContextAssets(),
     getAgents(),
   ])
 
+  const isLoop = type === "loop"
+
   return (
     <div>
-      <PageHeader title="New Workflow" />
+      <PageHeader title={isLoop ? "New Loop" : "New Workflow"} />
       <WorkflowForm
         action={createWorkflow}
+        defaultType={isLoop ? "loop" : "workflow"}
         availablePrompts={prompts.map((p) => ({
           id: p.id,
           title: p.title,

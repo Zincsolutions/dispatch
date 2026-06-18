@@ -16,6 +16,8 @@ interface FilterControlsProps {
   categoryParam?: string
   // Defaults to the shared STATUSES; pass a custom set (e.g. AGENT_STATUSES).
   statusOptions?: readonly { value: string; label: string }[]
+  // Hide the status dropdown (e.g. when rendering a second standalone filter).
+  showStatus?: boolean
 }
 
 export function FilterControls({
@@ -23,6 +25,7 @@ export function FilterControls({
   categoryLabel = "Category",
   categoryParam = "category",
   statusOptions = STATUSES,
+  showStatus = true,
 }: FilterControlsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -39,6 +42,7 @@ export function FilterControls({
 
   return (
     <div className="flex gap-2">
+      {showStatus && (
       <Select
         value={searchParams.get("status") || "all"}
         onValueChange={(v) => updateFilter("status", v)}
@@ -55,6 +59,7 @@ export function FilterControls({
           ))}
         </SelectContent>
       </Select>
+      )}
       {categoryOptions && (
         <Select
           value={searchParams.get(categoryParam) || "all"}
