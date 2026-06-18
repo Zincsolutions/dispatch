@@ -6,10 +6,23 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { TagInput } from "@/components/forms/tag-input"
 import { StatusSelect } from "@/components/forms/status-select"
 import { WorkflowStepEditor } from "@/components/forms/workflow-step-editor"
 import { RelatedItemSelector } from "@/components/forms/related-item-selector"
+import {
+  AGENT_STATUSES,
+  DEPARTMENTS,
+  RISK_LEVELS,
+  WORKFLOW_TYPES,
+} from "@/lib/constants"
 import { toast } from "sonner"
 import type { Workflow, WorkflowStep } from "@/lib/types"
 
@@ -32,6 +45,8 @@ interface WorkflowFormProps {
   availablePrompts: RelatedItem[]
   availableContextAssets: RelatedItem[]
   availableAgents: RelatedItem[]
+  // Preselect the type (e.g. "loop" from the New Loop button).
+  defaultType?: string
 }
 
 export function WorkflowForm({
@@ -40,10 +55,16 @@ export function WorkflowForm({
   availablePrompts,
   availableContextAssets,
   availableAgents,
+  defaultType,
 }: WorkflowFormProps) {
   const router = useRouter()
   const [tags, setTags] = useState<string[]>(defaultValues?.tags || [])
   const [status, setStatus] = useState(defaultValues?.status || "draft")
+  const [type, setType] = useState(
+    defaultValues?.type || defaultType || "workflow"
+  )
+  const [department, setDepartment] = useState(defaultValues?.department || "")
+  const [riskLevel, setRiskLevel] = useState(defaultValues?.risk_level || "")
   const [steps, setSteps] = useState<WorkflowStep[]>(
     (defaultValues?.steps as WorkflowStep[]) || []
   )
@@ -66,6 +87,9 @@ export function WorkflowForm({
   async function handleSubmit(formData: FormData) {
     formData.set("tags", JSON.stringify(tags))
     formData.set("status", status)
+    formData.set("type", type)
+    if (department) formData.set("department", department)
+    if (riskLevel) formData.set("risk_level", riskLevel)
     formData.set("steps", JSON.stringify(steps))
     formData.set("related_prompt_ids", JSON.stringify(relatedPromptIds))
     formData.set(
@@ -113,10 +137,152 @@ export function WorkflowForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
+          <Label>Type</Label>
+          <Select value={type} onValueChange={(v) => setType(v ?? "workflow")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              {WORKFLOW_TYPES.map((t) => (
+                <SelectItem key={t.value} value={t.value}>
+                  {t.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
           <Label>Status</Label>
-          <StatusSelect value={status} onValueChange={setStatus} />
+          <StatusSelect
+            value={status}
+            onValueChange={setStatus}
+            options={AGENT_STATUSES}
+          />
         </div>
       </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label>Department</Label>
+          <Select value={department} onValueChange={(v) => setDepartment(v ?? "")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select department" />
+            </SelectTrigger>
+            <SelectContent>
+              {DEPARTMENTS.map((d) => (
+                <SelectItem key={d.value} value={d.value}>
+                  {d.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="category">Category</Label>
+          <Input
+            id="category"
+            name="category"
+            defaultValue={defaultValues?.category || ""}
+            placeholder="e.g. SEO/GEO"
+          />
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="version">Version</Label>
+          <Input
+            id="version"
+            name="version"
+            defaultValue={defaultValues?.version || ""}
+            placeholder="1.0"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Risk level</Label>
+          <Select value={riskLevel} onValueChange={(v) => setRiskLevel(v ?? "")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select risk" />
+            </SelectTrigger>
+            <SelectContent>
+              {RISK_LEVELS.map((r) => (
+                <SelectItem key={r.value} value={r.value}>
+                  {r.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="estimated_run_time">Estimated run time</Label>
+          <Input
+            id="estimated_run_time"
+            name="estimated_run_time"
+            defaultValue={defaultValues?.estimated_run_time || ""}
+            placeholder="e.g. 10-15 min"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="output_format">Output format</Label>
+          <Input
+            id="output_format"
+            name="output_format"
+            defaultValue={defaultValues?.output_format || ""}
+            placeholder="e.g. Prioritized checklist"
+          />
+        </div>
+      </div>
+
+      {type === "loop" && (
+        <div className="border-t pt-6 space-y-4">
+          <h3 className="text-sm font-medium text-muted-foreground">
+            Loop success &amp; stop
+          </h3>
+          <div className="space-y-2">
+            <Label htmlFor="success_criteria">Success criteria</Label>
+            <Textarea
+              id="success_criteria"
+              name="success_criteria"
+              defaultValue={defaultValues?.success_criteria || ""}
+              rows={2}
+              placeholder="What does done look like?"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="verification_method">Verification method</Label>
+            <Textarea
+              id="verification_method"
+              name="verification_method"
+              defaultValue={defaultValues?.verification_method || ""}
+              rows={2}
+              placeholder="How is success checked?"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="stop_condition">Stop condition</Label>
+            <Textarea
+              id="stop_condition"
+              name="stop_condition"
+              defaultValue={defaultValues?.stop_condition || ""}
+              rows={2}
+              placeholder="When should the loop stop?"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="escalation_condition">Escalation condition</Label>
+            <Textarea
+              id="escalation_condition"
+              name="escalation_condition"
+              defaultValue={defaultValues?.escalation_condition || ""}
+              rows={2}
+              placeholder="When should this escalate to a human?"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label>Tags</Label>

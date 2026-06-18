@@ -1,15 +1,23 @@
 import Link from "next/link"
 import { getWorkflows } from "@/lib/queries/workflows"
-import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
-import { StatusBadge } from "@/components/shared/status-badge"
+import { WorkflowCard } from "@/components/workflows/workflow-card"
 import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
 import { TagFilterChip } from "@/components/lists/tag-filter-chip"
+import { buttonVariants } from "@/components/ui/button-variants"
+import { AGENT_STATUSES, DEPARTMENTS, WORKFLOW_TYPES } from "@/lib/constants"
+import { Plus, Repeat } from "lucide-react"
 import { Suspense } from "react"
 
 interface Props {
-  searchParams: Promise<{ search?: string; status?: string; tag?: string }>
+  searchParams: Promise<{
+    search?: string
+    status?: string
+    type?: string
+    department?: string
+    tag?: string
+  }>
 }
 
 export default async function WorkflowsPage({ searchParams }: Props) {
@@ -17,62 +25,83 @@ export default async function WorkflowsPage({ searchParams }: Props) {
   const workflows = await getWorkflows({
     search: params.search,
     status: params.status,
+    type: params.type,
+    department: params.department,
     tag: params.tag,
   })
-  const hasFilters = Boolean(params.search || params.status || params.tag)
+  const hasFilters = Boolean(
+    params.search || params.status || params.type || params.department || params.tag
+  )
 
   return (
     <div>
-      <PageHeader
-        title="Workflows"
-        description="Manage your organization's workflows"
-        createHref="/workflows/new"
-        createLabel="New Workflow"
-      />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Workflows &amp; Loops
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+            Standardize how your team uses AI for repeatable work. Build
+            workflows and loops from approved agents, prompts, context, and
+            governance rules.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href="/workflows/new"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            <Plus className="mr-1 h-4 w-4" />
+            New Workflow
+          </Link>
+          <Link
+            href="/workflows/new?type=loop"
+            className={buttonVariants({ variant: "default", size: "sm" })}
+          >
+            <Repeat className="mr-1 h-4 w-4" />
+            New Loop
+          </Link>
+        </div>
+      </div>
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center mb-6">
         <Suspense>
           <SearchBar />
         </Suspense>
         <Suspense>
-          <FilterControls />
+          <FilterControls
+            categoryOptions={[...WORKFLOW_TYPES]}
+            categoryLabel="Type"
+            categoryParam="type"
+            showStatus={false}
+          />
+        </Suspense>
+        <Suspense>
+          <FilterControls
+            categoryOptions={[...DEPARTMENTS]}
+            categoryLabel="Department"
+            categoryParam="department"
+            statusOptions={AGENT_STATUSES}
+          />
         </Suspense>
         {params.tag && <TagFilterChip tag={params.tag} basePath="/workflows" />}
       </div>
+
       {workflows.length === 0 ? (
         <EmptyState
-          title={hasFilters ? "No workflows match your filters" : "No workflows found"}
+          title={hasFilters ? "No workflows match your filters" : "No workflows yet"}
           description={
             hasFilters
               ? "Try clearing your search or filters."
-              : "Create your first workflow to start organizing your processes."
+              : "Create your first workflow or loop to standardize repeatable AI work."
           }
           createHref="/workflows/new"
           createLabel="New Workflow"
         />
       ) : (
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {workflows.map((workflow) => (
-            <Link
-              key={workflow.id}
-              href={`/workflows/${workflow.id}`}
-              className="flex items-center justify-between rounded-lg border p-4 hover:bg-accent transition-colors"
-            >
-              <div className="min-w-0 flex-1">
-                <h3 className="font-medium truncate">{workflow.title}</h3>
-                {workflow.description && (
-                  <p className="text-sm text-muted-foreground truncate mt-0.5">
-                    {workflow.description}
-                  </p>
-                )}
-                {workflow.steps && (workflow.steps as unknown[]).length > 0 && (
-                  <span className="text-xs text-muted-foreground mt-1">
-                    {(workflow.steps as unknown[]).length} step
-                    {(workflow.steps as unknown[]).length !== 1 ? "s" : ""}
-                  </span>
-                )}
-              </div>
-              <StatusBadge status={workflow.status} />
-            </Link>
+            <WorkflowCard key={workflow.id} workflow={workflow} />
           ))}
         </div>
       )}
