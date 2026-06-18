@@ -18,10 +18,20 @@ export async function createPrompt(formData: FormData) {
     category: formData.get("category") || null,
     tags: JSON.parse((formData.get("tags") as string) || "[]"),
     status: formData.get("status") || "draft",
+    sample_output_path: (formData.get("sample_output_path") as string) || null,
   })
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
+  }
+
+  // The browser uploads under its own org prefix (storage RLS); don't
+  // trust the client-supplied path regardless.
+  if (
+    parsed.data.sample_output_path &&
+    !parsed.data.sample_output_path.startsWith(`${organizationId}/`)
+  ) {
+    return { error: { _form: ["Invalid sample output path"] } }
   }
 
   const { error } = await supabase.from("prompts").insert({
@@ -40,7 +50,7 @@ export async function createPrompt(formData: FormData) {
 
 export async function updatePrompt(id: string, formData: FormData) {
   const supabase = await createClient()
-  await getCurrentUserWithOrg()
+  const { organizationId } = await getCurrentUserWithOrg()
 
   const parsed = promptSchema.safeParse({
     title: formData.get("title"),
@@ -49,11 +59,28 @@ export async function updatePrompt(id: string, formData: FormData) {
     category: formData.get("category") || null,
     tags: JSON.parse((formData.get("tags") as string) || "[]"),
     status: formData.get("status") || "draft",
+    sample_output_path: (formData.get("sample_output_path") as string) || null,
   })
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
   }
+
+  if (
+    parsed.data.sample_output_path &&
+    !parsed.data.sample_output_path.startsWith(`${organizationId}/`)
+  ) {
+    return { error: { _form: ["Invalid sample output path"] } }
+  }
+
+  // Grab the previous sample output so we can clean it up if it was
+  // replaced or removed in this edit.
+  const { data: existing } = await supabase
+    .from("prompts")
+    .select("sample_output_path")
+    .eq("id", id)
+    .single()
+  const oldSamplePath = existing?.sample_output_path as string | null
 
   const { error } = await supabase
     .from("prompts")
@@ -62,6 +89,11 @@ export async function updatePrompt(id: string, formData: FormData) {
 
   if (error) {
     return { error: { _form: [error.message] } }
+  }
+
+  if (oldSamplePath && oldSamplePath !== parsed.data.sample_output_path) {
+    // Best-effort: an orphaned file is preferable to a failed save.
+    await supabase.storage.from("library").remove([oldSamplePath])
   }
 
   revalidatePath("/prompts")
@@ -73,10 +105,23 @@ export async function deletePrompt(id: string) {
   const supabase = await createClient()
   await getCurrentUserWithOrg()
 
+  const { data: prompt } = await supabase
+    .from("prompts")
+    .select("sample_output_path")
+    .eq("id", id)
+    .single()
+
   const { error } = await supabase.from("prompts").delete().eq("id", id)
 
   if (error) {
     return { error: error.message }
+  }
+
+  if (prompt?.sample_output_path) {
+    // Best-effort: an orphaned file is preferable to a phantom row.
+    await supabase.storage
+      .from("library")
+      .remove([prompt.sample_output_path as string])
   }
 
   revalidatePath("/prompts")

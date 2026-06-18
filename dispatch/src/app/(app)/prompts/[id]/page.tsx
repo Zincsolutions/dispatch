@@ -94,6 +94,38 @@ export default async function PromptDetailPage({ params }: Props) {
         </pre>
       </div>
 
+      <div className="mb-6">
+        <h2 className="text-sm font-medium text-muted-foreground mb-2">
+          Sample output
+        </h2>
+        {prompt.sample_output_url ? (
+          <a
+            href={prompt.sample_output_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={prompt.sample_output_url}
+              alt="Sample output"
+              className="max-h-80 rounded-lg border object-contain hover:opacity-90 transition-opacity"
+            />
+          </a>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            No sample output yet.{" "}
+            <Link
+              href={`/prompts/${id}/edit`}
+              className="text-foreground underline underline-offset-2 hover:no-underline"
+            >
+              Add one
+            </Link>{" "}
+            to show what this prompt can create.
+          </p>
+        )}
+      </div>
+
       {prompt.tags.length > 0 && (
         <div className="mb-6">
           <h2 className="text-sm font-medium text-muted-foreground mb-2">

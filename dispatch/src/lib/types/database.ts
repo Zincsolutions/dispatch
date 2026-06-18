@@ -89,6 +89,7 @@ export interface Database {
           category: string | null
           tags: string[]
           status: string
+          sample_output_path: string | null
           created_at: string
           updated_at: string
         }
@@ -102,6 +103,7 @@ export interface Database {
           category?: string | null
           tags?: string[]
           status?: string
+          sample_output_path?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -115,6 +117,7 @@ export interface Database {
           category?: string | null
           tags?: string[]
           status?: string
+          sample_output_path?: string | null
           created_at?: string
           updated_at?: string
         }
