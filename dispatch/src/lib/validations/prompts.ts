@@ -7,6 +7,8 @@ export const promptSchema = z.object({
   category: z.string().optional().nullable(),
   tags: z.array(z.string()).default([]),
   status: z.enum(["draft", "approved", "archived"]).default("draft"),
+  // Optional example of what the prompt produces; null when none.
+  sample_output_path: z.string().max(500).optional().nullable(),
 })
 
 export type PromptFormValues = z.infer<typeof promptSchema>

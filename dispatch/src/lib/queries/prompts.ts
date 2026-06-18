@@ -38,6 +38,8 @@ export async function getPrompts(filters?: PromptFilters): Promise<Prompt[]> {
   return (data as Prompt[]) || []
 }
 
+const SIGNED_URL_TTL = 60 * 60 // 1 hour
+
 export async function getPromptById(id: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -48,11 +50,27 @@ export async function getPromptById(id: string) {
 
   if (error || !data) return null
 
+  const prompt = data as Prompt
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("full_name")
-    .eq("id", data.created_by)
+    .eq("id", prompt.created_by)
     .single()
 
-  return { ...(data as Prompt), created_by_name: profile?.full_name ?? "Unknown" }
+  // Sample output lives in the shared private `library` bucket; serve it
+  // via a short-lived signed URL.
+  let sampleOutputUrl: string | null = null
+  if (prompt.sample_output_path) {
+    const { data: signed } = await supabase.storage
+      .from("library")
+      .createSignedUrl(prompt.sample_output_path, SIGNED_URL_TTL)
+    sampleOutputUrl = signed?.signedUrl ?? null
+  }
+
+  return {
+    ...prompt,
+    created_by_name: profile?.full_name ?? "Unknown",
+    sample_output_url: sampleOutputUrl,
+  }
 }
