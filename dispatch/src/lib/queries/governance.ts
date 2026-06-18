@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server"
 import { sanitizeSearchTerm } from "@/lib/utils"
 import type { GovDocument, RegistryTool } from "@/lib/types"
 
+const SIGNED_URL_TTL = 60 * 60 // 1 hour
+
 interface DocumentFilters {
   search?: string
   status?: string
@@ -90,10 +92,21 @@ export async function getDocumentById(id: string) {
     }>
   }
 
+  // Attachment lives in the shared private `library` bucket; serve it via
+  // a short-lived signed URL.
+  let attachmentUrl: string | null = null
+  if (doc.attachment_path) {
+    const { data: signed } = await supabase.storage
+      .from("library")
+      .createSignedUrl(doc.attachment_path, SIGNED_URL_TTL)
+    attachmentUrl = signed?.signedUrl ?? null
+  }
+
   return {
     ...doc,
     created_by_name: creator?.full_name ?? "Unknown",
     member_count: memberCount ?? 0,
+    attachment_url: attachmentUrl,
     acknowledgments: doc.document_acknowledgments.map((a) => ({
       user_id: a.user_id,
       acknowledged_at: a.acknowledged_at,

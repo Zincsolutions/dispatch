@@ -414,6 +414,8 @@ export interface Database {
           doc_type: string
           status: string
           tags: string[]
+          attachment_path: string | null
+          attachment_name: string | null
           created_at: string
           updated_at: string
         }
@@ -426,6 +428,8 @@ export interface Database {
           doc_type?: string
           status?: string
           tags?: string[]
+          attachment_path?: string | null
+          attachment_name?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -438,6 +442,8 @@ export interface Database {
           doc_type?: string
           status?: string
           tags?: string[]
+          attachment_path?: string | null
+          attachment_name?: string | null
           created_at?: string
           updated_at?: string
         }

@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button-variants"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
 import { CopyButton } from "@/components/shared/copy-button"
 import { AcknowledgeSection } from "./acknowledge-section"
-import { Pencil, Trash2, ArrowLeft } from "lucide-react"
+import { Pencil, Trash2, ArrowLeft, Download, FileText } from "lucide-react"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -76,15 +76,43 @@ export default async function DocumentDetailPage({ params }: Props) {
         />
       )}
 
-      <div className="rounded-lg border p-4 mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-medium text-muted-foreground">Content</h2>
-          <CopyButton text={document.content} label="Copy" variant="ghost" />
+      {document.content.trim() && (
+        <div className="rounded-lg border p-4 mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-medium text-muted-foreground">Content</h2>
+            <CopyButton text={document.content} label="Copy" variant="ghost" />
+          </div>
+          <div className="whitespace-pre-wrap text-sm leading-relaxed">
+            {document.content}
+          </div>
         </div>
-        <div className="whitespace-pre-wrap text-sm leading-relaxed">
-          {document.content}
+      )}
+
+      {document.attachment_url && (
+        <div className="rounded-lg border p-4 mb-6">
+          <h2 className="text-sm font-medium text-muted-foreground mb-2">
+            Attachment
+          </h2>
+          <div className="flex items-center justify-between gap-3">
+            <span className="inline-flex items-center gap-2 min-w-0 text-sm">
+              <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span className="truncate">
+                {document.attachment_name || "Download file"}
+              </span>
+            </span>
+            <a
+              href={document.attachment_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              download={document.attachment_name || undefined}
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+            >
+              <Download className="mr-1 h-4 w-4" />
+              Download
+            </a>
+          </div>
         </div>
-      </div>
+      )}
 
       {document.tags.length > 0 && (
         <div className="mb-6">

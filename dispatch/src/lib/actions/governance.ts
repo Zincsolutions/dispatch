@@ -28,6 +28,8 @@ function parseDocumentFields(formData: FormData) {
     doc_type: formData.get("doc_type") || "policy",
     status: formData.get("status") || "draft",
     tags: safeParseTags(formData.get("tags")),
+    attachment_path: (formData.get("attachment_path") as string) || null,
+    attachment_name: (formData.get("attachment_name") as string) || null,
   }
 }
 
@@ -38,6 +40,15 @@ export async function createDocument(formData: FormData) {
   const parsed = documentSchema.safeParse(parseDocumentFields(formData))
   if (!parsed.success) {
     return { error: { _form: [parsed.error.issues[0]?.message || "Invalid input"] } }
+  }
+
+  // The browser uploads under its own org prefix (storage RLS); don't
+  // trust the client-supplied path regardless.
+  if (
+    parsed.data.attachment_path &&
+    !parsed.data.attachment_path.startsWith(`${organizationId}/`)
+  ) {
+    return { error: { _form: ["Invalid attachment path"] } }
   }
 
   const { data, error } = await supabase
@@ -60,12 +71,28 @@ export async function createDocument(formData: FormData) {
 
 export async function updateDocument(id: string, formData: FormData) {
   const supabase = await createClient()
-  await getCurrentUserWithOrg()
+  const { organizationId } = await getCurrentUserWithOrg()
 
   const parsed = documentSchema.safeParse(parseDocumentFields(formData))
   if (!parsed.success) {
     return { error: { _form: [parsed.error.issues[0]?.message || "Invalid input"] } }
   }
+
+  if (
+    parsed.data.attachment_path &&
+    !parsed.data.attachment_path.startsWith(`${organizationId}/`)
+  ) {
+    return { error: { _form: ["Invalid attachment path"] } }
+  }
+
+  // Grab the previous attachment so we can clean it up if it was
+  // replaced or removed in this edit.
+  const { data: existing } = await supabase
+    .from("documents")
+    .select("attachment_path")
+    .eq("id", id)
+    .single()
+  const oldAttachmentPath = existing?.attachment_path as string | null
 
   const { error } = await supabase
     .from("documents")
@@ -74,6 +101,11 @@ export async function updateDocument(id: string, formData: FormData) {
 
   if (error) {
     return { error: { _form: [error.message] } }
+  }
+
+  if (oldAttachmentPath && oldAttachmentPath !== parsed.data.attachment_path) {
+    // Best-effort: an orphaned file is preferable to a failed save.
+    await supabase.storage.from("library").remove([oldAttachmentPath])
   }
 
   revalidatePath("/governance")
@@ -85,9 +117,20 @@ export async function deleteDocument(id: string) {
   const supabase = await createClient()
   await getCurrentUserWithOrg()
 
+  const { data: doc } = await supabase
+    .from("documents")
+    .select("attachment_path")
+    .eq("id", id)
+    .single()
+
   const { error } = await supabase.from("documents").delete().eq("id", id)
   if (error) {
     return { error: error.message }
+  }
+
+  if (doc?.attachment_path) {
+    // Best-effort: an orphaned file is preferable to a phantom row.
+    await supabase.storage.from("library").remove([doc.attachment_path as string])
   }
 
   revalidatePath("/governance")
