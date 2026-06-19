@@ -14,8 +14,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { SelectedPlanBanner } from "./selected-plan-banner"
 
-export function SignupForm() {
+export function SignupForm({ plan }: { plan?: string }) {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -38,6 +39,7 @@ export function SignupForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <SelectedPlanBanner plan={plan} />
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="full_name">Full Name</Label>
