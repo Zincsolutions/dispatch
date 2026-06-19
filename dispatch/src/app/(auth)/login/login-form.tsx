@@ -30,9 +30,12 @@ export function LoginForm() {
   }
 
   return (
-    <Card>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Dispatch</CardTitle>
+    <Card className="border-dispatch-gray-100 shadow-xl shadow-black/5">
+      <CardHeader className="space-y-3 text-center">
+        <CardTitle className="sr-only">Sign in to Dispatch</CardTitle>
+        <div className="flex justify-center">
+          <img src="/dispatch-logo.svg" alt="Dispatch" className="h-10 w-auto" />
+        </div>
         <CardDescription>Sign in to your AI Vault</CardDescription>
       </CardHeader>
       <CardContent>
