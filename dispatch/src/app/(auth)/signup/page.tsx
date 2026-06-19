@@ -9,7 +9,12 @@ export const metadata: Metadata = {
     "Create your Dispatch workspace — organize your team's prompts, workflows, and AI assets in one place.",
 }
 
-export default async function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string }>
+}) {
+  const { plan } = await searchParams
   const supabase = await createClient()
   const {
     data: { user },
@@ -17,9 +22,9 @@ export default async function SignupPage() {
 
   // Authenticated but no org — show org setup only
   if (user) {
-    return <SetupOrgForm userEmail={user.email || ""} />
+    return <SetupOrgForm userEmail={user.email || ""} plan={plan} />
   }
 
   // Not authenticated — show full signup
-  return <SignupForm />
+  return <SignupForm plan={plan} />
 }

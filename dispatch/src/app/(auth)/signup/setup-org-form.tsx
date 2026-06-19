@@ -13,12 +13,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { SelectedPlanBanner } from "./selected-plan-banner"
 
 interface SetupOrgFormProps {
   userEmail: string
+  plan?: string
 }
 
-export function SetupOrgForm({ userEmail }: SetupOrgFormProps) {
+export function SetupOrgForm({ userEmail, plan }: SetupOrgFormProps) {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -41,6 +43,7 @@ export function SetupOrgForm({ userEmail }: SetupOrgFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <SelectedPlanBanner plan={plan} />
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="org_name">Organization Name</Label>
