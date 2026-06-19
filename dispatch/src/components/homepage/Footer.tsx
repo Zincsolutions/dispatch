@@ -7,6 +7,13 @@ const columns = [
       { label: "Product Tour", href: "/#product" },
       { label: "Use Cases", href: "/#use-cases" },
       { label: "Integrations", href: "/#integrations" },
+      { label: "Pricing", href: "/pricing" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "Talk to ZINC", href: "/contact" },
       { label: "Start Free Trial", href: "/signup" },
       { label: "Log in", href: "/login" },
     ],
@@ -24,7 +31,7 @@ export function Footer() {
   return (
     <footer className="bg-[#141414]">
       <div className="max-w-7xl mx-auto px-6 pt-20 pb-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-8">
           <div className="col-span-2 md:col-span-2">
             <Link href="/" className="inline-block mb-4">
               <img src="/dispatch-logo-footer.svg" alt="Dispatch" className="h-9 w-auto" />
