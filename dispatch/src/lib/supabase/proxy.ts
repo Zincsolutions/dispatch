@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
 // Routes reachable without a session. Everything else requires auth.
-const PUBLIC_PATHS = ["/", "/privacy", "/terms"]
+const PUBLIC_PATHS = ["/", "/privacy", "/terms", "/pricing", "/contact"]
 const PUBLIC_PREFIXES = ["/login", "/signup", "/auth", "/invite"]
 
 function isPublicPath(path: string) {

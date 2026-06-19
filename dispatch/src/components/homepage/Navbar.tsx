@@ -6,9 +6,10 @@ import { Menu, X } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 
 const navLinks = [
-  { label: "Product", href: "#product" },
-  { label: "Use Cases", href: "#use-cases" },
-  { label: "Integrations", href: "#integrations" },
+  { label: "Product", href: "/#product", route: false },
+  { label: "Use Cases", href: "/#use-cases", route: false },
+  { label: "Integrations", href: "/#integrations", route: false },
+  { label: "Pricing", href: "/pricing", route: true },
 ]
 
 export function Navbar() {
@@ -35,15 +36,25 @@ export function Navbar() {
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="px-4 py-2 rounded-lg text-[15px] font-medium text-[#333] hover:text-[#141414] hover:bg-[#EDECEC] transition-all duration-200"
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.route ? (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="px-4 py-2 rounded-lg text-[15px] font-medium text-[#333] hover:text-[#141414] hover:bg-[#EDECEC] transition-all duration-200"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.label}
+                href={link.href}
+                className="px-4 py-2 rounded-lg text-[15px] font-medium text-[#333] hover:text-[#141414] hover:bg-[#EDECEC] transition-all duration-200"
+              >
+                {link.label}
+              </a>
+            )
+          )}
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
@@ -89,16 +100,27 @@ export function Navbar() {
             className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-[#E5E5E3] overflow-hidden"
           >
             <div className="px-6 py-3 space-y-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="block px-4 py-3 rounded-xl text-[15px] font-medium text-[#333] hover:text-[#141414] hover:bg-[#EDECEC] transition-colors duration-150"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) =>
+                link.route ? (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-4 py-3 rounded-xl text-[15px] font-medium text-[#333] hover:text-[#141414] hover:bg-[#EDECEC] transition-colors duration-150"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-4 py-3 rounded-xl text-[15px] font-medium text-[#333] hover:text-[#141414] hover:bg-[#EDECEC] transition-colors duration-150"
+                  >
+                    {link.label}
+                  </a>
+                )
+              )}
               <div className="pt-2 border-t border-[#E5E5E3] mt-2">
                 <Link
                   href="/login"
