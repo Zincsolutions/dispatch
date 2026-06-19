@@ -31,9 +31,12 @@ export function SignupForm({ plan }: { plan?: string }) {
   }
 
   return (
-    <Card>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Create your Vault</CardTitle>
+    <Card className="border-dispatch-gray-100 shadow-xl shadow-black/5">
+      <CardHeader className="space-y-3 text-center">
+        <div className="flex justify-center">
+          <img src="/dispatch-logo.svg" alt="Dispatch" className="h-10 w-auto" />
+        </div>
+        <CardTitle className="text-xl">Create your Vault</CardTitle>
         <CardDescription>
           Set up your account and organization
         </CardDescription>
