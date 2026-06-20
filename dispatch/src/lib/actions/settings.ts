@@ -31,6 +31,78 @@ export async function updateOrganization(formData: FormData) {
   return { success: true }
 }
 
+const AVATARS_BUCKET = "avatars"
+
+// The file is uploaded directly from the browser to the public avatars
+// bucket (RLS-scoped to the user's own folder); this records the URL and
+// cleans up any previous avatar so each user keeps a single file.
+export async function updateProfileAvatar(storagePath: string) {
+  const supabase = await createClient()
+  const { user } = await getCurrentUserWithOrg()
+
+  // Never trust the client path: it must live under the user's own folder.
+  if (!storagePath || !storagePath.startsWith(`${user.id}/`)) {
+    return { error: "Invalid avatar path" }
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(AVATARS_BUCKET).getPublicUrl(storagePath)
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ avatar_url: publicUrl })
+    .eq("id", user.id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  // Best-effort: remove any older files in the user's folder so we don't
+  // accumulate orphans (an orphaned file is preferable to a failed save).
+  const { data: existing } = await supabase.storage
+    .from(AVATARS_BUCKET)
+    .list(user.id)
+  const newFile = storagePath.slice(`${user.id}/`.length)
+  const stale = (existing || [])
+    .filter((f) => f.name !== newFile)
+    .map((f) => `${user.id}/${f.name}`)
+  if (stale.length > 0) {
+    await supabase.storage.from(AVATARS_BUCKET).remove(stale)
+  }
+
+  revalidatePath("/settings")
+  revalidatePath("/", "layout")
+  return { success: true }
+}
+
+export async function removeProfileAvatar() {
+  const supabase = await createClient()
+  const { user } = await getCurrentUserWithOrg()
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ avatar_url: null })
+    .eq("id", user.id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  // Best-effort cleanup of every file in the user's avatar folder.
+  const { data: existing } = await supabase.storage
+    .from(AVATARS_BUCKET)
+    .list(user.id)
+  const paths = (existing || []).map((f) => `${user.id}/${f.name}`)
+  if (paths.length > 0) {
+    await supabase.storage.from(AVATARS_BUCKET).remove(paths)
+  }
+
+  revalidatePath("/settings")
+  revalidatePath("/", "layout")
+  return { success: true }
+}
+
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient()
   const { user } = await getCurrentUserWithOrg()
