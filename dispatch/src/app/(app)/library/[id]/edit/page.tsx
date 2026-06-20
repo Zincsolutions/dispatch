@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { getLibraryImageById, getCollections } from "@/lib/queries/library"
+import { getFoundationAssetOptions } from "@/lib/queries/context-assets"
 import { updateLibraryImage } from "@/lib/actions/library"
 import { LibraryImageForm } from "@/components/forms/library-image-form"
 
@@ -10,10 +11,11 @@ interface Props {
 
 export default async function EditLibraryImagePage({ params }: Props) {
   const { id } = await params
-  const [image, collections, { organizationId }] = await Promise.all([
+  const [image, collections, { organizationId }, foundationAssets] = await Promise.all([
     getLibraryImageById(id),
     getCollections(),
     getCurrentUserWithOrg(),
+    getFoundationAssetOptions(),
   ])
   if (!image) return notFound()
 
@@ -28,6 +30,8 @@ export default async function EditLibraryImagePage({ params }: Props) {
         orgId={organizationId}
         defaultValues={image}
         defaultReferenceUrl={image.reference_url}
+        availableContextAssets={foundationAssets}
+        connectedAssetIds={image.connected_asset_ids}
       />
     </div>
   )

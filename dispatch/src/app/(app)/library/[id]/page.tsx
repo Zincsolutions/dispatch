@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { buttonVariants } from "@/components/ui/button-variants"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
 import { CopyButton } from "@/components/shared/copy-button"
+import { StatusBadge } from "@/components/shared/status-badge"
 import { Pencil, Trash2, ArrowLeft } from "lucide-react"
 
 interface Props {
@@ -49,6 +50,7 @@ export default async function LibraryImageDetailPage({ params }: Props) {
               {image.title || "Untitled image"}
             </h1>
             <div className="flex items-center gap-2 mt-2">
+              <StatusBadge status={image.status} />
               <Badge variant="outline" className="capitalize">
                 {image.tool}
               </Badge>
@@ -149,6 +151,40 @@ export default async function LibraryImageDetailPage({ params }: Props) {
             </div>
           )}
 
+          {image.negative_prompt && (
+            <div className="rounded-lg border p-4">
+              <h2 className="text-sm font-medium text-muted-foreground mb-1">
+                Negative prompt
+              </h2>
+              <pre className="whitespace-pre-wrap text-sm font-mono leading-relaxed">
+                {image.negative_prompt}
+              </pre>
+            </div>
+          )}
+
+          {(image.aspect_ratio || image.seed || image.cref) && (
+            <div className="rounded-lg border p-4 flex flex-wrap gap-x-6 gap-y-1 text-sm">
+              {image.aspect_ratio && (
+                <span>
+                  <span className="text-muted-foreground">Aspect ratio:</span>{" "}
+                  <code className="font-mono">{image.aspect_ratio}</code>
+                </span>
+              )}
+              {image.seed && (
+                <span>
+                  <span className="text-muted-foreground">Seed:</span>{" "}
+                  <code className="font-mono">{image.seed}</code>
+                </span>
+              )}
+              {image.cref && (
+                <span>
+                  <span className="text-muted-foreground">--cref</span>{" "}
+                  <code className="font-mono">{image.cref}</code>
+                </span>
+              )}
+            </div>
+          )}
+
           <div className="rounded-lg border p-4 bg-muted/40">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
@@ -180,6 +216,33 @@ export default async function LibraryImageDetailPage({ params }: Props) {
               </Link>
             ))}
           </div>
+        </div>
+      )}
+
+      {image.connected_assets.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-sm font-medium text-muted-foreground mb-2">
+            Connected Foundation Assets
+          </h2>
+          <div className="space-y-1">
+            {image.connected_assets.map((a) => (
+              <Link
+                key={a.id}
+                href={`/foundation/${a.id}`}
+                className="flex items-center justify-between rounded-md border px-3 py-2 text-sm hover:bg-accent transition-colors"
+              >
+                <span className="truncate">{a.title}</span>
+                <StatusBadge status={a.status} />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {image.usage_notes && (
+        <div className="mb-6">
+          <h2 className="text-sm font-medium text-muted-foreground mb-2">Usage notes</h2>
+          <p className="text-sm whitespace-pre-wrap leading-relaxed">{image.usage_notes}</p>
         </div>
       )}
 

@@ -15,6 +15,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TagInput } from "@/components/forms/tag-input"
+import { StatusSelect } from "@/components/forms/status-select"
+import { RelatedItemSelector } from "@/components/forms/related-item-selector"
+import { FOUNDATION_STATUSES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
@@ -40,6 +43,8 @@ interface LibraryImageFormProps {
   defaultValues?: LibraryImage
   // Signed URL for an already-saved reference image (edit mode).
   defaultReferenceUrl?: string | null
+  availableContextAssets?: { id: string; title: string; status: string }[]
+  connectedAssetIds?: string[]
 }
 
 function fileExt(f: File) {
@@ -52,6 +57,8 @@ export function LibraryImageForm({
   orgId,
   defaultValues,
   defaultReferenceUrl,
+  availableContextAssets = [],
+  connectedAssetIds = [],
 }: LibraryImageFormProps) {
   const router = useRouter()
   const isEdit = Boolean(defaultValues)
@@ -59,9 +66,12 @@ export function LibraryImageForm({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [tags, setTags] = useState<string[]>(defaultValues?.tags || [])
   const [tool, setTool] = useState(defaultValues?.tool || "midjourney")
+  const [status, setStatus] = useState(defaultValues?.status || "approved")
   const [collectionId, setCollectionId] = useState(
     defaultValues?.collection_id || NO_COLLECTION
   )
+  const [relatedContextAssetIds, setRelatedContextAssetIds] =
+    useState<string[]>(connectedAssetIds)
   const [loading, setLoading] = useState(false)
 
   // Reference image: optional original the user worked from.
@@ -122,6 +132,8 @@ export function LibraryImageForm({
   async function handleSubmit(formData: FormData) {
     formData.set("tags", JSON.stringify(tags))
     formData.set("tool", tool)
+    formData.set("status", status)
+    formData.set("related_context_asset_ids", JSON.stringify(relatedContextAssetIds))
     formData.set(
       "collection_id",
       collectionId === NO_COLLECTION ? "" : collectionId
@@ -309,10 +321,82 @@ export function LibraryImageForm({
         </div>
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="space-y-2">
+          <Label>Status</Label>
+          <StatusSelect
+            value={status}
+            onValueChange={setStatus}
+            options={FOUNDATION_STATUSES}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="aspect_ratio">Aspect ratio</Label>
+          <Input
+            id="aspect_ratio"
+            name="aspect_ratio"
+            defaultValue={defaultValues?.aspect_ratio || ""}
+            placeholder="16:9"
+            className="font-mono text-sm"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="seed">Seed</Label>
+          <Input
+            id="seed"
+            name="seed"
+            defaultValue={defaultValues?.seed || ""}
+            placeholder="e.g. 12345"
+            className="font-mono text-sm"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="cref">Character reference (--cref)</Label>
+        <Input
+          id="cref"
+          name="cref"
+          defaultValue={defaultValues?.cref || ""}
+          placeholder="URL or code"
+          className="font-mono text-sm"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="negative_prompt">Negative prompt</Label>
+        <Textarea
+          id="negative_prompt"
+          name="negative_prompt"
+          defaultValue={defaultValues?.negative_prompt || ""}
+          rows={2}
+          className="font-mono text-sm"
+          placeholder="What to avoid (optional)"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="usage_notes">Usage notes</Label>
+        <Textarea
+          id="usage_notes"
+          name="usage_notes"
+          defaultValue={defaultValues?.usage_notes || ""}
+          rows={2}
+          placeholder="Where/how this image should be used (optional)"
+        />
+      </div>
+
       <div className="space-y-2">
         <Label>Tags</Label>
         <TagInput value={tags} onChange={setTags} />
       </div>
+
+      <RelatedItemSelector
+        items={availableContextAssets}
+        selectedIds={relatedContextAssetIds}
+        onSelectionChange={setRelatedContextAssetIds}
+        label="Connected Foundation Assets"
+      />
 
       {/* Reference image — sits below the rest so it's never confused with
           the generated image. Optional, and addable in both create and edit. */}

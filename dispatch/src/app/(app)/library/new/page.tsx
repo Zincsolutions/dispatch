@@ -1,11 +1,15 @@
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { getCollections } from "@/lib/queries/library"
+import { getFoundationAssetOptions } from "@/lib/queries/context-assets"
 import { createLibraryImage } from "@/lib/actions/library"
 import { LibraryImageForm } from "@/components/forms/library-image-form"
 
 export default async function NewLibraryImagePage() {
-  const { organizationId } = await getCurrentUserWithOrg()
-  const collections = await getCollections()
+  const [{ organizationId }, collections, foundationAssets] = await Promise.all([
+    getCurrentUserWithOrg(),
+    getCollections(),
+    getFoundationAssetOptions(),
+  ])
 
   return (
     <div>
@@ -18,6 +22,7 @@ export default async function NewLibraryImagePage() {
         action={createLibraryImage}
         collections={collections}
         orgId={organizationId}
+        availableContextAssets={foundationAssets}
       />
     </div>
   )

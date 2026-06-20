@@ -510,6 +510,12 @@ export interface Database {
           sref: string | null
           parameters: string | null
           tool: string
+          status: string
+          negative_prompt: string | null
+          cref: string | null
+          seed: string | null
+          aspect_ratio: string | null
+          usage_notes: string | null
           tags: string[]
           created_at: string
           updated_at: string
@@ -526,6 +532,12 @@ export interface Database {
           sref?: string | null
           parameters?: string | null
           tool?: string
+          status?: string
+          negative_prompt?: string | null
+          cref?: string | null
+          seed?: string | null
+          aspect_ratio?: string | null
+          usage_notes?: string | null
           tags?: string[]
           created_at?: string
           updated_at?: string
@@ -542,10 +554,21 @@ export interface Database {
           sref?: string | null
           parameters?: string | null
           tool?: string
+          status?: string
+          negative_prompt?: string | null
+          cref?: string | null
+          seed?: string | null
+          aspect_ratio?: string | null
+          usage_notes?: string | null
           tags?: string[]
           created_at?: string
           updated_at?: string
         }
+      }
+      library_image_context_assets: {
+        Row: { id: string; library_image_id: string; context_asset_id: string }
+        Insert: { id?: string; library_image_id: string; context_asset_id: string }
+        Update: { id?: string; library_image_id?: string; context_asset_id?: string }
       }
       documents: {
         Row: {

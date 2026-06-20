@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react"
 import Link from "next/link"
 import { Square, LayoutGrid } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { StatusBadge } from "@/components/shared/status-badge"
 import { cn } from "@/lib/utils"
 import type { LibraryImageWithUrl } from "@/lib/queries/library"
 
@@ -119,6 +120,7 @@ export function ImageGrid({ images }: { images: LibraryImageWithUrl[] }) {
                   {image.title || image.prompt || "Untitled"}
                 </p>
                 <div className="flex items-center gap-1.5 mt-1.5">
+                  <StatusBadge status={image.status} />
                   {image.sref && (
                     <Badge variant="secondary" className="text-[10px] font-mono">
                       sref {image.sref.length > 12 ? `${image.sref.slice(0, 12)}…` : image.sref}
