@@ -15,7 +15,9 @@ export async function createContextAsset(formData: FormData) {
     title: formData.get("title"),
     description: formData.get("description") || null,
     content: formData.get("content"),
+    category: formData.get("category"),
     asset_type: formData.get("asset_type") || null,
+    notes: formData.get("notes") || null,
     tags: JSON.parse((formData.get("tags") as string) || "[]"),
     status: formData.get("status") || "draft",
   })
@@ -28,6 +30,10 @@ export async function createContextAsset(formData: FormData) {
     ...parsed.data,
     organization_id: organizationId,
     created_by: user.id,
+    owner_user_id: user.id,
+    ...(parsed.data.status === "approved"
+      ? { approved_by: user.id, approved_at: new Date().toISOString() }
+      : {}),
   } as ContextAssetInsert)
 
   if (error) {
@@ -40,13 +46,15 @@ export async function createContextAsset(formData: FormData) {
 
 export async function updateContextAsset(id: string, formData: FormData) {
   const supabase = await createClient()
-  await getCurrentUserWithOrg()
+  const { user } = await getCurrentUserWithOrg()
 
   const parsed = contextAssetSchema.safeParse({
     title: formData.get("title"),
     description: formData.get("description") || null,
     content: formData.get("content"),
+    category: formData.get("category"),
     asset_type: formData.get("asset_type") || null,
+    notes: formData.get("notes") || null,
     tags: JSON.parse((formData.get("tags") as string) || "[]"),
     status: formData.get("status") || "draft",
   })
@@ -55,9 +63,24 @@ export async function updateContextAsset(id: string, formData: FormData) {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  // Stamp approval metadata when an asset transitions into 'approved';
+  // clear it when it moves out of 'approved'.
+  const { data: existing } = await supabase
+    .from("context_assets")
+    .select("status")
+    .eq("id", id)
+    .single()
+  const nowApproved = parsed.data.status === "approved"
+  const wasApproved = existing?.status === "approved"
+  const approvalFields = nowApproved
+    ? wasApproved
+      ? {}
+      : { approved_by: user.id, approved_at: new Date().toISOString() }
+    : { approved_by: null, approved_at: null }
+
   const { error } = await supabase
     .from("context_assets")
-    .update(parsed.data as ContextAssetUpdate)
+    .update({ ...parsed.data, ...approvalFields } as ContextAssetUpdate)
     .eq("id", id)
 
   if (error) {

@@ -15,7 +15,11 @@ import {
 } from "@/components/ui/select"
 import { TagInput } from "@/components/forms/tag-input"
 import { StatusSelect } from "@/components/forms/status-select"
-import { CONTEXT_ASSET_TYPES } from "@/lib/constants"
+import {
+  CONTEXT_ASSET_TYPES,
+  FOUNDATION_CATEGORIES,
+  FOUNDATION_STATUSES,
+} from "@/lib/constants"
 import { toast } from "sonner"
 import type { ContextAsset } from "@/lib/types"
 
@@ -28,12 +32,14 @@ export function ContextAssetForm({ action, defaultValues }: ContextAssetFormProp
   const router = useRouter()
   const [tags, setTags] = useState<string[]>(defaultValues?.tags || [])
   const [status, setStatus] = useState(defaultValues?.status || "draft")
+  const [category, setCategory] = useState(defaultValues?.category || "")
   const [assetType, setAssetType] = useState(defaultValues?.asset_type || "")
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(formData: FormData) {
     formData.set("tags", JSON.stringify(tags))
     formData.set("status", status)
+    formData.set("category", category)
     if (assetType) formData.set("asset_type", assetType)
 
     setLoading(true)
@@ -83,7 +89,23 @@ export function ContextAssetForm({ action, defaultValues }: ContextAssetFormProp
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="space-y-2">
+          <Label>Category</Label>
+          <Select value={category} onValueChange={(v) => setCategory(v ?? "")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              {FOUNDATION_CATEGORIES.map((c) => (
+                <SelectItem key={c.value} value={c.value}>
+                  {c.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="space-y-2">
           <Label>Asset Type</Label>
           <Select value={assetType} onValueChange={(v) => setAssetType(v ?? "")}>
@@ -102,7 +124,11 @@ export function ContextAssetForm({ action, defaultValues }: ContextAssetFormProp
 
         <div className="space-y-2">
           <Label>Status</Label>
-          <StatusSelect value={status} onValueChange={setStatus} />
+          <StatusSelect
+            value={status}
+            onValueChange={setStatus}
+            options={FOUNDATION_STATUSES}
+          />
         </div>
       </div>
 
@@ -111,13 +137,24 @@ export function ContextAssetForm({ action, defaultValues }: ContextAssetFormProp
         <TagInput value={tags} onChange={setTags} />
       </div>
 
+      <div className="space-y-2">
+        <Label htmlFor="notes">Notes</Label>
+        <Textarea
+          id="notes"
+          name="notes"
+          defaultValue={defaultValues?.notes || ""}
+          rows={3}
+          placeholder="Internal notes about this asset (optional)"
+        />
+      </div>
+
       <div className="flex gap-3">
         <Button type="submit" disabled={loading}>
           {loading
             ? "Saving..."
             : defaultValues
-              ? "Update Context Asset"
-              : "Create Context Asset"}
+              ? "Update Foundation Asset"
+              : "Add Foundation Asset"}
         </Button>
         <Button
           type="button"

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { buttonVariants } from "@/components/ui/button-variants"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
 import { CopyButton } from "@/components/shared/copy-button"
+import { FOUNDATION_CATEGORIES } from "@/lib/constants"
 import { Pencil, Trash2, ArrowLeft } from "lucide-react"
 
 interface Props {
@@ -65,6 +66,12 @@ export default async function ContextAssetDetailPage({ params }: Props) {
 
       <div className="flex items-center gap-3 mb-6">
         <StatusBadge status={contextAsset.status} />
+        {contextAsset.category && (
+          <Badge variant="secondary">
+            {FOUNDATION_CATEGORIES.find((c) => c.value === contextAsset.category)?.label ??
+              contextAsset.category}
+          </Badge>
+        )}
         {contextAsset.asset_type && (
           <Badge variant="outline" className="capitalize">
             {contextAsset.asset_type.replace("_", " ")}
@@ -110,12 +117,24 @@ export default async function ContextAssetDetailPage({ params }: Props) {
         </div>
       )}
 
+      {contextAsset.notes && (
+        <div className="mb-6">
+          <h2 className="text-sm font-medium text-muted-foreground mb-2">Notes</h2>
+          <p className="text-sm whitespace-pre-wrap leading-relaxed">
+            {contextAsset.notes}
+          </p>
+        </div>
+      )}
+
       <div className="text-xs text-muted-foreground space-y-1">
         <p>Created by {createdByName}</p>
         <p>
           Created {new Date(contextAsset.created_at).toLocaleDateString()} &middot;
           Updated {new Date(contextAsset.updated_at).toLocaleDateString()}
         </p>
+        {contextAsset.approved_at && (
+          <p>Approved {new Date(contextAsset.approved_at).toLocaleDateString()}</p>
+        )}
       </div>
     </div>
   )

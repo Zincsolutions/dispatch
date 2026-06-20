@@ -133,7 +133,12 @@ export interface Database {
           title: string
           description: string | null
           content: string
+          category: string | null
           asset_type: string | null
+          notes: string | null
+          owner_user_id: string | null
+          approved_by: string | null
+          approved_at: string | null
           tags: string[]
           status: string
           created_at: string
@@ -146,7 +151,12 @@ export interface Database {
           title: string
           description?: string | null
           content: string
+          category?: string | null
           asset_type?: string | null
+          notes?: string | null
+          owner_user_id?: string | null
+          approved_by?: string | null
+          approved_at?: string | null
           tags?: string[]
           status?: string
           created_at?: string
@@ -159,7 +169,12 @@ export interface Database {
           title?: string
           description?: string | null
           content?: string
+          category?: string | null
           asset_type?: string | null
+          notes?: string | null
+          owner_user_id?: string | null
+          approved_by?: string | null
+          approved_at?: string | null
           tags?: string[]
           status?: string
           created_at?: string
