@@ -109,6 +109,19 @@ export async function getContextAssetById(id: string) {
   }
 }
 
+// Lightweight options for the "Connected Foundation Assets" picker
+// (prompts, agents, etc.). RLS scopes this to the current org.
+export async function getFoundationAssetOptions(): Promise<
+  { id: string; title: string; status: string }[]
+> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("context_assets")
+    .select("id, title, status")
+    .order("title", { ascending: true })
+  return (data as { id: string; title: string; status: string }[]) || []
+}
+
 export interface CategoryStat {
   total: number
   approved: number

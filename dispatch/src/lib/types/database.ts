@@ -245,6 +245,16 @@ export interface Database {
           created_at?: string
         }
       }
+      prompt_context_assets: {
+        Row: { id: string; prompt_id: string; context_asset_id: string }
+        Insert: { id?: string; prompt_id: string; context_asset_id: string }
+        Update: { id?: string; prompt_id?: string; context_asset_id?: string }
+      }
+      agent_context_assets: {
+        Row: { id: string; agent_id: string; context_asset_id: string }
+        Insert: { id?: string; agent_id: string; context_asset_id: string }
+        Update: { id?: string; agent_id?: string; context_asset_id?: string }
+      }
       agents: {
         Row: {
           id: string

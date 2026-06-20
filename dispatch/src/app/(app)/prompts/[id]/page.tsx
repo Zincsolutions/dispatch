@@ -126,6 +126,26 @@ export default async function PromptDetailPage({ params }: Props) {
         )}
       </div>
 
+      {prompt.connected_assets.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-sm font-medium text-muted-foreground mb-2">
+            Connected Foundation Assets
+          </h2>
+          <div className="space-y-1">
+            {prompt.connected_assets.map((a) => (
+              <Link
+                key={a.id}
+                href={`/foundation/${a.id}`}
+                className="flex items-center justify-between rounded-md border px-3 py-2 text-sm hover:bg-accent transition-colors"
+              >
+                <span className="truncate">{a.title}</span>
+                <StatusBadge status={a.status} />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {prompt.tags.length > 0 && (
         <div className="mb-6">
           <h2 className="text-sm font-medium text-muted-foreground mb-2">

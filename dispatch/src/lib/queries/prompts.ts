@@ -68,9 +68,26 @@ export async function getPromptById(id: string) {
     sampleOutputUrl = signed?.signedUrl ?? null
   }
 
+  // Connected foundation assets.
+  const { data: linkRows } = await supabase
+    .from("prompt_context_assets")
+    .select("context_asset_id")
+    .eq("prompt_id", id)
+  const connectedAssetIds = (linkRows || []).map((r) => r.context_asset_id)
+  let connectedAssets: { id: string; title: string; status: string }[] = []
+  if (connectedAssetIds.length) {
+    const { data: assets } = await supabase
+      .from("context_assets")
+      .select("id, title, status")
+      .in("id", connectedAssetIds)
+    connectedAssets = (assets as { id: string; title: string; status: string }[]) || []
+  }
+
   return {
     ...prompt,
     created_by_name: profile?.full_name ?? "Unknown",
     sample_output_url: sampleOutputUrl,
+    connected_asset_ids: connectedAssetIds,
+    connected_assets: connectedAssets,
   }
 }

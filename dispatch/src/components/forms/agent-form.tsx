@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select"
 import { TagInput } from "@/components/forms/tag-input"
 import { StatusSelect } from "@/components/forms/status-select"
+import { RelatedItemSelector } from "@/components/forms/related-item-selector"
 import {
   AGENT_PLATFORMS,
   AGENT_STATUSES,
@@ -27,15 +28,24 @@ import type { Agent } from "@/lib/types"
 interface AgentFormProps {
   action: (formData: FormData) => Promise<{ error?: Record<string, string[]> } | void>
   defaultValues?: Agent
+  availableContextAssets?: { id: string; title: string; status: string }[]
+  connectedAssetIds?: string[]
 }
 
-export function AgentForm({ action, defaultValues }: AgentFormProps) {
+export function AgentForm({
+  action,
+  defaultValues,
+  availableContextAssets = [],
+  connectedAssetIds = [],
+}: AgentFormProps) {
   const router = useRouter()
   const [tags, setTags] = useState<string[]>(defaultValues?.tags || [])
   const [status, setStatus] = useState(defaultValues?.status || "draft")
   const [platform, setPlatform] = useState(defaultValues?.platform || "")
   const [department, setDepartment] = useState(defaultValues?.department || "")
   const [riskLevel, setRiskLevel] = useState(defaultValues?.risk_level || "")
+  const [relatedContextAssetIds, setRelatedContextAssetIds] =
+    useState<string[]>(connectedAssetIds)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(formData: FormData) {
@@ -44,6 +54,7 @@ export function AgentForm({ action, defaultValues }: AgentFormProps) {
     if (platform) formData.set("platform", platform)
     if (department) formData.set("department", department)
     if (riskLevel) formData.set("risk_level", riskLevel)
+    formData.set("related_context_asset_ids", JSON.stringify(relatedContextAssetIds))
 
     setLoading(true)
     const result = await action(formData)
@@ -196,6 +207,13 @@ export function AgentForm({ action, defaultValues }: AgentFormProps) {
         <Label>Tags</Label>
         <TagInput value={tags} onChange={setTags} />
       </div>
+
+      <RelatedItemSelector
+        items={availableContextAssets}
+        selectedIds={relatedContextAssetIds}
+        onSelectionChange={setRelatedContextAssetIds}
+        label="Connected Foundation Assets"
+      />
 
       <div className="flex gap-3">
         <Button type="submit" disabled={loading}>

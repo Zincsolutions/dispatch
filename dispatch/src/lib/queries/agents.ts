@@ -80,5 +80,25 @@ export async function getAgentById(id: string) {
     .eq("id", data.created_by)
     .single()
 
-  return { ...(data as Agent), created_by_name: profile?.full_name ?? "Unknown" }
+  // Connected foundation assets.
+  const { data: linkRows } = await supabase
+    .from("agent_context_assets")
+    .select("context_asset_id")
+    .eq("agent_id", id)
+  const connectedAssetIds = (linkRows || []).map((r) => r.context_asset_id)
+  let connectedAssets: { id: string; title: string; status: string }[] = []
+  if (connectedAssetIds.length) {
+    const { data: assets } = await supabase
+      .from("context_assets")
+      .select("id, title, status")
+      .in("id", connectedAssetIds)
+    connectedAssets = (assets as { id: string; title: string; status: string }[]) || []
+  }
+
+  return {
+    ...(data as Agent),
+    created_by_name: profile?.full_name ?? "Unknown",
+    connected_asset_ids: connectedAssetIds,
+    connected_assets: connectedAssets,
+  }
 }
