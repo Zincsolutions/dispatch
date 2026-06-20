@@ -34,8 +34,8 @@ export async function createContextAsset(formData: FormData) {
     return { error: { _form: [error.message] } }
   }
 
-  revalidatePath("/context")
-  redirect("/context")
+  revalidatePath("/foundation")
+  redirect("/foundation")
 }
 
 export async function updateContextAsset(id: string, formData: FormData) {
@@ -64,9 +64,9 @@ export async function updateContextAsset(id: string, formData: FormData) {
     return { error: { _form: [error.message] } }
   }
 
-  revalidatePath("/context")
-  revalidatePath(`/context/${id}`)
-  redirect(`/context/${id}`)
+  revalidatePath("/foundation")
+  revalidatePath(`/foundation/${id}`)
+  redirect(`/foundation/${id}`)
 }
 
 export async function deleteContextAsset(id: string) {
@@ -79,6 +79,6 @@ export async function deleteContextAsset(id: string) {
     return { error: error.message }
   }
 
-  revalidatePath("/context")
-  redirect("/context")
+  revalidatePath("/foundation")
+  redirect("/foundation")
 }

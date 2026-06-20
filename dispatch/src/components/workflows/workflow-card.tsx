@@ -75,7 +75,7 @@ export function WorkflowCard({ workflow }: { workflow: WorkflowWithMeta }) {
           </p>
         )}
         <p>
-          <span className="text-foreground/70">Context:</span>{" "}
+          <span className="text-foreground/70">Foundation:</span>{" "}
           {workflow.context_count} assets{"   "}
           <span className="text-foreground/70">Prompts:</span>{" "}
           {workflow.prompt_count}

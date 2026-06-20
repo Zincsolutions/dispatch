@@ -5,7 +5,7 @@ import { createContextAsset } from "@/lib/actions/context-assets"
 export default function NewContextAssetPage() {
   return (
     <div>
-      <PageHeader title="New Context Asset" />
+      <PageHeader title="Add Foundation Asset" />
       <ContextAssetForm action={createContextAsset} />
     </div>
   )

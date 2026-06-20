@@ -25,11 +25,11 @@ export default async function ContextAssetDetailPage({ params }: Props) {
     <div className="max-w-3xl">
       <div className="mb-6">
         <Link
-          href="/context"
+          href="/foundation"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
         >
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Back to Context Assets
+          Back to AI Foundation
         </Link>
         <div className="flex items-start justify-between">
           <div>
@@ -41,13 +41,13 @@ export default async function ContextAssetDetailPage({ params }: Props) {
             )}
           </div>
           <div className="flex items-center gap-2">
-            <Link href={`/context/${id}/edit`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+            <Link href={`/foundation/${id}/edit`} className={buttonVariants({ variant: "outline", size: "sm" })}>
               <Pencil className="mr-1 h-4 w-4" />
               Edit
             </Link>
             <ConfirmDialog
-              title="Delete context asset"
-              description="Are you sure you want to delete this context asset? This action cannot be undone."
+              title="Delete foundation asset"
+              description="Are you sure you want to delete this foundation asset? This action cannot be undone."
               onConfirm={async () => {
                 "use server"
                 await deleteContextAsset(id)
@@ -97,7 +97,7 @@ export default async function ContextAssetDetailPage({ params }: Props) {
           </h2>
           <div className="flex flex-wrap gap-1.5">
             {contextAsset.tags.map((tag: string) => (
-              <Link key={tag} href={`/context?tag=${encodeURIComponent(tag)}`}>
+              <Link key={tag} href={`/foundation?tag=${encodeURIComponent(tag)}`}>
                 <Badge
                   variant="secondary"
                   className="hover:bg-secondary/80 cursor-pointer"

@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
           "/prompts",
           "/workflows",
           "/agents",
-          "/context",
+          "/foundation",
           "/settings",
           "/invite/",
           "/auth/",

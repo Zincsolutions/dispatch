@@ -26,10 +26,10 @@ export default async function ContextAssetsPage({ searchParams }: Props) {
   return (
     <div>
       <PageHeader
-        title="Context Assets"
-        description="Manage your organization's context asset library"
-        createHref="/context/new"
-        createLabel="New Context Asset"
+        title="AI Foundation"
+        description="Manage the company knowledge, brand standards, messaging, and reference material that powers your AI systems."
+        createHref="/foundation/new"
+        createLabel="Add Foundation Asset"
       />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center mb-6">
         <Suspense>
@@ -42,25 +42,25 @@ export default async function ContextAssetsPage({ searchParams }: Props) {
             categoryParam="asset_type"
           />
         </Suspense>
-        {params.tag && <TagFilterChip tag={params.tag} basePath="/context" />}
+        {params.tag && <TagFilterChip tag={params.tag} basePath="/foundation" />}
       </div>
       {contextAssets.length === 0 ? (
         <EmptyState
-          title={hasFilters ? "No context assets match your filters" : "No context assets found"}
+          title={hasFilters ? "No foundation assets match your filters" : "Build your AI Foundation"}
           description={
             hasFilters
               ? "Try clearing your search or filters."
-              : "Create your first context asset to start building your context library."
+              : "Add the brand, voice, customer, product, and company knowledge that powers your prompts, agents, workflows, and image systems."
           }
-          createHref="/context/new"
-          createLabel="New Context Asset"
+          createHref="/foundation/new"
+          createLabel="Add Foundation Asset"
         />
       ) : (
         <div className="space-y-2">
           {contextAssets.map((asset) => (
             <Link
               key={asset.id}
-              href={`/context/${asset.id}`}
+              href={`/foundation/${asset.id}`}
               className="flex items-center justify-between rounded-lg border p-4 hover:bg-accent transition-colors"
             >
               <div className="min-w-0 flex-1">

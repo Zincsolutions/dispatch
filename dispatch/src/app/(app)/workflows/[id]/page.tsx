@@ -278,13 +278,13 @@ export default async function WorkflowDetailPage({ params }: Props) {
       {workflow.linked_context_assets.length > 0 && (
         <div className="mb-6">
           <h2 className="text-sm font-medium text-muted-foreground mb-2">
-            Linked Context Assets
+            Connected Foundation Assets
           </h2>
           <div className="space-y-1">
             {workflow.linked_context_assets.map((ca) => (
               <Link
                 key={ca.id}
-                href={`/context/${ca.id}`}
+                href={`/foundation/${ca.id}`}
                 className="flex items-center justify-between rounded-md border px-3 py-2 text-sm hover:bg-accent transition-colors"
               >
                 <span>{ca.title}</span>
