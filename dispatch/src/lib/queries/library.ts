@@ -82,6 +82,21 @@ export async function getLibraryImageById(id: string) {
     .createSignedUrls(pathsToSign, SIGNED_URL_TTL)
   const urlByPath = new Map((signed || []).map((s) => [s.path, s.signedUrl]))
 
+  // Connected foundation assets.
+  const { data: linkRows } = await supabase
+    .from("library_image_context_assets")
+    .select("context_asset_id")
+    .eq("library_image_id", id)
+  const connectedAssetIds = (linkRows || []).map((r) => r.context_asset_id)
+  let connectedAssets: { id: string; title: string; status: string }[] = []
+  if (connectedAssetIds.length) {
+    const { data: assets } = await supabase
+      .from("context_assets")
+      .select("id, title, status")
+      .in("id", connectedAssetIds)
+    connectedAssets = (assets as { id: string; title: string; status: string }[]) || []
+  }
+
   return {
     ...image,
     url: urlByPath.get(image.storage_path) ?? null,
@@ -90,6 +105,8 @@ export async function getLibraryImageById(id: string) {
       : null,
     collection_name: image.image_collections?.name ?? null,
     created_by_name: image.profiles?.full_name ?? "Unknown",
+    connected_asset_ids: connectedAssetIds,
+    connected_assets: connectedAssets,
   }
 }
 

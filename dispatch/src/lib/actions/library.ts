@@ -20,8 +20,23 @@ function parseImageFields(formData: FormData) {
     sref: (formData.get("sref") as string) || null,
     parameters: (formData.get("parameters") as string) || null,
     tool: formData.get("tool") || "midjourney",
+    status: formData.get("status") || "approved",
+    negative_prompt: (formData.get("negative_prompt") as string) || null,
+    cref: (formData.get("cref") as string) || null,
+    seed: (formData.get("seed") as string) || null,
+    aspect_ratio: (formData.get("aspect_ratio") as string) || null,
+    usage_notes: (formData.get("usage_notes") as string) || null,
     collection_id: (formData.get("collection_id") as string) || null,
     tags: safeParseTags(formData.get("tags")),
+  }
+}
+
+function relatedAssetIdsFrom(formData: FormData): string[] {
+  try {
+    const raw = JSON.parse((formData.get("related_context_asset_ids") as string) || "[]")
+    return Array.isArray(raw) ? raw.filter((x) => typeof x === "string") : []
+  } catch {
+    return []
   }
 }
 
@@ -61,14 +76,28 @@ export async function createLibraryImage(formData: FormData) {
     return { error: { _form: ["Invalid reference storage path"] } }
   }
 
-  const { error } = await supabase.from("library_images").insert({
-    ...parsed.data,
-    organization_id: organizationId,
-    created_by: user.id,
-  } as LibraryImageInsert)
+  const { data: created, error } = await supabase
+    .from("library_images")
+    .insert({
+      ...parsed.data,
+      organization_id: organizationId,
+      created_by: user.id,
+    } as LibraryImageInsert)
+    .select("id")
+    .single()
 
-  if (error) {
-    return { error: { _form: [error.message] } }
+  if (error || !created) {
+    return { error: { _form: [error?.message || "Could not save image"] } }
+  }
+
+  const relatedAssetIds = relatedAssetIdsFrom(formData)
+  if (relatedAssetIds.length) {
+    await supabase.from("library_image_context_assets").insert(
+      relatedAssetIds.map((context_asset_id) => ({
+        library_image_id: created.id,
+        context_asset_id,
+      }))
+    )
   }
 
   revalidatePath("/library")
@@ -113,6 +142,18 @@ export async function updateLibraryImage(id: string, formData: FormData) {
   if (oldReferencePath && oldReferencePath !== parsed.data.reference_storage_path) {
     // Best-effort: an orphaned file is preferable to a failed save.
     await supabase.storage.from("library").remove([oldReferencePath])
+  }
+
+  // Replace the connected foundation assets.
+  const relatedAssetIds = relatedAssetIdsFrom(formData)
+  await supabase.from("library_image_context_assets").delete().eq("library_image_id", id)
+  if (relatedAssetIds.length) {
+    await supabase.from("library_image_context_assets").insert(
+      relatedAssetIds.map((context_asset_id) => ({
+        library_image_id: id,
+        context_asset_id,
+      }))
+    )
   }
 
   revalidatePath("/library")
