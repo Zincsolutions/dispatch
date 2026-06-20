@@ -6,22 +6,22 @@ import { StatusBadge } from "@/components/shared/status-badge"
 import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
 import { TagFilterChip } from "@/components/lists/tag-filter-chip"
-import { CONTEXT_ASSET_TYPES } from "@/lib/constants"
+import { FOUNDATION_CATEGORIES, FOUNDATION_STATUSES } from "@/lib/constants"
 import { Suspense } from "react"
 
 interface Props {
-  searchParams: Promise<{ search?: string; status?: string; asset_type?: string; tag?: string }>
+  searchParams: Promise<{ search?: string; status?: string; category?: string; tag?: string }>
 }
 
-export default async function ContextAssetsPage({ searchParams }: Props) {
+export default async function FoundationPage({ searchParams }: Props) {
   const params = await searchParams
   const contextAssets = await getContextAssets({
     search: params.search,
     status: params.status,
-    asset_type: params.asset_type,
+    category: params.category,
     tag: params.tag,
   })
-  const hasFilters = Boolean(params.search || params.status || params.asset_type || params.tag)
+  const hasFilters = Boolean(params.search || params.status || params.category || params.tag)
 
   return (
     <div>
@@ -37,9 +37,10 @@ export default async function ContextAssetsPage({ searchParams }: Props) {
         </Suspense>
         <Suspense>
           <FilterControls
-            categoryOptions={[...CONTEXT_ASSET_TYPES]}
-            categoryLabel="Asset Type"
-            categoryParam="asset_type"
+            categoryOptions={[...FOUNDATION_CATEGORIES]}
+            categoryLabel="Category"
+            categoryParam="category"
+            statusOptions={FOUNDATION_STATUSES}
           />
         </Suspense>
         {params.tag && <TagFilterChip tag={params.tag} basePath="/foundation" />}
@@ -71,9 +72,10 @@ export default async function ContextAssetsPage({ searchParams }: Props) {
                   </p>
                 )}
                 <div className="flex items-center gap-2 mt-1.5">
-                  {asset.asset_type && (
-                    <span className="text-xs text-muted-foreground capitalize">
-                      {asset.asset_type.replace("_", " ")}
+                  {asset.category && (
+                    <span className="text-xs text-muted-foreground">
+                      {FOUNDATION_CATEGORIES.find((c) => c.value === asset.category)?.label ??
+                        asset.category}
                     </span>
                   )}
                 </div>

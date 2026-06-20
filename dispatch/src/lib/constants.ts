@@ -25,6 +25,24 @@ export const CONTEXT_ASSET_TYPES = [
   { value: "other", label: "Other" },
 ] as const
 
+// The six AI Foundation categories (the core organizing layer).
+export const FOUNDATION_CATEGORIES = [
+  { value: "brand_identity", label: "Brand Identity" },
+  { value: "voice_messaging", label: "Voice & Messaging" },
+  { value: "products_services", label: "Products & Services" },
+  { value: "customers_personas", label: "Customers & Personas" },
+  { value: "company_knowledge", label: "Company Knowledge" },
+  { value: "examples_reference", label: "Examples & Reference Material" },
+] as const
+
+// Status lifecycle for AI Foundation assets (adds needs_review for governance).
+export const FOUNDATION_STATUSES = [
+  { value: "draft", label: "Draft" },
+  { value: "needs_review", label: "Needs Review" },
+  { value: "approved", label: "Approved" },
+  { value: "archived", label: "Archived" },
+] as const
+
 export const AGENT_PLATFORMS = [
   { value: "chatgpt", label: "ChatGPT" },
   { value: "claude", label: "Claude" },

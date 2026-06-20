@@ -5,6 +5,7 @@ import type { ContextAsset } from "@/lib/types"
 interface ContextAssetFilters {
   search?: string
   status?: string
+  category?: string
   asset_type?: string
   tag?: string
 }
@@ -25,6 +26,9 @@ export async function getContextAssets(filters?: ContextAssetFilters): Promise<C
   }
   if (filters?.status) {
     query = query.eq("status", filters.status)
+  }
+  if (filters?.category) {
+    query = query.eq("category", filters.category)
   }
   if (filters?.asset_type) {
     query = query.eq("asset_type", filters.asset_type)
