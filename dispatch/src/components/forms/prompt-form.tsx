@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select"
 import { TagInput } from "@/components/forms/tag-input"
 import { StatusSelect } from "@/components/forms/status-select"
+import { RelatedItemSelector } from "@/components/forms/related-item-selector"
 import { PROMPT_CATEGORIES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { Loader2 } from "lucide-react"
@@ -35,6 +36,8 @@ interface PromptFormProps {
   orgId?: string
   // Signed URL for an already-saved sample output (edit mode).
   defaultSampleOutputUrl?: string | null
+  availableContextAssets?: { id: string; title: string; status: string }[]
+  connectedAssetIds?: string[]
 }
 
 export function PromptForm({
@@ -42,11 +45,15 @@ export function PromptForm({
   defaultValues,
   orgId,
   defaultSampleOutputUrl,
+  availableContextAssets = [],
+  connectedAssetIds = [],
 }: PromptFormProps) {
   const router = useRouter()
   const [tags, setTags] = useState<string[]>(defaultValues?.tags || [])
   const [status, setStatus] = useState(defaultValues?.status || "draft")
   const [category, setCategory] = useState(defaultValues?.category || "")
+  const [relatedContextAssetIds, setRelatedContextAssetIds] =
+    useState<string[]>(connectedAssetIds)
   const [loading, setLoading] = useState(false)
 
   // Sample output: optional example of what the prompt produces.
@@ -89,6 +96,7 @@ export function PromptForm({
     formData.set("tags", JSON.stringify(tags))
     formData.set("status", status)
     if (category) formData.set("category", category)
+    formData.set("related_context_asset_ids", JSON.stringify(relatedContextAssetIds))
 
     setLoading(true)
     const supabase = createClient()
@@ -199,6 +207,13 @@ export function PromptForm({
         <Label>Tags</Label>
         <TagInput value={tags} onChange={setTags} />
       </div>
+
+      <RelatedItemSelector
+        items={availableContextAssets}
+        selectedIds={relatedContextAssetIds}
+        onSelectionChange={setRelatedContextAssetIds}
+        label="Connected Foundation Assets"
+      />
 
       {/* Sample output — an example of what this prompt produces, so people
           browsing the prompt can see what it's capable of. Optional. */}

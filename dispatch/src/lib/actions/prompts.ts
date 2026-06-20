@@ -34,14 +34,30 @@ export async function createPrompt(formData: FormData) {
     return { error: { _form: ["Invalid sample output path"] } }
   }
 
-  const { error } = await supabase.from("prompts").insert({
-    ...parsed.data,
-    organization_id: organizationId,
-    created_by: user.id,
-  } as PromptInsert)
+  const { data: created, error } = await supabase
+    .from("prompts")
+    .insert({
+      ...parsed.data,
+      organization_id: organizationId,
+      created_by: user.id,
+    } as PromptInsert)
+    .select("id")
+    .single()
 
-  if (error) {
-    return { error: { _form: [error.message] } }
+  if (error || !created) {
+    return { error: { _form: [error?.message || "Could not create prompt"] } }
+  }
+
+  const relatedAssetIds: string[] = JSON.parse(
+    (formData.get("related_context_asset_ids") as string) || "[]"
+  )
+  if (relatedAssetIds.length) {
+    await supabase.from("prompt_context_assets").insert(
+      relatedAssetIds.map((context_asset_id) => ({
+        prompt_id: created.id,
+        context_asset_id,
+      }))
+    )
   }
 
   revalidatePath("/prompts")
@@ -94,6 +110,20 @@ export async function updatePrompt(id: string, formData: FormData) {
   if (oldSamplePath && oldSamplePath !== parsed.data.sample_output_path) {
     // Best-effort: an orphaned file is preferable to a failed save.
     await supabase.storage.from("library").remove([oldSamplePath])
+  }
+
+  // Replace the connected foundation assets.
+  const relatedAssetIds: string[] = JSON.parse(
+    (formData.get("related_context_asset_ids") as string) || "[]"
+  )
+  await supabase.from("prompt_context_assets").delete().eq("prompt_id", id)
+  if (relatedAssetIds.length) {
+    await supabase.from("prompt_context_assets").insert(
+      relatedAssetIds.map((context_asset_id) => ({
+        prompt_id: id,
+        context_asset_id,
+      }))
+    )
   }
 
   revalidatePath("/prompts")

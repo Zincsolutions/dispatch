@@ -33,14 +33,30 @@ export async function createAgent(formData: FormData) {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
-  const { error } = await supabase.from("agents").insert({
-    ...parsed.data,
-    organization_id: organizationId,
-    created_by: user.id,
-  })
+  const { data: created, error } = await supabase
+    .from("agents")
+    .insert({
+      ...parsed.data,
+      organization_id: organizationId,
+      created_by: user.id,
+    })
+    .select("id")
+    .single()
 
-  if (error) {
-    return { error: { _form: [error.message] } }
+  if (error || !created) {
+    return { error: { _form: [error?.message || "Could not create agent"] } }
+  }
+
+  const relatedAssetIds: string[] = JSON.parse(
+    (formData.get("related_context_asset_ids") as string) || "[]"
+  )
+  if (relatedAssetIds.length) {
+    await supabase.from("agent_context_assets").insert(
+      relatedAssetIds.map((context_asset_id) => ({
+        agent_id: created.id,
+        context_asset_id,
+      }))
+    )
   }
 
   revalidatePath("/agents")
@@ -64,6 +80,20 @@ export async function updateAgent(id: string, formData: FormData) {
 
   if (error) {
     return { error: { _form: [error.message] } }
+  }
+
+  // Replace the connected foundation assets.
+  const relatedAssetIds: string[] = JSON.parse(
+    (formData.get("related_context_asset_ids") as string) || "[]"
+  )
+  await supabase.from("agent_context_assets").delete().eq("agent_id", id)
+  if (relatedAssetIds.length) {
+    await supabase.from("agent_context_assets").insert(
+      relatedAssetIds.map((context_asset_id) => ({
+        agent_id: id,
+        context_asset_id,
+      }))
+    )
   }
 
   revalidatePath("/agents")
