@@ -20,11 +20,11 @@ import { useState } from "react"
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "AI Foundation", href: "/foundation", icon: FileText },
   { label: "Prompts", href: "/prompts", icon: MessageSquareText },
-  { label: "Context", href: "/context", icon: FileText },
   { label: "Agents", href: "/agents", icon: Bot },
   { label: "Workflows & Loops", href: "/workflows", icon: Workflow },
-  { label: "Library", href: "/library", icon: Images },
+  { label: "Image Library", href: "/library", icon: Images },
   { label: "Governance", href: "/governance", icon: ShieldCheck },
   { label: "Settings", href: "/settings", icon: Settings },
 ]

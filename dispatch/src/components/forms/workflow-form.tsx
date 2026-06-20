@@ -305,7 +305,7 @@ export function WorkflowForm({
           items={availableContextAssets}
           selectedIds={relatedContextAssetIds}
           onSelectionChange={setRelatedContextAssetIds}
-          label="Context Assets"
+          label="Connected Foundation Assets"
         />
 
         <RelatedItemSelector

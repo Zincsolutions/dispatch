@@ -20,7 +20,7 @@ export default async function EditContextAssetPage({ params }: Props) {
 
   return (
     <div>
-      <PageHeader title="Edit Context Asset" />
+      <PageHeader title="Edit Foundation Asset" />
       <ContextAssetForm action={handleUpdate} defaultValues={contextAsset} />
     </div>
   )

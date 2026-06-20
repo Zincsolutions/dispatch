@@ -28,17 +28,17 @@ export default async function DashboardPage() {
       emptyDescription: "No prompts yet. Create your first prompt to get started.",
     },
     {
-      title: "Recent Context Assets",
+      title: "Recent Foundation Assets",
       icon: FileText,
       items: data.contextAssets.map((c) => ({
         id: c.id,
         name: c.title,
         status: c.status,
-        href: `/context/${c.id}`,
+        href: `/foundation/${c.id}`,
       })),
-      viewAllHref: "/context",
-      createHref: "/context/new",
-      emptyDescription: "No context assets yet. Add brand voice, audience definitions, and more.",
+      viewAllHref: "/foundation",
+      createHref: "/foundation/new",
+      emptyDescription: "No foundation assets yet. Add brand voice, audience, product, and company knowledge.",
     },
     {
       title: "Recent Agents",
