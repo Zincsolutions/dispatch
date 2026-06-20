@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { MobileNav } from "./mobile-nav"
 import { LogOut, User } from "lucide-react"
 import Link from "next/link"
@@ -19,9 +19,10 @@ interface TopbarProps {
   orgName: string
   userName: string
   userEmail: string
+  avatarUrl?: string | null
 }
 
-export function Topbar({ orgName, userName, userEmail }: TopbarProps) {
+export function Topbar({ orgName, userName, userEmail, avatarUrl }: TopbarProps) {
   const initials = userName
     ? userName
         .split(" ")
@@ -38,6 +39,7 @@ export function Topbar({ orgName, userName, userEmail }: TopbarProps) {
       <DropdownMenu>
         <DropdownMenuTrigger className="relative h-8 w-8 rounded-full cursor-pointer">
           <Avatar className="h-8 w-8">
+            {avatarUrl && <AvatarImage src={avatarUrl} alt={userName || "Profile photo"} />}
             <AvatarFallback className="text-xs">{initials}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>

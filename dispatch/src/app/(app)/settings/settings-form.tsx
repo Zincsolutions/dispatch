@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { AvatarUpload, initialsFrom } from "./avatar-upload"
 import { toast } from "sonner"
 import type { Organization, Profile } from "@/lib/types"
 
@@ -87,6 +89,15 @@ export function SettingsForm({
         <CardContent>
           <form action={handleProfileUpdate} className="space-y-4">
             <div className="space-y-2">
+              <Label>Profile Photo</Label>
+              <AvatarUpload
+                userId={profile.id}
+                avatarUrl={profile.avatar_url}
+                name={profile.full_name}
+                email={userEmail}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="full-name">Full Name</Label>
               <Input
                 id="full-name"
@@ -116,13 +127,29 @@ export function SettingsForm({
                 key={member.id}
                 className="flex items-center justify-between"
               >
-                <div>
-                  <p className="text-sm font-medium">
-                    {member.profiles?.full_name || "Unknown"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {member.profiles?.email}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <Avatar>
+                    {member.profiles?.avatar_url && (
+                      <AvatarImage
+                        src={member.profiles.avatar_url}
+                        alt={member.profiles?.full_name || "Member"}
+                      />
+                    )}
+                    <AvatarFallback className="text-xs">
+                      {initialsFrom(
+                        member.profiles?.full_name || "",
+                        member.profiles?.email || ""
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">
+                      {member.profiles?.full_name || "Unknown"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {member.profiles?.email}
+                    </p>
+                  </div>
                 </div>
                 <Badge variant="outline" className="capitalize">
                   {member.role}
