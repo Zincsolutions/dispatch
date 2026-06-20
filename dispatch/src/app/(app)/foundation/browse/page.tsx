@@ -1,0 +1,99 @@
+import Link from "next/link"
+import { getContextAssets } from "@/lib/queries/context-assets"
+import { PageHeader } from "@/components/shared/page-header"
+import { EmptyState } from "@/components/shared/empty-state"
+import { StatusBadge } from "@/components/shared/status-badge"
+import { SearchBar } from "@/components/lists/search-bar"
+import { FilterControls } from "@/components/lists/filter-controls"
+import { TagFilterChip } from "@/components/lists/tag-filter-chip"
+import { FOUNDATION_CATEGORIES, FOUNDATION_STATUSES } from "@/lib/constants"
+import { ArrowLeft } from "lucide-react"
+import { Suspense } from "react"
+
+interface Props {
+  searchParams: Promise<{ search?: string; status?: string; category?: string; tag?: string }>
+}
+
+export default async function FoundationBrowsePage({ searchParams }: Props) {
+  const params = await searchParams
+  const contextAssets = await getContextAssets({
+    search: params.search,
+    status: params.status,
+    category: params.category,
+    tag: params.tag,
+  })
+  const hasFilters = Boolean(params.search || params.status || params.category || params.tag)
+  const activeCategory = FOUNDATION_CATEGORIES.find((c) => c.value === params.category)
+
+  return (
+    <div>
+      <Link
+        href="/foundation"
+        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+      >
+        <ArrowLeft className="mr-1 h-4 w-4" />
+        Back to AI Foundation
+      </Link>
+      <PageHeader
+        title={activeCategory ? activeCategory.label : "All Foundation Assets"}
+        description="Browse, search, and filter your AI Foundation assets."
+        createHref="/foundation/new"
+        createLabel="Add Foundation Asset"
+      />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center mb-6">
+        <Suspense>
+          <SearchBar />
+        </Suspense>
+        <Suspense>
+          <FilterControls
+            categoryOptions={[...FOUNDATION_CATEGORIES]}
+            categoryLabel="Category"
+            categoryParam="category"
+            statusOptions={FOUNDATION_STATUSES}
+          />
+        </Suspense>
+        {params.tag && <TagFilterChip tag={params.tag} basePath="/foundation/browse" />}
+      </div>
+      {contextAssets.length === 0 ? (
+        <EmptyState
+          title={hasFilters ? "No foundation assets match your filters" : "Build your AI Foundation"}
+          description={
+            hasFilters
+              ? "Try clearing your search or filters."
+              : "Add the brand, voice, customer, product, and company knowledge that powers your prompts, agents, workflows, and image systems."
+          }
+          createHref="/foundation/new"
+          createLabel="Add Foundation Asset"
+        />
+      ) : (
+        <div className="space-y-2">
+          {contextAssets.map((asset) => (
+            <Link
+              key={asset.id}
+              href={`/foundation/${asset.id}`}
+              className="flex items-center justify-between rounded-lg border p-4 hover:bg-accent transition-colors"
+            >
+              <div className="min-w-0 flex-1">
+                <h3 className="font-medium truncate">{asset.title}</h3>
+                {asset.description && (
+                  <p className="text-sm text-muted-foreground truncate mt-0.5">
+                    {asset.description}
+                  </p>
+                )}
+                <div className="flex items-center gap-2 mt-1.5">
+                  {asset.category && (
+                    <span className="text-xs text-muted-foreground">
+                      {FOUNDATION_CATEGORIES.find((c) => c.value === asset.category)?.label ??
+                        asset.category}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <StatusBadge status={asset.status} />
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}

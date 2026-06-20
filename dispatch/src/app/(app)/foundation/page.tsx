@@ -1,27 +1,94 @@
 import Link from "next/link"
-import { getContextAssets } from "@/lib/queries/context-assets"
+import { getFoundationOverview } from "@/lib/queries/context-assets"
 import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
-import { StatusBadge } from "@/components/shared/status-badge"
-import { SearchBar } from "@/components/lists/search-bar"
-import { FilterControls } from "@/components/lists/filter-controls"
-import { TagFilterChip } from "@/components/lists/tag-filter-chip"
-import { FOUNDATION_CATEGORIES, FOUNDATION_STATUSES } from "@/lib/constants"
-import { Suspense } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { FOUNDATION_CATEGORIES } from "@/lib/constants"
+import {
+  Palette,
+  Megaphone,
+  Package,
+  Users,
+  BookOpen,
+  Sparkles,
+  Layers,
+  CheckCircle2,
+  AlertCircle,
+  FileText,
+  CalendarClock,
+  type LucideIcon,
+} from "lucide-react"
 
-interface Props {
-  searchParams: Promise<{ search?: string; status?: string; category?: string; tag?: string }>
+const CATEGORY_META: Record<string, { icon: LucideIcon; description: string }> = {
+  brand_identity: {
+    icon: Palette,
+    description: "Logos, colors, fonts, guidelines, and visual standards.",
+  },
+  voice_messaging: {
+    icon: Megaphone,
+    description: "Tone, positioning, approved copy, and language.",
+  },
+  products_services: {
+    icon: Package,
+    description: "What you sell — features, benefits, pricing, and FAQs.",
+  },
+  customers_personas: {
+    icon: Users,
+    description: "ICPs, personas, segments, pain points, and objections.",
+  },
+  company_knowledge: {
+    icon: BookOpen,
+    description: "Company overview, processes, research, and positioning.",
+  },
+  examples_reference: {
+    icon: Sparkles,
+    description: "Gold-standard examples your AI can learn from.",
+  },
 }
 
-export default async function FoundationPage({ searchParams }: Props) {
-  const params = await searchParams
-  const contextAssets = await getContextAssets({
-    search: params.search,
-    status: params.status,
-    category: params.category,
-    tag: params.tag,
-  })
-  const hasFilters = Boolean(params.search || params.status || params.category || params.tag)
+function fmtDate(d: string | null) {
+  return d ? new Date(d).toLocaleDateString() : "—"
+}
+
+export default async function FoundationPage() {
+  const overview = await getFoundationOverview()
+
+  if (overview.total === 0) {
+    return (
+      <div>
+        <PageHeader
+          title="AI Foundation"
+          description="Manage the company knowledge, brand standards, messaging, and reference material that powers your AI systems."
+          createHref="/foundation/new"
+          createLabel="Add Foundation Asset"
+        />
+        <EmptyState
+          title="Build your AI Foundation"
+          description="Add the brand, voice, customer, product, and company knowledge that powers your prompts, agents, workflows, and image systems."
+          createHref="/foundation/new"
+          createLabel="Add Foundation Asset"
+        />
+      </div>
+    )
+  }
+
+  const stats: {
+    label: string
+    value: string | number
+    icon: LucideIcon
+    href?: string
+  }[] = [
+    { label: "Total Assets", value: overview.total, icon: Layers },
+    { label: "Approved", value: overview.approved, icon: CheckCircle2 },
+    {
+      label: "Needs Review",
+      value: overview.needsReview,
+      icon: AlertCircle,
+      href: overview.needsReview > 0 ? "/foundation/browse?status=needs_review" : undefined,
+    },
+    { label: "Draft", value: overview.draft, icon: FileText },
+    { label: "Last Updated", value: fmtDate(overview.lastUpdated), icon: CalendarClock },
+  ]
 
   return (
     <div>
@@ -31,60 +98,72 @@ export default async function FoundationPage({ searchParams }: Props) {
         createHref="/foundation/new"
         createLabel="Add Foundation Asset"
       />
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center mb-6">
-        <Suspense>
-          <SearchBar />
-        </Suspense>
-        <Suspense>
-          <FilterControls
-            categoryOptions={[...FOUNDATION_CATEGORIES]}
-            categoryLabel="Category"
-            categoryParam="category"
-            statusOptions={FOUNDATION_STATUSES}
-          />
-        </Suspense>
-        {params.tag && <TagFilterChip tag={params.tag} basePath="/foundation" />}
-      </div>
-      {contextAssets.length === 0 ? (
-        <EmptyState
-          title={hasFilters ? "No foundation assets match your filters" : "Build your AI Foundation"}
-          description={
-            hasFilters
-              ? "Try clearing your search or filters."
-              : "Add the brand, voice, customer, product, and company knowledge that powers your prompts, agents, workflows, and image systems."
-          }
-          createHref="/foundation/new"
-          createLabel="Add Foundation Asset"
-        />
-      ) : (
-        <div className="space-y-2">
-          {contextAssets.map((asset) => (
-            <Link
-              key={asset.id}
-              href={`/foundation/${asset.id}`}
-              className="flex items-center justify-between rounded-lg border p-4 hover:bg-accent transition-colors"
-            >
-              <div className="min-w-0 flex-1">
-                <h3 className="font-medium truncate">{asset.title}</h3>
-                {asset.description && (
-                  <p className="text-sm text-muted-foreground truncate mt-0.5">
-                    {asset.description}
-                  </p>
-                )}
-                <div className="flex items-center gap-2 mt-1.5">
-                  {asset.category && (
-                    <span className="text-xs text-muted-foreground">
-                      {FOUNDATION_CATEGORIES.find((c) => c.value === asset.category)?.label ??
-                        asset.category}
-                    </span>
-                  )}
+
+      {/* Foundation health summary */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-5 mb-8">
+        {stats.map((stat) => {
+          const body = (
+            <Card className="h-full">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <stat.icon className="h-4 w-4" />
+                  <span className="text-xs font-medium">{stat.label}</span>
                 </div>
-              </div>
-              <StatusBadge status={asset.status} />
+                <p className="mt-2 text-2xl font-semibold tracking-tight">{stat.value}</p>
+              </CardContent>
+            </Card>
+          )
+          return stat.href ? (
+            <Link key={stat.label} href={stat.href} className="block transition-opacity hover:opacity-80">
+              {body}
             </Link>
-          ))}
-        </div>
-      )}
+          ) : (
+            <div key={stat.label}>{body}</div>
+          )
+        })}
+      </div>
+
+      {/* Category cards */}
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-semibold tracking-tight">Categories</h2>
+        <Link href="/foundation/browse" className="text-sm text-muted-foreground hover:text-foreground">
+          Browse all assets
+        </Link>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {FOUNDATION_CATEGORIES.map((category) => {
+          const meta = CATEGORY_META[category.value]
+          const stat = overview.byCategory[category.value]
+          const Icon = meta.icon
+          return (
+            <Link
+              key={category.value}
+              href={`/foundation/browse?category=${category.value}`}
+              className="group rounded-lg border p-5 hover:shadow-md hover:bg-accent/40 transition-all bg-card"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-muted">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h3 className="font-medium">{category.label}</h3>
+              </div>
+              <p className="text-sm text-muted-foreground min-h-10">{meta.description}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">{stat?.total ?? 0} assets</span>
+                <span>{stat?.approved ?? 0} approved</span>
+                {(stat?.needsReview ?? 0) > 0 && (
+                  <span className="text-amber-600 dark:text-amber-500">
+                    {stat?.needsReview} need review
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                Last updated: {fmtDate(stat?.lastUpdated ?? null)}
+              </p>
+            </Link>
+          )
+        })}
+      </div>
     </div>
   )
 }
