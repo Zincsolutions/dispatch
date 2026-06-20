@@ -19,7 +19,7 @@ function readSize(): Size {
 // hydration-safe (server renders "large", then syncs to the saved value) and
 // stays in sync across tabs.
 function useImageSize(): [Size, (next: Size) => void] {
-  const size = useSyncExternalStore(
+  const size = useSyncExternalStore<Size>(
     (onChange) => {
       window.addEventListener("storage", onChange)
       window.addEventListener(CHANGE_EVENT, onChange)
