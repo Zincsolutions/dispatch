@@ -181,6 +181,70 @@ export interface Database {
           updated_at?: string
         }
       }
+      foundation_asset_files: {
+        Row: {
+          id: string
+          foundation_asset_id: string
+          organization_id: string
+          storage_path: string
+          file_name: string
+          file_type: string | null
+          file_size: number | null
+          uploaded_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          foundation_asset_id: string
+          organization_id: string
+          storage_path: string
+          file_name: string
+          file_type?: string | null
+          file_size?: number | null
+          uploaded_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          foundation_asset_id?: string
+          organization_id?: string
+          storage_path?: string
+          file_name?: string
+          file_type?: string | null
+          file_size?: number | null
+          uploaded_by?: string | null
+          created_at?: string
+        }
+      }
+      foundation_asset_links: {
+        Row: {
+          id: string
+          foundation_asset_id: string
+          organization_id: string
+          url: string
+          label: string | null
+          created_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          foundation_asset_id: string
+          organization_id: string
+          url: string
+          label?: string | null
+          created_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          foundation_asset_id?: string
+          organization_id?: string
+          url?: string
+          label?: string | null
+          created_by?: string | null
+          created_at?: string
+        }
+      }
       agents: {
         Row: {
           id: string

@@ -15,6 +15,9 @@ export type ContextAsset = Database["public"]["Tables"]["context_assets"]["Row"]
 export type ContextAssetInsert = Database["public"]["Tables"]["context_assets"]["Insert"]
 export type ContextAssetUpdate = Database["public"]["Tables"]["context_assets"]["Update"]
 
+export type FoundationAssetFile = Database["public"]["Tables"]["foundation_asset_files"]["Row"]
+export type FoundationAssetLink = Database["public"]["Tables"]["foundation_asset_links"]["Row"]
+
 export type Agent = Database["public"]["Tables"]["agents"]["Row"]
 export type AgentInsert = Database["public"]["Tables"]["agents"]["Insert"]
 export type AgentUpdate = Database["public"]["Tables"]["agents"]["Update"]

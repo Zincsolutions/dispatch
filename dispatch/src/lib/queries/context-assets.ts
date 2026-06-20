@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { sanitizeSearchTerm } from "@/lib/utils"
-import type { ContextAsset } from "@/lib/types"
+import type { ContextAsset, FoundationAssetFile, FoundationAssetLink } from "@/lib/types"
+
+const SIGNED_URL_TTL = 60 * 60 // 1 hour
 
 interface ContextAssetFilters {
   search?: string
@@ -51,14 +53,60 @@ export async function getContextAssetById(id: string) {
     .single()
 
   if (error || !data) return null
+  const asset = data as ContextAsset
 
-  const { data: profile } = await supabase
+  // Resolve the people (creator, owner, approver) in one query.
+  const personIds = [
+    asset.created_by,
+    asset.owner_user_id,
+    asset.approved_by,
+  ].filter(Boolean) as string[]
+  const { data: profiles } = await supabase
     .from("profiles")
-    .select("full_name")
-    .eq("id", data.created_by)
-    .single()
+    .select("id, full_name")
+    .in("id", personIds.length ? personIds : ["00000000-0000-0000-0000-000000000000"])
+  const nameById = new Map((profiles || []).map((p) => [p.id, p.full_name]))
 
-  return { ...(data as ContextAsset), created_by_name: profile?.full_name ?? "Unknown" }
+  // Attached files + external links.
+  const [filesRes, linksRes] = await Promise.all([
+    supabase
+      .from("foundation_asset_files")
+      .select("*")
+      .eq("foundation_asset_id", id)
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("foundation_asset_links")
+      .select("*")
+      .eq("foundation_asset_id", id)
+      .order("created_at", { ascending: true }),
+  ])
+  const fileRows = (filesRes.data as FoundationAssetFile[]) || []
+  const links = (linksRes.data as FoundationAssetLink[]) || []
+
+  // Sign the file paths (stored in the private `library` bucket).
+  let signedByPath = new Map<string, string>()
+  if (fileRows.length) {
+    const { data: signed } = await supabase.storage
+      .from("library")
+      .createSignedUrls(
+        fileRows.map((f) => f.storage_path),
+        SIGNED_URL_TTL
+      )
+    signedByPath = new Map(
+      (signed || [])
+        .filter((s) => s.path)
+        .map((s) => [s.path as string, s.signedUrl])
+    )
+  }
+
+  return {
+    ...asset,
+    created_by_name: nameById.get(asset.created_by) ?? "Unknown",
+    owner_name: asset.owner_user_id ? nameById.get(asset.owner_user_id) ?? null : null,
+    approved_by_name: asset.approved_by ? nameById.get(asset.approved_by) ?? null : null,
+    files: fileRows.map((f) => ({ ...f, url: signedByPath.get(f.storage_path) ?? null })),
+    links,
+  }
 }
 
 export interface CategoryStat {
