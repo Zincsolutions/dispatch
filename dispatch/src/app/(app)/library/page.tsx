@@ -5,7 +5,7 @@ import { EmptyState } from "@/components/shared/empty-state"
 import { SearchBar } from "@/components/lists/search-bar"
 import { TagFilterChip } from "@/components/lists/tag-filter-chip"
 import { NewCollectionDialog } from "./new-collection-dialog"
-import { Badge } from "@/components/ui/badge"
+import { ImageGrid } from "./image-grid"
 import { cn } from "@/lib/utils"
 import { Suspense } from "react"
 
@@ -91,45 +91,7 @@ export default async function LibraryPage({ searchParams }: Props) {
           createLabel="Add Image"
         />
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {images.map((image) => (
-            <Link
-              key={image.id}
-              href={`/library/${image.id}`}
-              className="group rounded-lg border overflow-hidden hover:shadow-md transition-shadow bg-card"
-            >
-              <div className="aspect-square bg-muted overflow-hidden">
-                {image.url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={image.url}
-                    alt={image.title || image.prompt.slice(0, 80) || "Library image"}
-                    className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-200"
-                  />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center text-xs text-muted-foreground">
-                    Preview unavailable
-                  </div>
-                )}
-              </div>
-              <div className="p-3">
-                <p className="text-sm font-medium truncate">
-                  {image.title || image.prompt || "Untitled"}
-                </p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  {image.sref && (
-                    <Badge variant="secondary" className="text-[10px] font-mono">
-                      sref {image.sref.length > 12 ? `${image.sref.slice(0, 12)}…` : image.sref}
-                    </Badge>
-                  )}
-                  <span className="text-[11px] text-muted-foreground capitalize ml-auto">
-                    {image.tool}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <ImageGrid images={images} />
       )}
     </div>
   )
