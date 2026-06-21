@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { getContextAssetById } from "@/lib/queries/context-assets"
 import { deleteContextAsset } from "@/lib/actions/context-assets"
 import { StatusBadge } from "@/components/shared/status-badge"
+import { StatusQuickSelect } from "../status-quick-select"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { buttonVariants } from "@/components/ui/button-variants"
@@ -211,7 +212,7 @@ export default async function ContextAssetDetailPage({ params }: Props) {
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-muted-foreground">Status</span>
-                <StatusBadge status={asset.status} />
+                <StatusQuickSelect id={asset.id} status={asset.status} />
               </div>
               {meta.map((row) => (
                 <div key={row.label} className="flex items-center justify-between gap-3">

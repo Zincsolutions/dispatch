@@ -193,6 +193,43 @@ async function saveChildren(
   }
 }
 
+// Quick status change from the list/detail views (no full form submit).
+export async function updateFoundationAssetStatus(id: string, status: string) {
+  const supabase = await createClient()
+  const { user } = await getCurrentUserWithOrg()
+
+  if (!["draft", "needs_review", "approved", "archived"].includes(status)) {
+    return { error: "Invalid status" }
+  }
+
+  const { data: existing } = await supabase
+    .from("context_assets")
+    .select("status")
+    .eq("id", id)
+    .single()
+  const nowApproved = status === "approved"
+  const wasApproved = existing?.status === "approved"
+  const approvalFields = nowApproved
+    ? wasApproved
+      ? {}
+      : { approved_by: user.id, approved_at: new Date().toISOString() }
+    : { approved_by: null, approved_at: null }
+
+  const { error } = await supabase
+    .from("context_assets")
+    .update({ status, ...approvalFields } as ContextAssetUpdate)
+    .eq("id", id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath("/foundation")
+  revalidatePath("/foundation/browse")
+  revalidatePath(`/foundation/${id}`)
+  return { success: true }
+}
+
 export async function deleteContextAsset(id: string) {
   const supabase = await createClient()
   await getCurrentUserWithOrg()
