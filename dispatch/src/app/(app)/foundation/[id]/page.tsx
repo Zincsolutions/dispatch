@@ -38,6 +38,15 @@ export default async function ContextAssetDetailPage({ params }: Props) {
     { label: "Approved", value: fmt(asset.approved_at) },
   ]
 
+  // Show image attachments (logos, swatches, brand graphics) as visual
+  // previews; everything else stays a download link.
+  const imageFiles = asset.files.filter(
+    (f) => f.url && f.file_type?.startsWith("image/")
+  )
+  const otherFiles = asset.files.filter(
+    (f) => !(f.url && f.file_type?.startsWith("image/"))
+  )
+
   return (
     <div>
       <Link
@@ -96,11 +105,38 @@ export default async function ContextAssetDetailPage({ params }: Props) {
             </pre>
           </div>
 
-          {asset.files.length > 0 && (
+          {imageFiles.length > 0 && (
+            <div>
+              <h2 className="text-sm font-medium text-muted-foreground mb-2">Graphics</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {imageFiles.map((f) => (
+                  <a
+                    key={f.id}
+                    href={f.url!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block"
+                  >
+                    <div className="aspect-square rounded-lg border bg-muted overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={f.url!}
+                        alt={f.file_name}
+                        className="h-full w-full object-contain group-hover:opacity-90 transition-opacity"
+                      />
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground truncate">{f.file_name}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {otherFiles.length > 0 && (
             <div>
               <h2 className="text-sm font-medium text-muted-foreground mb-2">Files</h2>
               <div className="space-y-2">
-                {asset.files.map((f) =>
+                {otherFiles.map((f) =>
                   f.url ? (
                     <a
                       key={f.id}
