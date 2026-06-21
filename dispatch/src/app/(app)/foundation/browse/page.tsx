@@ -2,7 +2,7 @@ import Link from "next/link"
 import { getContextAssets } from "@/lib/queries/context-assets"
 import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
-import { StatusBadge } from "@/components/shared/status-badge"
+import { StatusQuickSelect } from "../status-quick-select"
 import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
 import { TagFilterChip } from "@/components/lists/tag-filter-chip"
@@ -71,41 +71,45 @@ export default async function FoundationBrowsePage({ searchParams }: Props) {
       ) : (
         <div className="space-y-2">
           {contextAssets.map((asset) => (
-            <Link
+            <div
               key={asset.id}
-              href={`/foundation/${asset.id}`}
-              className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent transition-colors"
+              className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent/50 transition-colors"
             >
-              {asset.cover_image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={asset.cover_image_url}
-                  alt=""
-                  className="h-12 w-12 shrink-0 rounded-md border bg-muted object-contain"
-                />
-              ) : (
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border bg-muted">
-                  <ImageIcon className="h-5 w-5 text-muted-foreground" />
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <h3 className="font-medium truncate">{asset.title}</h3>
-                {asset.description && (
-                  <p className="text-sm text-muted-foreground truncate mt-0.5">
-                    {asset.description}
-                  </p>
+              <Link
+                href={`/foundation/${asset.id}`}
+                className="flex min-w-0 flex-1 items-center gap-3"
+              >
+                {asset.cover_image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={asset.cover_image_url}
+                    alt=""
+                    className="h-12 w-12 shrink-0 rounded-md border bg-muted object-contain"
+                  />
+                ) : (
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border bg-muted">
+                    <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                  </div>
                 )}
-                <div className="flex items-center gap-2 mt-1.5">
-                  {asset.category && (
-                    <span className="text-xs text-muted-foreground">
-                      {FOUNDATION_CATEGORIES.find((c) => c.value === asset.category)?.label ??
-                        asset.category}
-                    </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-medium truncate">{asset.title}</h3>
+                  {asset.description && (
+                    <p className="text-sm text-muted-foreground truncate mt-0.5">
+                      {asset.description}
+                    </p>
                   )}
+                  <div className="flex items-center gap-2 mt-1.5">
+                    {asset.category && (
+                      <span className="text-xs text-muted-foreground">
+                        {FOUNDATION_CATEGORIES.find((c) => c.value === asset.category)?.label ??
+                          asset.category}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <StatusBadge status={asset.status} />
-            </Link>
+              </Link>
+              <StatusQuickSelect id={asset.id} status={asset.status} />
+            </div>
           ))}
         </div>
       )}
