@@ -8,13 +8,15 @@ import { PageHeader } from "@/components/shared/page-header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button-variants"
-import { FileCheck2, Wrench, ArrowRight, CheckCircle2 } from "lucide-react"
+import { getReviewQueue } from "@/lib/queries/review-queue"
+import { FileCheck2, Wrench, ArrowRight, CheckCircle2, ClipboardCheck } from "lucide-react"
 
 export default async function GovernancePage() {
-  const [documents, awaitingAck, tools] = await Promise.all([
+  const [documents, awaitingAck, tools, reviewQueue] = await Promise.all([
     getDocuments(),
     getDocumentsAwaitingMyAck(),
     getTools(),
+    getReviewQueue(),
   ])
 
   const approved = documents.filter((d) => d.status === "approved")
@@ -54,6 +56,40 @@ export default async function GovernancePage() {
           </CardContent>
         </Card>
       )}
+
+      <Card
+        className={
+          reviewQueue.length > 0
+            ? "mb-6 border-amber-300/60 bg-amber-50/50 dark:bg-amber-950/10"
+            : "mb-6"
+        }
+      >
+        <CardContent className="flex items-center justify-between gap-4 p-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <ClipboardCheck className="h-5 w-5 text-muted-foreground shrink-0" />
+            <div className="min-w-0">
+              <p className="text-sm font-medium">
+                Review Queue
+                {reviewQueue.length > 0 ? ` (${reviewQueue.length})` : ""}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {reviewQueue.length > 0
+                  ? "Foundation assets, agents, workflows, and images awaiting review"
+                  : "Nothing is waiting for review right now"}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/governance/review"
+            className={buttonVariants({
+              variant: reviewQueue.length > 0 ? "default" : "outline",
+              size: "sm",
+            })}
+          >
+            {reviewQueue.length > 0 ? "Review now" : "Open queue"}
+          </Link>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
