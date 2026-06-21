@@ -12,7 +12,12 @@ interface ContextAssetFilters {
   tag?: string
 }
 
-export async function getContextAssets(filters?: ContextAssetFilters): Promise<ContextAsset[]> {
+export type ContextAssetWithCover = ContextAsset & { cover_image_url: string | null }
+
+export async function getContextAssets(
+  filters?: ContextAssetFilters,
+  opts?: { withCover?: boolean }
+): Promise<ContextAssetWithCover[]> {
   const supabase = await createClient()
   let query = supabase
     .from("context_assets")
@@ -41,7 +46,45 @@ export async function getContextAssets(filters?: ContextAssetFilters): Promise<C
 
   const { data, error } = await query
   if (error) throw error
-  return (data as ContextAsset[]) || []
+  const assets = (data as ContextAsset[]) || []
+
+  if (!opts?.withCover || assets.length === 0) {
+    return assets.map((a) => ({ ...a, cover_image_url: null }))
+  }
+
+  // Attach a cover thumbnail: the first image file on each asset, signed.
+  const { data: fileRows } = await supabase
+    .from("foundation_asset_files")
+    .select("foundation_asset_id, storage_path, file_type, created_at")
+    .in(
+      "foundation_asset_id",
+      assets.map((a) => a.id)
+    )
+    .order("created_at", { ascending: true })
+
+  const coverPathByAsset = new Map<string, string>()
+  for (const r of fileRows || []) {
+    if (!r.file_type || !r.file_type.startsWith("image/")) continue
+    if (!coverPathByAsset.has(r.foundation_asset_id)) {
+      coverPathByAsset.set(r.foundation_asset_id, r.storage_path)
+    }
+  }
+
+  let signedByPath = new Map<string, string>()
+  const paths = [...coverPathByAsset.values()]
+  if (paths.length) {
+    const { data: signed } = await supabase.storage
+      .from("library")
+      .createSignedUrls(paths, SIGNED_URL_TTL)
+    signedByPath = new Map(
+      (signed || []).filter((s) => s.path).map((s) => [s.path as string, s.signedUrl])
+    )
+  }
+
+  return assets.map((a) => {
+    const p = coverPathByAsset.get(a.id)
+    return { ...a, cover_image_url: p ? signedByPath.get(p) ?? null : null }
+  })
 }
 
 export async function getContextAssetById(id: string) {

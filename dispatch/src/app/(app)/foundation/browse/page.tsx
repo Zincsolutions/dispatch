@@ -7,7 +7,7 @@ import { SearchBar } from "@/components/lists/search-bar"
 import { FilterControls } from "@/components/lists/filter-controls"
 import { TagFilterChip } from "@/components/lists/tag-filter-chip"
 import { FOUNDATION_CATEGORIES, FOUNDATION_STATUSES } from "@/lib/constants"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Image as ImageIcon } from "lucide-react"
 import { Suspense } from "react"
 
 interface Props {
@@ -16,12 +16,15 @@ interface Props {
 
 export default async function FoundationBrowsePage({ searchParams }: Props) {
   const params = await searchParams
-  const contextAssets = await getContextAssets({
-    search: params.search,
-    status: params.status,
-    category: params.category,
-    tag: params.tag,
-  })
+  const contextAssets = await getContextAssets(
+    {
+      search: params.search,
+      status: params.status,
+      category: params.category,
+      tag: params.tag,
+    },
+    { withCover: true }
+  )
   const hasFilters = Boolean(params.search || params.status || params.category || params.tag)
   const activeCategory = FOUNDATION_CATEGORIES.find((c) => c.value === params.category)
 
@@ -71,8 +74,20 @@ export default async function FoundationBrowsePage({ searchParams }: Props) {
             <Link
               key={asset.id}
               href={`/foundation/${asset.id}`}
-              className="flex items-center justify-between rounded-lg border p-4 hover:bg-accent transition-colors"
+              className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent transition-colors"
             >
+              {asset.cover_image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={asset.cover_image_url}
+                  alt=""
+                  className="h-12 w-12 shrink-0 rounded-md border bg-muted object-contain"
+                />
+              ) : (
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border bg-muted">
+                  <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <h3 className="font-medium truncate">{asset.title}</h3>
                 {asset.description && (
