@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { getFoundationOverview } from "@/lib/queries/context-assets"
+import { getFoundationOverview, getCategoryImagePreviews } from "@/lib/queries/context-assets"
 import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { Card, CardContent } from "@/components/ui/card"
@@ -51,7 +51,10 @@ function fmtDate(d: string | null) {
 }
 
 export default async function FoundationPage() {
-  const overview = await getFoundationOverview()
+  const [overview, previewsByCategory] = await Promise.all([
+    getFoundationOverview(),
+    getCategoryImagePreviews(),
+  ])
 
   if (overview.total === 0) {
     return (
@@ -134,6 +137,7 @@ export default async function FoundationPage() {
         {FOUNDATION_CATEGORIES.map((category) => {
           const meta = CATEGORY_META[category.value]
           const stat = overview.byCategory[category.value]
+          const previews = previewsByCategory[category.value] ?? []
           const Icon = meta.icon
           return (
             <Link
@@ -148,6 +152,19 @@ export default async function FoundationPage() {
                 <h3 className="font-medium">{category.label}</h3>
               </div>
               <p className="text-sm text-muted-foreground min-h-10">{meta.description}</p>
+              {previews.length > 0 && (
+                <div className="mt-3 flex gap-2">
+                  {previews.map((url, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={i}
+                      src={url}
+                      alt=""
+                      className="h-12 w-12 rounded-md border bg-muted object-contain"
+                    />
+                  ))}
+                </div>
+              )}
               <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                 <span className="font-medium text-foreground">{stat?.total ?? 0} assets</span>
                 <span>{stat?.approved ?? 0} approved</span>

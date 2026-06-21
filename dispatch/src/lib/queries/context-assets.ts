@@ -165,6 +165,54 @@ export async function getFoundationAssetOptions(): Promise<
   return (data as { id: string; title: string; status: string }[]) || []
 }
 
+// Recent image thumbnails per foundation category, for the landing cards.
+// Returns signed URLs keyed by category value. RLS scopes to the org.
+export async function getCategoryImagePreviews(
+  perCategory = 4
+): Promise<Record<string, string[]>> {
+  const supabase = await createClient()
+
+  const { data: assets } = await supabase
+    .from("context_assets")
+    .select("id, category")
+  const categoryByAsset = new Map(
+    (assets || []).map((a) => [a.id, a.category as string | null])
+  )
+
+  const { data: files } = await supabase
+    .from("foundation_asset_files")
+    .select("foundation_asset_id, storage_path, file_type, created_at")
+    .order("created_at", { ascending: false })
+    .limit(150)
+
+  const pathsByCategory: Record<string, string[]> = {}
+  for (const f of files || []) {
+    if (!f.file_type || !f.file_type.startsWith("image/")) continue
+    const category = categoryByAsset.get(f.foundation_asset_id)
+    if (!category) continue
+    const arr = (pathsByCategory[category] ??= [])
+    if (arr.length < perCategory) arr.push(f.storage_path)
+  }
+
+  const allPaths = Object.values(pathsByCategory).flat()
+  if (allPaths.length === 0) return {}
+
+  const { data: signed } = await supabase.storage
+    .from("library")
+    .createSignedUrls(allPaths, SIGNED_URL_TTL)
+  const urlByPath = new Map(
+    (signed || []).filter((s) => s.path).map((s) => [s.path as string, s.signedUrl])
+  )
+
+  const result: Record<string, string[]> = {}
+  for (const [category, paths] of Object.entries(pathsByCategory)) {
+    result[category] = paths
+      .map((p) => urlByPath.get(p))
+      .filter(Boolean) as string[]
+  }
+  return result
+}
+
 export interface CategoryStat {
   total: number
   approved: number
