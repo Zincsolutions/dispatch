@@ -13,7 +13,7 @@ const columns = [
   {
     title: "Company",
     links: [
-      { label: "Talk to ZINC", href: "/contact" },
+      { label: "Talk to Us", href: "/contact" },
       { label: "Start Free Trial", href: "/signup" },
       { label: "Log in", href: "/login" },
     ],

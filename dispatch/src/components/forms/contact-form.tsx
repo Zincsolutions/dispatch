@@ -40,7 +40,7 @@ export function ContactForm({ plan }: { plan: string }) {
       <div className="rounded-2xl border border-[#E5E5E3] bg-[#EDECEC] p-10 text-center">
         <h2 className="text-2xl font-extrabold text-[#141414] mb-3">Thanks — we’ll be in touch.</h2>
         <p className="text-[15px] text-[#666] leading-relaxed max-w-md mx-auto">
-          Your message is on its way to the ZINC team. We typically respond within one
+          Your message is on its way to us. We typically respond within one
           business day to help you set up Dispatch for your organization.
         </p>
       </div>
@@ -118,7 +118,7 @@ export function ContactForm({ plan }: { plan: string }) {
         disabled={loading}
         className="w-full sm:w-auto bg-[#141414] text-white px-8 py-3.5 rounded-2xl text-base font-semibold hover:bg-[#333] active:scale-[0.98] transition-all duration-200 disabled:opacity-60 disabled:pointer-events-none"
       >
-        {loading ? "Sending…" : "Talk to ZINC"}
+        {loading ? "Sending…" : "Talk to Us"}
       </button>
     </form>
   )
