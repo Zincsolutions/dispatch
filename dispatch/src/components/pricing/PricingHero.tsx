@@ -28,7 +28,7 @@ export function PricingHero() {
             href="/contact?plan=enterprise"
             className="border border-[#141414]/20 text-[#141414] px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-[#141414]/[0.04] hover:border-[#141414]/30 active:scale-[0.98] transition-all duration-200"
           >
-            Talk to ZINC
+            Talk to Us
           </Link>
         </div>
       </div>

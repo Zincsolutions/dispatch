@@ -11,7 +11,7 @@ export function PricingBottomCTA() {
           Start organizing your <span className="gradient-text-dark">AI operating system</span>.
         </h2>
         <p className="text-lg text-white/60 max-w-xl mx-auto mb-10 leading-relaxed">
-          Create a free account or talk with ZINC about setting up Dispatch for your team.
+          Create a free account or talk with us about setting up Dispatch for your team.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
@@ -30,7 +30,7 @@ export function PricingBottomCTA() {
             }
             className="border border-white/25 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-white/[0.06] hover:border-white/40 active:scale-[0.98] transition-all duration-200"
           >
-            Talk to ZINC
+            Talk to Us
           </Link>
         </div>
       </div>

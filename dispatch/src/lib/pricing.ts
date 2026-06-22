@@ -74,7 +74,7 @@ export const plans: Plan[] = [
     priceAnnual: null,
     priceNote: null,
     badge: null,
-    ctaLabel: "Talk to ZINC",
+    ctaLabel: "Talk to Us",
     ctaHref: "/contact?plan=enterprise",
     highlighted: false,
     features: [
@@ -162,9 +162,9 @@ export const faqs = [
       "Yes. Starter and Team include multiple users, and Enterprise can support larger organizations with custom access, permissions, and governance needs.",
   },
   {
-    question: "Can ZINC help set this up for us?",
+    question: "Can Dispatch help set this up for us?",
     answer:
-      "Yes. ZINC can help create your initial context library, agents, workflows, governance rules, and AI operating structure.",
+      "Yes. Dispatch can help create your initial context library, agents, workflows, governance rules, and AI operating structure.",
   },
   {
     question: "What happens if our AI tools change?",
