@@ -15,38 +15,28 @@ export function HeroSection() {
       <div className="max-w-7xl mx-auto px-6 pt-40 pb-24 text-center">
         <motion.p
           {...fadeUp(0.15)}
-          className="text-base sm:text-lg font-medium text-[#999] tracking-wide mb-8"
+          className="text-sm sm:text-base font-semibold text-[#999] tracking-[0.18em] uppercase mb-8"
         >
-          Your teams are using AI everywhere. And nowhere at the same time.
+          The AI Operations System for Growth-Focused Organizations
         </motion.p>
 
         <motion.h1
           {...fadeUp(0.3)}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold text-[#141414] leading-[1.08] tracking-tight mb-8 max-w-5xl mx-auto"
         >
-          Turn AI chaos into{" "}
-          <span className="gradient-text">a system</span>
-          <br className="hidden sm:block" /> your whole team can run on.
+          Turn AI chaos into an operational advantage.
         </motion.h1>
 
         <motion.p
           {...fadeUp(0.45)}
-          className="text-lg md:text-xl text-[#666] max-w-3xl mx-auto mb-5 leading-relaxed"
+          className="text-lg md:text-xl text-[#666] max-w-3xl mx-auto mb-12 leading-relaxed"
         >
-          Dispatch centralizes your prompts, workflows, tools, and outputs
-          into one structured platform — so your team can collaborate, move
-          faster, and scale what actually works.
+          Dispatch gives your organization a centralized system for managing AI
+          knowledge, workflows, and governance so you can move faster, maintain
+          consistency, and scale what works.
         </motion.p>
 
-        <motion.p
-          {...fadeUp(0.55)}
-          className="text-[15px] font-medium text-[#999] mb-12"
-        >
-          A shared workspace for your team — with a secure vault for your
-          most valuable AI assets.
-        </motion.p>
-
-        <motion.div {...fadeUp(0.65)} className="flex flex-col sm:flex-row gap-4 justify-center mb-5">
+        <motion.div {...fadeUp(0.6)} className="flex flex-col sm:flex-row gap-4 justify-center mb-5">
           <Link
             href="/signup"
             className="bg-[#141414] text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-[#333] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_24px_rgba(20,20,20,0.2)]"
