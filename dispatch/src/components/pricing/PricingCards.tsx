@@ -11,20 +11,21 @@ function handleCtaClick(plan: Plan) {
   if (plan.id === "enterprise") {
     track("enterprise_contact_clicked", { plan: "enterprise", cta_location: "pricing_card" })
   }
-  if (plan.id === "starter") {
-    track("free_signup_clicked", { plan: "starter", cta_location: "pricing_card" })
+  if (plan.id === "personal") {
+    track("free_signup_clicked", { plan: "personal", cta_location: "pricing_card" })
   }
 }
 
 function PriceBlock({ plan }: { plan: Plan }) {
-  const isCustom = plan.priceMonthly === "Custom"
+  // Show "/mo" only for the paid monthly tiers (not $0 or Custom).
+  const showPerMonth = plan.priceMonthly !== "Custom" && plan.priceMonthly !== "$0"
   return (
     <div className="mb-6">
       <div className="flex items-baseline gap-1.5">
         <span className="text-[40px] font-extrabold text-[#141414] leading-none tracking-tight">
           {plan.priceMonthly}
         </span>
-        {!isCustom && <span className="text-[15px] font-medium text-[#999]">/mo</span>}
+        {showPerMonth && <span className="text-[15px] font-medium text-[#999]">/mo</span>}
       </div>
       <p className="text-[13px] text-[#999] mt-2 h-4">{plan.priceNote || ""}</p>
     </div>
@@ -35,7 +36,7 @@ function PlanCard({ plan }: { plan: Plan }) {
   const highlighted = plan.highlighted
   return (
     <div
-      className={`relative flex flex-col rounded-2xl p-7 sm:p-8 bg-white transition-shadow ${
+      className={`relative flex flex-col rounded-2xl p-6 sm:p-7 bg-white transition-shadow ${
         highlighted
           ? "border-2 border-[#141414] shadow-[0_24px_64px_-16px_rgba(20,20,20,0.18)]"
           : "border border-[#E5E5E3]"
@@ -68,12 +69,15 @@ function PlanCard({ plan }: { plan: Plan }) {
         {plan.ctaLabel}
       </Link>
 
-      <div className="border-t border-[#E5E5E3] my-7" />
+      <div className="border-t border-[#E5E5E3] my-6" />
 
-      <ul className="space-y-3.5">
+      {plan.featuresNote && (
+        <p className="text-[13px] font-semibold text-[#141414] mb-4">{plan.featuresNote}</p>
+      )}
+      <ul className="space-y-3">
         {plan.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-3 text-[14px] text-[#333] leading-snug">
-            <Check className="h-[18px] w-[18px] text-[#141414] shrink-0 mt-[1px]" strokeWidth={2.5} />
+          <li key={feature} className="flex items-start gap-2.5 text-[13.5px] text-[#333] leading-snug">
+            <Check className="h-[17px] w-[17px] text-[#141414] shrink-0 mt-[1px]" strokeWidth={2.5} />
             <span>{feature}</span>
           </li>
         ))}
@@ -84,8 +88,8 @@ function PlanCard({ plan }: { plan: Plan }) {
 
 export function PricingCards() {
   return (
-    <div className="max-w-6xl mx-auto px-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+    <div className="max-w-7xl mx-auto px-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
         {plans.map((plan) => (
           <PlanCard key={plan.id} plan={plan} />
         ))}

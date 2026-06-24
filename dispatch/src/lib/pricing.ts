@@ -1,13 +1,13 @@
 // Single source of truth for the pricing page. Cards, comparison table,
-// free plan, and FAQ all read from here so copy lives in one place.
+// and FAQ all read from here so copy lives in one place.
 
 export interface Plan {
-  id: "starter" | "team" | "enterprise"
+  id: "personal" | "starter" | "team" | "enterprise"
   name: string
   description: string
   priceMonthly: string
-  priceAnnual: string | null
   priceNote: string | null
+  featuresNote: string | null
   badge: string | null
   ctaLabel: string
   ctaHref: string
@@ -17,163 +17,223 @@ export interface Plan {
 
 export const plans: Plan[] = [
   {
+    id: "personal",
+    name: "Personal",
+    description:
+      "For individuals organizing prompts, workflows, and AI assets for personal use.",
+    priceMonthly: "$0",
+    priceNote: "Free forever",
+    featuresNote: null,
+    badge: null,
+    ctaLabel: "Get Started Free",
+    ctaHref: "/signup?plan=personal",
+    highlighted: false,
+    features: [
+      "1 user",
+      "25 prompts",
+      "10 workflows",
+      "5 agents",
+      "50 image assets",
+      "Basic AI Foundation",
+      "Personal collections",
+      "Basic search",
+      "Community templates",
+    ],
+  },
+  {
     id: "starter",
     name: "Starter",
     description:
-      "For individuals and small teams organizing their AI assets for the first time.",
-    priceMonthly: "$19",
-    priceAnnual: "$190",
-    priceNote: "or $190/year",
+      "For small teams centralizing prompts, workflows, agents, and AI assets in one shared workspace.",
+    priceMonthly: "$29",
+    priceNote: "per month",
+    featuresNote: "Everything in Personal, plus:",
     badge: null,
-    ctaLabel: "Start Starter",
+    ctaLabel: "Start Free Trial",
     ctaHref: "/signup?plan=starter",
     highlighted: false,
     features: [
-      "1 workspace",
-      "5 users included",
-      "100 AI assets",
-      "Prompts, context, agents, workflows, and images",
-      "Global search",
-      "Tags and favorites",
-      "Basic governance status labels",
-      "Copy/export assets to AI tools",
+      "Up to 10 users",
+      "Unlimited prompts",
+      "Unlimited workflows",
+      "Unlimited agents",
+      "Unlimited image assets",
+      "Shared team workspace",
+      "AI Foundation assets",
+      "Brand & context assets",
+      "Favorites and saved assets",
+      "Basic permissions",
+      "Activity history",
     ],
   },
   {
     id: "team",
     name: "Team",
     description:
-      "For teams standardizing how AI is used across people, departments, and tools.",
-    priceMonthly: "$79",
-    priceAnnual: "$790",
-    priceNote: "or $790/year",
-    badge: "Most popular",
-    ctaLabel: "Start Team",
+      "For organizations that need to manage AI knowledge, workflows, agents, and governance across teams.",
+    priceMonthly: "$99",
+    priceNote: "per month",
+    featuresNote: "Everything in Starter, plus:",
+    badge: "Recommended",
+    ctaLabel: "Start Free Trial",
     ctaHref: "/signup?plan=team",
     highlighted: true,
     features: [
-      "5 workspaces or departments",
-      "25 users included",
-      "1,000 AI assets",
-      "Unlimited prompts, agents, workflows, and image records",
-      "Context library",
-      "My Dispatch",
-      "Usage tracking",
-      "Ownership and review dates",
+      "Up to 50 users",
+      "Governance Center",
+      "Approval workflows",
+      "Review queues",
+      "Policy acknowledgements",
       "Tool registry",
-      "Team governance dashboard",
-      "Structured export for third-party AI tools",
+      "Department workspaces",
+      "Advanced permissions",
+      "Organization dashboard",
+      "Usage reporting",
+      "Status labels (Approved, Draft, Experimental, Needs Review)",
+      "Priority support",
     ],
   },
   {
     id: "enterprise",
     name: "Enterprise",
     description:
-      "For organizations that need advanced governance, security controls, permissions, and managed implementation.",
+      "For larger organizations requiring enterprise controls, custom workflows, compliance support, and deeper integration.",
     priceMonthly: "Custom",
-    priceAnnual: null,
-    priceNote: null,
+    priceNote: "Contact sales",
+    featuresNote: "Everything in Team, plus:",
     badge: null,
-    ctaLabel: "Talk to Us",
+    ctaLabel: "Contact Sales",
     ctaHref: "/contact?plan=enterprise",
     highlighted: false,
     features: [
-      "Custom users and workspaces",
-      "Custom asset limits",
-      "Advanced governance",
-      "Approval workflows",
+      "Unlimited users",
+      "SSO and SCIM",
+      "Custom roles",
       "Audit logs",
-      "Role-based permissions",
-      "SSO",
-      "Multi-brand or multi-client workspaces",
-      "Managed onboarding",
-      "Custom agents, workflows, and governance frameworks",
-      "Priority support",
+      "Advanced governance controls",
+      "Enterprise security",
+      "API access",
+      "Custom integrations",
+      "Dedicated success manager",
+      "Onboarding and training",
+      "Custom usage limits",
     ],
   },
 ]
 
-export const freePlan = {
-  eyebrow: "Free forever",
-  description:
-    "Explore Dispatch with 1 workspace, 2 users, 25 AI assets, 2 agents, 2 workflows, and basic search.",
-  ctaLabel: "Create Free Account",
-  ctaHref: "/signup?plan=free",
-}
-
-// Comparison table. Cell values are either a string (rendered as text) or a
-// boolean (rendered as a check / dash).
+// Comparison table, grouped by category. Cell values are either a string
+// (rendered as text) or a boolean (rendered as a check / dash).
 export interface ComparisonRow {
+  group: string
   feature: string
+  personal: string | boolean
   starter: string | boolean
   team: string | boolean
   enterprise: string | boolean
 }
 
 export const comparisonRows: ComparisonRow[] = [
-  { feature: "Workspaces", starter: "1", team: "5", enterprise: "Custom" },
-  { feature: "Users included", starter: "5", team: "25", enterprise: "Custom" },
-  { feature: "AI assets", starter: "100", team: "1,000", enterprise: "Custom" },
-  { feature: "Prompts", starter: "Included", team: "Unlimited", enterprise: "Unlimited / Custom" },
-  { feature: "Context assets", starter: "Included", team: "Unlimited", enterprise: "Unlimited / Custom" },
-  { feature: "Agents", starter: "Included", team: "Unlimited", enterprise: "Unlimited / Custom" },
-  { feature: "Workflows / loops", starter: "Included", team: "Unlimited", enterprise: "Unlimited / Custom" },
-  { feature: "Image library", starter: "Included", team: "Unlimited records", enterprise: "Unlimited / Custom" },
-  { feature: "Global search", starter: true, team: true, enterprise: true },
-  { feature: "Tags", starter: true, team: true, enterprise: true },
-  { feature: "Favorites / My Dispatch", starter: true, team: true, enterprise: true },
-  { feature: "Usage tracking", starter: false, team: "Basic", enterprise: "Advanced" },
-  { feature: "Tool registry", starter: false, team: true, enterprise: true },
-  { feature: "Governance dashboard", starter: "Basic", team: "Team-level", enterprise: "Advanced" },
-  { feature: "Review dates", starter: "Basic", team: true, enterprise: true },
-  { feature: "Ownership fields", starter: "Basic", team: true, enterprise: true },
-  { feature: "Approval workflows", starter: false, team: "Basic / Optional", enterprise: true },
-  { feature: "Audit logs", starter: false, team: false, enterprise: true },
-  { feature: "Role-based permissions", starter: false, team: "Basic", enterprise: "Advanced" },
-  { feature: "SSO", starter: false, team: false, enterprise: true },
-  { feature: "Managed onboarding", starter: false, team: "Optional", enterprise: "Included" },
-  { feature: "Priority support", starter: false, team: "Standard", enterprise: "Priority" },
+  // Core Workspace
+  { group: "Core Workspace", feature: "Users", personal: "1", starter: "Up to 10", team: "Up to 50", enterprise: "Unlimited" },
+  { group: "Core Workspace", feature: "Prompts", personal: "25", starter: "Unlimited", team: "Unlimited", enterprise: "Unlimited" },
+  { group: "Core Workspace", feature: "Workflows", personal: "10", starter: "Unlimited", team: "Unlimited", enterprise: "Unlimited" },
+  { group: "Core Workspace", feature: "Agents", personal: "5", starter: "Unlimited", team: "Unlimited", enterprise: "Unlimited" },
+  { group: "Core Workspace", feature: "Image assets", personal: "50", starter: "Unlimited", team: "Unlimited", enterprise: "Unlimited" },
+  { group: "Core Workspace", feature: "AI Foundation", personal: "Basic", starter: true, team: true, enterprise: true },
+  { group: "Core Workspace", feature: "Search", personal: "Basic", starter: true, team: true, enterprise: true },
+  { group: "Core Workspace", feature: "Collections", personal: true, starter: true, team: true, enterprise: true },
+
+  // Collaboration
+  { group: "Collaboration", feature: "Shared workspace", personal: false, starter: true, team: true, enterprise: true },
+  { group: "Collaboration", feature: "Favorites & saved assets", personal: false, starter: true, team: true, enterprise: true },
+  { group: "Collaboration", feature: "Activity history", personal: false, starter: true, team: true, enterprise: true },
+  { group: "Collaboration", feature: "Team sharing", personal: false, starter: true, team: true, enterprise: true },
+  { group: "Collaboration", feature: "Department workspaces", personal: false, starter: false, team: true, enterprise: true },
+
+  // Governance
+  { group: "Governance", feature: "Governance Center", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Governance", feature: "Approval workflows", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Governance", feature: "Review queues", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Governance", feature: "Policy acknowledgements", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Governance", feature: "Tool registry", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Governance", feature: "Status labels", personal: false, starter: false, team: true, enterprise: true },
+
+  // Security & Admin
+  { group: "Security & Admin", feature: "Basic permissions", personal: false, starter: true, team: true, enterprise: true },
+  { group: "Security & Admin", feature: "Advanced permissions", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Security & Admin", feature: "Organization dashboard", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Security & Admin", feature: "Custom roles", personal: false, starter: false, team: false, enterprise: true },
+  { group: "Security & Admin", feature: "SSO", personal: false, starter: false, team: false, enterprise: true },
+  { group: "Security & Admin", feature: "SCIM", personal: false, starter: false, team: false, enterprise: true },
+  { group: "Security & Admin", feature: "Audit logs", personal: false, starter: false, team: false, enterprise: true },
+
+  // Support
+  { group: "Support", feature: "Community support", personal: true, starter: true, team: true, enterprise: true },
+  { group: "Support", feature: "Standard support", personal: false, starter: true, team: true, enterprise: true },
+  { group: "Support", feature: "Priority support", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Support", feature: "Dedicated success manager", personal: false, starter: false, team: false, enterprise: true },
+  { group: "Support", feature: "Onboarding & training", personal: false, starter: false, team: false, enterprise: true },
 ]
 
 export const faqs = [
   {
-    question: "Why isn’t Dispatch priced primarily by user seat?",
+    question: "Is there a free plan?",
     answer:
-      "Dispatch is designed to manage organizational AI knowledge, not punish teams for collaboration. Each plan includes a generous number of users. Pricing is based more on the amount of AI assets, governance, and operational structure your organization needs.",
+      "Yes. The Personal plan is free forever — built for individuals organizing prompts, workflows, and AI assets for their own use.",
   },
   {
-    question: "What counts as an AI asset?",
+    question: "What is included in the Personal plan?",
     answer:
-      "AI assets include prompts, context records, agents, workflows, loops, image records, governance policies, tool records, and reusable AI operating materials stored in Dispatch.",
+      "Personal includes 1 user, 25 prompts, 10 workflows, 5 agents, 50 image assets, a basic AI Foundation, personal collections, and basic search. Governance, approvals, and team sharing are part of the paid plans.",
   },
   {
-    question: "Does Dispatch replace ChatGPT, Claude, or Midjourney?",
+    question: "Can I upgrade from Personal to Starter or Team?",
     answer:
-      "No. Dispatch is the system of record above those tools. Your team can continue using the AI tools they prefer while Dispatch keeps the organization’s approved assets, context, agents, workflows, and governance organized in one place.",
+      "Anytime. Your prompts, workflows, agents, and assets carry over — upgrading simply unlocks shared workspaces, more capacity, and (on Team) governance.",
   },
   {
-    question: "Can we start for free?",
+    question: "Do you offer monthly and yearly billing?",
     answer:
-      "Yes. The free plan is designed to help individuals and small teams organize a limited set of AI assets before upgrading.",
+      "Yes. You can pay monthly or save with annual billing. Annual plans save up to 20%.",
   },
   {
-    question: "Can we invite our whole team?",
+    question: "Which plan includes governance?",
     answer:
-      "Yes. Starter and Team include multiple users, and Enterprise can support larger organizations with custom access, permissions, and governance needs.",
+      "The Governance Center — approval workflows, review queues, policy acknowledgements, the tool registry, and status labels — is included on Team and Enterprise.",
   },
   {
-    question: "Can Dispatch help set this up for us?",
+    question: "What are AI Foundation assets?",
     answer:
-      "Yes. Dispatch can help create your initial context library, agents, workflows, governance rules, and AI operating structure.",
+      "AI Foundation is your organization's shared source of truth: brand voice, company context, approved source materials, SOPs, image direction, and reusable standards that keep AI outputs consistent.",
   },
   {
-    question: "What happens if our AI tools change?",
+    question: "Can I invite my team?",
     answer:
-      "Dispatch keeps your AI assets independent of any one tool. If your team changes from ChatGPT to Claude, Gemini, Perplexity, or another platform, your organizational AI assets remain organized in Dispatch.",
+      "Yes. Starter includes up to 10 users, Team up to 50, and Enterprise supports unlimited users with advanced permissions.",
   },
   {
-    question: "Is Dispatch for agencies?",
+    question: "Does Dispatch support approval workflows?",
     answer:
-      "Yes. Agencies can use Dispatch to manage their own AI assets or create organized AI enablement systems for clients.",
+      "Yes, on Team and Enterprise. Assets can move through Draft, Needs Review, and Approved, with review queues so the right people sign off before anything is used in production.",
+  },
+  {
+    question: "Is there an Enterprise plan?",
+    answer:
+      "Yes. Enterprise adds SSO, SCIM, custom roles, audit logs, advanced governance and security controls, API access, custom integrations, and a dedicated success manager.",
+  },
+  {
+    question: "Do you offer onboarding or implementation support?",
+    answer:
+      "Yes. Team includes priority support, and Enterprise includes dedicated onboarding and training to stand up your AI operating system.",
+  },
+  {
+    question: "Can ZINC help set up Dispatch for my company?",
+    answer:
+      "Yes. ZINC can help build your initial AI Foundation, agents, workflows, and governance framework so Dispatch reflects how your organization actually works.",
+  },
+  {
+    question: "Can I cancel anytime?",
+    answer:
+      "Yes. Plans are month-to-month (or annual), and you can change or cancel your plan whenever you need to.",
   },
 ]

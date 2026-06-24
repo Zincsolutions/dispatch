@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { Navbar } from "@/components/homepage/Navbar"
 import { Footer } from "@/components/homepage/Footer"
 import { PricingHero } from "@/components/pricing/PricingHero"
-import { FreePlanStrip } from "@/components/pricing/FreePlanStrip"
 import { PricingCards } from "@/components/pricing/PricingCards"
 import { ComparisonTable } from "@/components/pricing/ComparisonTable"
 import { PricingPhilosophy } from "@/components/pricing/PricingPhilosophy"
@@ -31,8 +30,7 @@ export default function PricingPage() {
       <PricingViewTracker />
       <Navbar />
       <PricingHero />
-      <FreePlanStrip />
-      <section className="pt-16 pb-8">
+      <section className="pt-8 pb-8">
         <PricingCards />
       </section>
       <ComparisonTable />
