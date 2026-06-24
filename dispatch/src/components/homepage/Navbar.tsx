@@ -10,6 +10,7 @@ const navLinks = [
   { label: "Solutions", href: "/solutions", route: true },
   { label: "Resources", href: "/resources", route: true },
   { label: "Pricing", href: "/pricing", route: true },
+  { label: "Contact", href: "/contact", route: true },
 ]
 
 export function Navbar() {
