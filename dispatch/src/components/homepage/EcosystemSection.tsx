@@ -111,7 +111,7 @@ export function EcosystemSection() {
   const animate = isInView && !prefersReducedMotion
 
   return (
-    <section className="relative overflow-hidden bg-[#F7F7F6] py-28">
+    <section id="product" className="relative overflow-hidden bg-[#F7F7F6] py-28">
       {/* Soft radial glow + faint grid */}
       <div
         aria-hidden
@@ -246,7 +246,7 @@ export function EcosystemSection() {
         <AnimateOnScroll delay={0.1}>
           <div className="mt-16 lg:mt-12 text-center">
             <a
-              href="#product"
+              href="/signup"
               className="group inline-flex items-center gap-2 text-[15px] font-semibold text-[#141414] hover:text-[#333] transition-colors"
             >
               Explore the Platform
