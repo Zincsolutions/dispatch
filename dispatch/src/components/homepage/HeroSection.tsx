@@ -19,7 +19,7 @@ export function HeroSection() {
         >
           The OS for
           <br />
-          your AI operations.
+          your <span className="gradient-text">AI Operations</span>.
         </motion.h1>
 
         <motion.p
