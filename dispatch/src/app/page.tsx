@@ -3,6 +3,9 @@ import { HeroSection } from "@/components/homepage/HeroSection"
 import { ProductShowcase } from "@/components/homepage/ProductShowcase"
 import { ProblemSection } from "@/components/homepage/ProblemSection"
 import { ValuePillars } from "@/components/homepage/ValuePillars"
+import { FoundationSection } from "@/components/homepage/FoundationSection"
+import { GovernanceSection } from "@/components/homepage/GovernanceSection"
+import { AgentsWorkflowsSection } from "@/components/homepage/AgentsWorkflowsSection"
 import { FeatureSection } from "@/components/homepage/FeatureSection"
 import { IntegrationsPanel } from "@/components/homepage/IntegrationsPanel"
 import { UseCases } from "@/components/homepage/UseCases"
@@ -37,14 +40,6 @@ const features = [
     screenshotSrc: "/screenshots/workflow-detail.jpg",
     screenshotAlt: "Dispatch workflow with documented step-by-step process",
   },
-  {
-    headline: "Put guardrails around AI — without slowing anyone down.",
-    body: "Policies and SOPs your team actually acknowledges, plus a living registry of which AI tools are approved, experimental, or off-limits.",
-    soWhat:
-      "Most companies have no idea which AI tools their teams use or what data goes into them. Dispatch gives you one page that answers both — with proof your team has read the rules. That's the difference between using AI and governing it.",
-    screenshotSrc: "/screenshots/tools.jpg",
-    screenshotAlt: "Dispatch tool registry showing approved and not-allowed AI tools with data rules",
-  },
 ]
 
 export default function HomePage() {
@@ -55,6 +50,9 @@ export default function HomePage() {
       <ProductShowcase />
       <ProblemSection />
       <ValuePillars />
+      <FoundationSection />
+      <GovernanceSection />
+      <AgentsWorkflowsSection />
       {features.map((feature, i) => (
         <FeatureSection key={i} index={i} {...feature} />
       ))}
