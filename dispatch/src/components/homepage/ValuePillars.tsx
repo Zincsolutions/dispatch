@@ -1,31 +1,25 @@
 "use client"
 
 import { StaggerContainer, StaggerItem, AnimateOnScroll } from "./AnimateOnScroll"
-import { Layers, TrendingUp, Shield } from "lucide-react"
+import { Layers, ShieldCheck, TrendingUp } from "lucide-react"
 
 const pillars = [
   {
     icon: Layers,
     title: "Organize",
-    subhead: "Bring everything into one system.",
-    body: "Prompts, workflows, tools, brand assets, and outputs — all in one structured platform your whole team can access. No more hunting through chats, docs, and shared drives.",
-    closer: "The days of 'Where's that prompt?' are over.",
+    body: "Centralize prompts, agents, workflows, images, brand context, SOPs, and AI foundation assets — one structured system your whole organization can access.",
     iconBg: "rgba(157,218,215,0.2)",
   },
   {
-    icon: TrendingUp,
-    title: "Amplify",
-    subhead: "Scale what works. Stop rebuilding what you've already perfected.",
-    body: "When one team finds a workflow that delivers, Dispatch helps you turn it into a repeatable system the whole organization can use. Rate what performs, surface best practices, and let your wins compound.",
-    closer: "Your best work should multiply, not evaporate.",
-    iconBg: "rgba(253,255,96,0.15)",
+    icon: ShieldCheck,
+    title: "Govern",
+    body: "Manage approvals, policies, review queues, tool registries, and organizational standards — so the right assets get used the right way.",
+    iconBg: "rgba(253,255,96,0.18)",
   },
   {
-    icon: Shield,
-    title: "Protect",
-    subhead: "A secure home for your most valuable AI assets.",
-    body: "Your prompts, proprietary workflows, and brand-critical assets deserve better than a shared Google Doc. Dispatch provides a centralized, controlled environment — a vault at the core of your workspace.",
-    closer: "Think of it as a workspace with a vault at its core.",
+    icon: TrendingUp,
+    title: "Scale",
+    body: "Turn successful AI efforts into repeatable systems that can be reused and improved across departments.",
     iconBg: "rgba(245,180,140,0.2)",
   },
 ]
@@ -36,9 +30,8 @@ export function ValuePillars() {
       <div className="max-w-7xl mx-auto px-6">
         <AnimateOnScroll>
           <h2 className="text-3xl sm:text-4xl md:text-[42px] font-extrabold text-[#141414] text-center leading-tight mb-20">
-            One platform to{" "}
-            <span className="gradient-text">organize, amplify, and protect</span>{" "}
-            your AI.
+            One system to{" "}
+            <span className="gradient-text">organize, govern, and scale</span> AI.
           </h2>
         </AnimateOnScroll>
 
@@ -52,18 +45,8 @@ export function ValuePillars() {
                 >
                   <pillar.icon className="h-6 w-6 text-[#141414]" />
                 </div>
-                <h3 className="text-xl font-bold text-[#141414] mb-2">
-                  {pillar.title}
-                </h3>
-                <p className="text-[15px] font-semibold text-[#333] mb-4">
-                  {pillar.subhead}
-                </p>
-                <p className="text-[15px] text-[#666] leading-relaxed mb-6">
-                  {pillar.body}
-                </p>
-                <p className="text-[15px] font-semibold text-[#141414] italic">
-                  {pillar.closer}
-                </p>
+                <h3 className="text-xl font-bold text-[#141414] mb-3">{pillar.title}</h3>
+                <p className="text-[15px] text-[#666] leading-relaxed">{pillar.body}</p>
               </div>
             </StaggerItem>
           ))}
