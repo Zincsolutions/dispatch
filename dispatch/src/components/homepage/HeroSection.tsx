@@ -13,31 +13,23 @@ export function HeroSection() {
   return (
     <section className="bg-white">
       <div className="max-w-7xl mx-auto px-6 pt-40 pb-24 text-center">
-        <motion.p
-          {...fadeUp(0.15)}
-          className="text-sm sm:text-base font-semibold text-[#999] tracking-[0.18em] uppercase mb-8"
-        >
-          The AI Operations System for Growth-Focused Organizations
-        </motion.p>
-
         <motion.h1
-          {...fadeUp(0.3)}
+          {...fadeUp(0.15)}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold text-[#141414] leading-[1.08] tracking-tight mb-8 max-w-5xl mx-auto"
         >
-          Turn AI chaos into an operational{" "}
-          <span className="gradient-text">advantage</span>.
+          The OS for your AI operations.
         </motion.h1>
 
         <motion.p
-          {...fadeUp(0.45)}
+          {...fadeUp(0.3)}
           className="text-lg md:text-xl text-[#666] max-w-3xl mx-auto mb-12 leading-relaxed"
         >
-          Dispatch gives your organization a centralized system for managing AI
-          knowledge, workflows, and governance so you can move faster, maintain
-          consistency, and scale what works.
+          Dispatch gives your organization one place to organize, share, and govern
+          prompts, AI images, agents, workflows, and knowledge so you can scale AI
+          with confidence.
         </motion.p>
 
-        <motion.div {...fadeUp(0.6)} className="flex flex-col sm:flex-row gap-4 justify-center mb-5">
+        <motion.div {...fadeUp(0.45)} className="flex flex-col sm:flex-row gap-4 justify-center mb-5">
           <Link
             href="/signup"
             className="bg-[#141414] text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-[#333] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_24px_rgba(20,20,20,0.2)]"
@@ -52,7 +44,7 @@ export function HeroSection() {
           </a>
         </motion.div>
 
-        <motion.p {...fadeUp(0.7)} className="text-[13px] text-[#999]">
+        <motion.p {...fadeUp(0.55)} className="text-[13px] text-[#999]">
           No credit card needed ✦ Free plan available
         </motion.p>
       </div>
