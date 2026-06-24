@@ -17,7 +17,9 @@ export function HeroSection() {
           {...fadeUp(0.15)}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold text-[#141414] leading-[1.08] tracking-tight mb-8 max-w-5xl mx-auto"
         >
-          The OS for your AI operations.
+          The OS for
+          <br />
+          your AI operations.
         </motion.h1>
 
         <motion.p
