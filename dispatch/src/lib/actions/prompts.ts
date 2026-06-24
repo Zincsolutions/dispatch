@@ -45,6 +45,12 @@ export async function createPrompt(formData: FormData) {
     .single()
 
   if (error || !created) {
+    console.error("createPrompt insert failed", {
+      message: error?.message,
+      code: error?.code,
+      details: error?.details,
+      hint: error?.hint,
+    })
     return { error: { _form: [error?.message || "Could not create prompt"] } }
   }
 
@@ -104,6 +110,12 @@ export async function updatePrompt(id: string, formData: FormData) {
     .eq("id", id)
 
   if (error) {
+    console.error("updatePrompt failed", {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    })
     return { error: { _form: [error.message] } }
   }
 

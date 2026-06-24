@@ -133,11 +133,16 @@ export function PromptForm({
         await supabase.storage.from("library").remove(uploadedPaths)
       }
       const errors = result.error
-      const message =
-        "_form" in errors
-          ? errors._form?.[0]
-          : Object.values(errors).flat().join(", ")
-      toast.error(message || "Something went wrong")
+      const isServerError = "_form" in errors
+      const message = isServerError
+        ? errors._form?.[0]
+        : Object.values(errors).flat().join(", ")
+      // Server/DB errors (vs. field validation) are surfaced raw and are worth
+      // reading — keep them on screen until dismissed instead of auto-hiding.
+      toast.error(message || "Something went wrong", {
+        duration: isServerError ? Infinity : 6000,
+        closeButton: true,
+      })
       setLoading(false)
     }
   }

@@ -21,8 +21,10 @@ export function TagInput({
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if ((e.key === "Enter" || e.key === ",") && input.trim()) {
       e.preventDefault()
-      const tag = input.trim().toLowerCase()
-      if (!value.includes(tag)) {
+      // Cap tag length: the DB indexes tags, and an over-long tag fails the
+      // insert. Keep this in sync with the prompt/library validation schemas.
+      const tag = input.trim().toLowerCase().slice(0, 50)
+      if (tag && value.length < 20 && !value.includes(tag)) {
         onChange([...value, tag])
       }
       setInput("")
@@ -57,6 +59,7 @@ export function TagInput({
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
+        maxLength={50}
       />
     </div>
   )
