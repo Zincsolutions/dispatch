@@ -1,9 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { Check } from "lucide-react"
 import { track } from "@/lib/analytics"
 import { plans, type Plan } from "@/lib/pricing"
+
+type Billing = "monthly" | "yearly"
 
 function handleCtaClick(plan: Plan) {
   track("pricing_cta_clicked", { plan: plan.id, cta_location: "pricing_card" })
@@ -16,23 +19,25 @@ function handleCtaClick(plan: Plan) {
   }
 }
 
-function PriceBlock({ plan }: { plan: Plan }) {
-  // Show "/mo" only for the paid monthly tiers (not $0 or Custom).
-  const showPerMonth = plan.priceMonthly !== "Custom" && plan.priceMonthly !== "$0"
+function PriceBlock({ plan, billing }: { plan: Plan; billing: Billing }) {
+  const price = billing === "yearly" ? plan.priceAnnual : plan.priceMonthly
+  const note = billing === "yearly" ? plan.priceAnnualNote : plan.priceNote
+  // Show "/mo" only for the paid tiers (not $0 or Custom).
+  const showPerMonth = price !== "Custom" && price !== "$0"
   return (
     <div className="mb-6">
       <div className="flex items-baseline gap-1.5">
         <span className="text-[40px] font-extrabold text-[#141414] leading-none tracking-tight">
-          {plan.priceMonthly}
+          {price}
         </span>
         {showPerMonth && <span className="text-[15px] font-medium text-[#999]">/mo</span>}
       </div>
-      <p className="text-[13px] text-[#999] mt-2 h-4">{plan.priceNote || ""}</p>
+      <p className="text-[13px] text-[#999] mt-2 h-4">{note || ""}</p>
     </div>
   )
 }
 
-function PlanCard({ plan }: { plan: Plan }) {
+function PlanCard({ plan, billing }: { plan: Plan; billing: Billing }) {
   const highlighted = plan.highlighted
   return (
     <div
@@ -55,7 +60,7 @@ function PlanCard({ plan }: { plan: Plan }) {
         {plan.description}
       </p>
 
-      <PriceBlock plan={plan} />
+      <PriceBlock plan={plan} billing={billing} />
 
       <Link
         href={plan.ctaHref}
@@ -87,11 +92,39 @@ function PlanCard({ plan }: { plan: Plan }) {
 }
 
 export function PricingCards() {
+  const [billing, setBilling] = useState<Billing>("yearly")
+
   return (
     <div className="max-w-7xl mx-auto px-6">
+      <div className="flex justify-center mb-10">
+        <div className="inline-flex items-center gap-1 p-1 rounded-full bg-[#EDECEC] border border-[#E5E5E3]">
+          <button
+            type="button"
+            onClick={() => setBilling("monthly")}
+            className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${
+              billing === "monthly" ? "bg-white text-[#141414] shadow-sm" : "text-[#999] hover:text-[#666]"
+            }`}
+          >
+            Monthly
+          </button>
+          <button
+            type="button"
+            onClick={() => setBilling("yearly")}
+            className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors inline-flex items-center gap-2 ${
+              billing === "yearly" ? "bg-white text-[#141414] shadow-sm" : "text-[#999] hover:text-[#666]"
+            }`}
+          >
+            Yearly
+            <span className="bg-[#FDFF60] text-[#141414] text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">
+              Save 20%
+            </span>
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
         {plans.map((plan) => (
-          <PlanCard key={plan.id} plan={plan} />
+          <PlanCard key={plan.id} plan={plan} billing={billing} />
         ))}
       </div>
     </div>

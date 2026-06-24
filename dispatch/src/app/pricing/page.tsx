@@ -4,7 +4,8 @@ import { Footer } from "@/components/homepage/Footer"
 import { PricingHero } from "@/components/pricing/PricingHero"
 import { PricingCards } from "@/components/pricing/PricingCards"
 import { ComparisonTable } from "@/components/pricing/ComparisonTable"
-import { PricingPhilosophy } from "@/components/pricing/PricingPhilosophy"
+import { CapabilityCards } from "@/components/pricing/CapabilityCards"
+import { PricingSocialProof } from "@/components/pricing/PricingSocialProof"
 import { PricingFAQ } from "@/components/pricing/PricingFAQ"
 import { PricingBottomCTA } from "@/components/pricing/PricingBottomCTA"
 import { PricingViewTracker } from "@/components/pricing/PricingViewTracker"
@@ -34,7 +35,8 @@ export default function PricingPage() {
         <PricingCards />
       </section>
       <ComparisonTable />
-      <PricingPhilosophy />
+      <CapabilityCards />
+      <PricingSocialProof />
       <PricingFAQ />
       <PricingBottomCTA />
       <Footer />

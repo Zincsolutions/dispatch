@@ -7,6 +7,8 @@ export interface Plan {
   description: string
   priceMonthly: string
   priceNote: string | null
+  priceAnnual: string
+  priceAnnualNote: string | null
   featuresNote: string | null
   badge: string | null
   ctaLabel: string
@@ -23,6 +25,8 @@ export const plans: Plan[] = [
       "For individuals organizing prompts, workflows, and AI assets for personal use.",
     priceMonthly: "$0",
     priceNote: "Free forever",
+    priceAnnual: "$0",
+    priceAnnualNote: "Free forever",
     featuresNote: null,
     badge: null,
     ctaLabel: "Get Started Free",
@@ -47,6 +51,8 @@ export const plans: Plan[] = [
       "For small teams centralizing prompts, workflows, agents, and AI assets in one shared workspace.",
     priceMonthly: "$29",
     priceNote: "per month",
+    priceAnnual: "$23",
+    priceAnnualNote: "$279 billed yearly",
     featuresNote: "Everything in Personal, plus:",
     badge: null,
     ctaLabel: "Start Free Trial",
@@ -73,6 +79,8 @@ export const plans: Plan[] = [
       "For organizations that need to manage AI knowledge, workflows, agents, and governance across teams.",
     priceMonthly: "$99",
     priceNote: "per month",
+    priceAnnual: "$79",
+    priceAnnualNote: "$950 billed yearly",
     featuresNote: "Everything in Starter, plus:",
     badge: "Recommended",
     ctaLabel: "Start Free Trial",
@@ -100,6 +108,8 @@ export const plans: Plan[] = [
       "For larger organizations requiring enterprise controls, custom workflows, compliance support, and deeper integration.",
     priceMonthly: "Custom",
     priceNote: "Contact sales",
+    priceAnnual: "Custom",
+    priceAnnualNote: "Contact sales",
     featuresNote: "Everything in Team, plus:",
     badge: null,
     ctaLabel: "Contact Sales",
