@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/homepage/Navbar"
 import { HeroSection } from "@/components/homepage/HeroSection"
 import { EcosystemSection } from "@/components/homepage/EcosystemSection"
+import { CommandCenter } from "@/components/homepage/CommandCenter"
 import { ProblemSection } from "@/components/homepage/ProblemSection"
 import { ValuePillars } from "@/components/homepage/ValuePillars"
 import { FoundationSection } from "@/components/homepage/FoundationSection"
@@ -50,6 +51,7 @@ export default function HomePage() {
       <Navbar />
       <HeroSection />
       <EcosystemSection />
+      <CommandCenter />
       <ProblemSection />
       <ValuePillars />
       <FoundationSection />
