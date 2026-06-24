@@ -28,20 +28,39 @@ export default async function DashboardPage() {
     getDocumentsAwaitingMyAck(),
   ])
 
-  const stats: { label: string; value: number; icon: LucideIcon; href?: string }[] = [
-    { label: "Total AI Assets", value: metrics.totalAssets, icon: Layers },
-    { label: "Approved", value: metrics.approved, icon: CheckCircle2 },
+  const stats: {
+    label: string
+    value: number
+    icon: LucideIcon
+    sub: string
+    href?: string
+  }[] = [
+    { label: "AI Assets", value: metrics.totalAssets, icon: Layers, sub: "Across every category" },
     {
-      label: "Pending Review",
+      label: "Governed Assets",
+      value: metrics.approved,
+      icon: CheckCircle2,
+      sub: "Approved and ready to use",
+    },
+    {
+      label: "Needs Review",
       value: metrics.pendingReview,
       icon: AlertCircle,
+      sub: "Awaiting approval",
       href: metrics.pendingReview > 0 ? "/governance/review" : undefined,
     },
-    { label: "Active Agents", value: metrics.activeAgents, icon: Bot, href: "/agents" },
     {
-      label: "Active Workflows",
+      label: "Active Agents",
+      value: metrics.activeAgents,
+      icon: Bot,
+      sub: "Currently in your stack",
+      href: "/agents",
+    },
+    {
+      label: "Workflow Loops",
       value: metrics.activeWorkflows,
       icon: Workflow,
+      sub: "Active automations",
       href: "/workflows",
     },
   ]
@@ -88,7 +107,7 @@ export default async function DashboardPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Your AI operations at a glance — what exists, what&apos;s approved, and what needs attention.
+          The operational view of your organization&apos;s AI knowledge, workflows, agents, and governance.
         </p>
       </div>
 
@@ -98,11 +117,14 @@ export default async function DashboardPage() {
           const body = (
             <Card className="h-full">
               <CardContent className="p-4">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <stat.icon className="h-4 w-4" />
-                  <span className="text-xs font-medium">{stat.label}</span>
+                <div className="flex items-center gap-2">
+                  <stat.icon className="h-[18px] w-[18px] text-foreground" />
+                  <span className="text-xs font-semibold uppercase tracking-wide text-foreground/70">
+                    {stat.label}
+                  </span>
                 </div>
-                <p className="mt-2 text-3xl font-semibold tracking-tight">{stat.value}</p>
+                <p className="mt-2 text-4xl font-bold tracking-tight">{stat.value}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{stat.sub}</p>
               </CardContent>
             </Card>
           )
@@ -185,18 +207,30 @@ export default async function DashboardPage() {
               )}
             </div>
 
-            <div className="grid grid-cols-3 gap-3 md:grid-cols-1 md:gap-4 content-start">
-              <div>
-                <p className="text-2xl font-semibold tracking-tight">{metrics.approved}</p>
-                <p className="text-xs text-muted-foreground">Approved assets</p>
+            <div className="grid grid-cols-3 gap-3 md:grid-cols-1 content-start">
+              <div className="rounded-lg border border-emerald-300/50 bg-emerald-50/60 p-3 dark:bg-emerald-950/20">
+                <p className="text-2xl font-bold tracking-tight text-emerald-700 dark:text-emerald-400">
+                  {metrics.approved}
+                </p>
+                <p className="text-xs font-medium text-emerald-700/80 dark:text-emerald-400/80">
+                  Approved Assets
+                </p>
               </div>
-              <div>
-                <p className="text-2xl font-semibold tracking-tight">{reviewQueue.length}</p>
-                <p className="text-xs text-muted-foreground">Pending review</p>
+              <div className="rounded-lg border border-orange-300/50 bg-orange-50/60 p-3 dark:bg-orange-950/20">
+                <p className="text-2xl font-bold tracking-tight text-orange-700 dark:text-orange-400">
+                  {reviewQueue.length}
+                </p>
+                <p className="text-xs font-medium text-orange-700/80 dark:text-orange-400/80">
+                  Needs Review
+                </p>
               </div>
-              <div>
-                <p className="text-2xl font-semibold tracking-tight">{awaitingAck.length}</p>
-                <p className="text-xs text-muted-foreground">Pending acknowledgements</p>
+              <div className="rounded-lg border border-amber-300/50 bg-amber-50/70 p-3 dark:bg-amber-950/20">
+                <p className="text-2xl font-bold tracking-tight text-amber-700 dark:text-amber-500">
+                  {awaitingAck.length}
+                </p>
+                <p className="text-xs font-medium text-amber-700/80 dark:text-amber-500/80">
+                  Awaiting Acknowledgement
+                </p>
               </div>
             </div>
           </div>
