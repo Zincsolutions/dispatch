@@ -6,6 +6,8 @@ import { ValuePillars } from "@/components/homepage/ValuePillars"
 import { FoundationSection } from "@/components/homepage/FoundationSection"
 import { GovernanceSection } from "@/components/homepage/GovernanceSection"
 import { AgentsWorkflowsSection } from "@/components/homepage/AgentsWorkflowsSection"
+import { MoreThanPromptLibrary } from "@/components/homepage/MoreThanPromptLibrary"
+import { CredibilitySection } from "@/components/homepage/CredibilitySection"
 import { FeatureSection } from "@/components/homepage/FeatureSection"
 import { IntegrationsPanel } from "@/components/homepage/IntegrationsPanel"
 import { UseCases } from "@/components/homepage/UseCases"
@@ -61,6 +63,8 @@ export default function HomePage() {
       <SecuritySection />
       <EarlyAccess />
       <BlogSection />
+      <MoreThanPromptLibrary />
+      <CredibilitySection />
       <FinalCTA />
       <Footer />
     </div>
