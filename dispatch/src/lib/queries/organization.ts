@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import type { Organization } from "@/lib/types"
 
 export async function getCurrentUserWithOrg() {
   const supabase = await createClient()
@@ -36,7 +37,31 @@ export async function getCurrentUserWithOrg() {
   return {
     user,
     organizationId: membership.organization_id as string,
-    organization: organization as { id: string; name: string; slug: string; created_at: string; updated_at: string },
+    organization: organization as Organization,
     role: membership.role as string,
+  }
+}
+
+// Org-wide counts for the Plan & Usage card (RLS-scoped to the user's org).
+export async function getPlanUsage() {
+  const supabase = await createClient()
+  const headCount = (table: string) =>
+    supabase.from(table).select("*", { count: "exact", head: true })
+
+  const [users, prompts, workflows, agents, images] = await Promise.all([
+    headCount("organization_members"),
+    headCount("prompts"),
+    headCount("workflows"),
+    headCount("agents"),
+    headCount("library_images"),
+  ])
+
+  const n = (r: { count: number | null }) => r.count ?? 0
+  return {
+    users: n(users),
+    prompts: n(prompts),
+    workflows: n(workflows),
+    agents: n(agents),
+    images: n(images),
   }
 }

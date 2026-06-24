@@ -131,6 +131,29 @@ export const plans: Plan[] = [
   },
 ]
 
+// Per-plan limits used for usage tracking + upgrade prompts (not hard
+// enforcement yet). `null` means unlimited.
+export type PlanId = Plan["id"]
+
+export interface PlanLimits {
+  users: number | null
+  prompts: number | null
+  workflows: number | null
+  agents: number | null
+  images: number | null
+}
+
+export const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
+  personal: { users: 1, prompts: 25, workflows: 10, agents: 5, images: 50 },
+  starter: { users: 10, prompts: null, workflows: null, agents: null, images: null },
+  team: { users: 50, prompts: null, workflows: null, agents: null, images: null },
+  enterprise: { users: null, prompts: null, workflows: null, agents: null, images: null },
+}
+
+export function planLabel(id: string): string {
+  return plans.find((p) => p.id === id)?.name ?? "Personal"
+}
+
 // Comparison table, grouped by category. Cell values are either a string
 // (rendered as text) or a boolean (rendered as a check / dash).
 export interface ComparisonRow {

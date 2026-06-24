@@ -1,5 +1,6 @@
-import { getCurrentUserWithOrg } from "@/lib/queries/organization"
+import { getCurrentUserWithOrg, getPlanUsage } from "@/lib/queries/organization"
 import { getPendingInvitations } from "@/lib/queries/invitations"
+import { PlanUsageCard } from "./plan-usage-card"
 import { createClient } from "@/lib/supabase/server"
 import { signout } from "@/lib/actions/auth"
 import { Button } from "@/components/ui/button"
@@ -22,12 +23,16 @@ export default async function SettingsPage() {
     .select("*, profiles(*)")
     .order("created_at", { ascending: true })
 
-  const invitations = role === "owner" ? await getPendingInvitations() : []
+  const [invitations, usage] = await Promise.all([
+    role === "owner" ? getPendingInvitations() : Promise.resolve([]),
+    getPlanUsage(),
+  ])
 
   return (
     <div className="max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight mb-6">Settings</h1>
       <div className="space-y-6">
+        <PlanUsageCard plan={organization.plan} usage={usage} />
         <SettingsForm
           organization={organization}
           profile={profile!}
