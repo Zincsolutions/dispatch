@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { TagInput } from "@/components/forms/tag-input"
+import { ImageDropzone } from "@/components/forms/image-dropzone"
 import { StatusSelect } from "@/components/forms/status-select"
 import { RelatedItemSelector } from "@/components/forms/related-item-selector"
 import { FOUNDATION_STATUSES } from "@/lib/constants"
@@ -64,6 +65,8 @@ export function LibraryImageForm({
   const isEdit = Boolean(defaultValues)
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  // Bumped to remount (and clear) the main image input after an invalid pick.
+  const [fileInputKey, setFileInputKey] = useState(0)
   const [tags, setTags] = useState<string[]>(defaultValues?.tags || [])
   const [tool, setTool] = useState(defaultValues?.tool || "midjourney")
   const [status, setStatus] = useState(defaultValues?.status || "approved")
@@ -85,38 +88,41 @@ export function LibraryImageForm({
   // Bumped to remount (and thus clear) the file input after a remove.
   const [referenceInputKey, setReferenceInputKey] = useState(0)
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const selected = e.target.files?.[0] ?? null
+  // Shared validation for both the generated image and the reference image,
+  // whether the file arrives via click or drag-and-drop. Returns the file if
+  // valid, or null (after toasting) if not.
+  function acceptImage(selected: File | null): File | null {
     if (selected && !selected.type.startsWith("image/")) {
       toast.error("Please choose an image file")
-      e.target.value = ""
-      return
+      return null
     }
     if (selected && selected.size > MAX_FILE_MB * 1024 * 1024) {
       toast.error(`Images must be under ${MAX_FILE_MB} MB`)
-      e.target.value = ""
-      return
+      return null
     }
-    setFile(selected)
-    setPreviewUrl(selected ? URL.createObjectURL(selected) : null)
+    return selected
   }
 
-  function handleReferenceChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const selected = e.target.files?.[0] ?? null
-    if (selected && !selected.type.startsWith("image/")) {
-      toast.error("Please choose an image file")
-      e.target.value = ""
+  function handleFileSelect(selected: File | null) {
+    const valid = acceptImage(selected)
+    if (selected && !valid) {
+      setFileInputKey((k) => k + 1) // clear the rejected pick
       return
     }
-    if (selected && selected.size > MAX_FILE_MB * 1024 * 1024) {
-      toast.error(`Images must be under ${MAX_FILE_MB} MB`)
-      e.target.value = ""
+    setFile(valid)
+    setPreviewUrl(valid ? URL.createObjectURL(valid) : null)
+  }
+
+  function handleReferenceSelect(selected: File | null) {
+    const valid = acceptImage(selected)
+    if (selected && !valid) {
+      setReferenceInputKey((k) => k + 1) // clear the rejected pick
       return
     }
-    setReferenceFile(selected)
-    setReferencePreviewUrl(selected ? URL.createObjectURL(selected) : null)
+    setReferenceFile(valid)
+    setReferencePreviewUrl(valid ? URL.createObjectURL(valid) : null)
     // A new selection supersedes any previously-saved reference.
-    if (selected) setKeepExistingReference(false)
+    if (valid) setKeepExistingReference(false)
   }
 
   function handleReferenceRemove() {
@@ -220,12 +226,11 @@ export function LibraryImageForm({
       {!isEdit && (
         <div className="space-y-2">
           <Label htmlFor="file">Image</Label>
-          <Input
+          <ImageDropzone
             id="file"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            required
+            onSelect={handleFileSelect}
+            resetKey={fileInputKey}
+            maxMb={MAX_FILE_MB}
           />
           {previewUrl && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -424,12 +429,11 @@ export function LibraryImageForm({
             </Button>
           </div>
         )}
-        <Input
-          key={referenceInputKey}
+        <ImageDropzone
           id="reference-file"
-          type="file"
-          accept="image/*"
-          onChange={handleReferenceChange}
+          onSelect={handleReferenceSelect}
+          resetKey={referenceInputKey}
+          maxMb={MAX_FILE_MB}
         />
       </div>
 
