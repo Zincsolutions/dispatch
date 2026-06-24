@@ -1,9 +1,10 @@
 import { Check } from "lucide-react"
 
 const PLAN_DETAILS: Record<string, { label: string; detail: string }> = {
-  free: { label: "Free plan", detail: "1 workspace · 2 users · 25 AI assets to start" },
-  starter: { label: "Starter plan", detail: "$19/mo · 5 users · 100 AI assets" },
-  team: { label: "Team plan", detail: "$79/mo · 25 users · 1,000 AI assets" },
+  personal: { label: "Personal plan", detail: "Free forever · for individuals" },
+  free: { label: "Personal plan", detail: "Free forever · for individuals" },
+  starter: { label: "Starter plan", detail: "$29/mo · up to 10 users" },
+  team: { label: "Team plan", detail: "$99/mo · up to 50 users · governance" },
   enterprise: { label: "Enterprise", detail: "Custom setup — our team will tailor your plan" },
 }
 
