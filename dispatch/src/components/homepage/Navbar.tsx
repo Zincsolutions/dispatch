@@ -7,8 +7,6 @@ import { AnimatePresence, motion } from "framer-motion"
 
 const navLinks = [
   { label: "Product", href: "/#product", route: false },
-  { label: "Use Cases", href: "/#use-cases", route: false },
-  { label: "Integrations", href: "/#integrations", route: false },
   { label: "Pricing", href: "/pricing", route: true },
 ]
 
