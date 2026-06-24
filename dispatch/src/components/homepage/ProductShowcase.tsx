@@ -5,10 +5,16 @@ import { AnimatePresence, motion } from "framer-motion"
 
 const tabs = [
   {
-    label: "Prompts",
-    src: "/screenshots/prompt-detail.jpg",
-    alt: "Dispatch prompt detail with Run in ChatGPT and Run in Claude buttons",
-    caption: "Your team's best prompts — run them in ChatGPT or Claude with one click.",
+    label: "Dashboard",
+    src: "/screenshots/dashboard.jpg",
+    alt: "Dispatch dashboard — AI operations command center with asset metrics and governance overview",
+    caption: "Your AI operations command center — what exists, what's approved, and what needs review.",
+  },
+  {
+    label: "Governance",
+    src: "/screenshots/governance.jpg",
+    alt: "Dispatch governance overview with policy acknowledgments and tool registry",
+    caption: "Review queues, policy acknowledgements, and a registry of approved tools.",
   },
   {
     label: "Workflows",
@@ -23,10 +29,10 @@ const tabs = [
     caption: "AI imagery that stays on-brand — every image stored with its prompt and sref.",
   },
   {
-    label: "Governance",
-    src: "/screenshots/governance.jpg",
-    alt: "Dispatch governance overview with policy acknowledgments and tool registry",
-    caption: "Policies your team acknowledges, and a registry of which tools are approved.",
+    label: "Prompts",
+    src: "/screenshots/prompt-detail.jpg",
+    alt: "Dispatch prompt detail with Run in ChatGPT and Run in Claude buttons",
+    caption: "Your team's best prompts — run them in ChatGPT or Claude with one click.",
   },
 ]
 
@@ -36,13 +42,20 @@ export function ProductShowcase() {
   const [activeTab, setActiveTab] = useState(0)
 
   return (
-    <section
-      id="product"
-      className="relative pb-32 bg-white"
-    >
+    <section id="product" className="relative pb-32 bg-white">
       <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <h2 className="text-3xl sm:text-4xl md:text-[42px] font-extrabold text-[#141414] leading-tight mb-4">
+            Your AI operations command center.
+          </h2>
+          <p className="text-lg text-[#666] leading-relaxed">
+            See what exists, what&apos;s approved, what needs review, and how your
+            organization is building with AI.
+          </p>
+        </div>
+
         <div className="flex justify-center mb-10" role="tablist" aria-label="Product features">
-          <div className="inline-flex gap-1 p-1 rounded-2xl bg-[#EDECEC] border border-[#E5E5E3]">
+          <div className="inline-flex gap-1 p-1 rounded-2xl bg-[#EDECEC] border border-[#E5E5E3] flex-wrap justify-center">
             {tabs.map((tab, i) => (
               <button
                 key={tab.label}
