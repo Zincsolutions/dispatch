@@ -21,12 +21,12 @@ export function Testimonial() {
                 aria-hidden
                 className="absolute inset-0 -translate-x-3 translate-y-3 rounded-3xl bg-[#FDFF60]"
               />
-              <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-[#E5E5E3] bg-white shadow-[0_30px_70px_-20px_rgba(20,20,20,0.25)]">
+              <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-[#E5E5E3] bg-white shadow-[0_30px_70px_-20px_rgba(20,20,20,0.25)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/screenshots/dashboard.jpg"
-                  alt="A team's centralized Dispatch workspace for organizing, sharing, and governing AI"
-                  className="h-full w-full object-cover object-top"
+                  src="/case-study-dfnd.jpg"
+                  alt="DFND — Active Ax Compression Short campaign, built to cover more ground"
+                  className="h-full w-full object-cover object-center"
                   loading="lazy"
                 />
               </div>
@@ -52,11 +52,11 @@ export function Testimonial() {
 
               <div className="flex items-center gap-4 mb-10">
                 <div className="w-12 h-12 rounded-full bg-[#141414] text-white flex items-center justify-center font-semibold shrink-0">
-                  JS
+                  JH
                 </div>
                 <div>
-                  <p className="font-bold text-[#141414] leading-tight">Jane Smith</p>
-                  <p className="text-sm text-[#666]">VP Marketing, Example Company</p>
+                  <p className="font-bold text-[#141414] leading-tight">Jeff Herdman</p>
+                  <p className="text-sm text-[#666]">CEO, DFND</p>
                 </div>
               </div>
 
