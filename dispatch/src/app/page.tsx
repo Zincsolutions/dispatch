@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/homepage/Navbar"
 import { HeroSection } from "@/components/homepage/HeroSection"
+import { EcosystemSection } from "@/components/homepage/EcosystemSection"
 import { ProductShowcase } from "@/components/homepage/ProductShowcase"
 import { ProblemSection } from "@/components/homepage/ProblemSection"
 import { ValuePillars } from "@/components/homepage/ValuePillars"
@@ -49,6 +50,7 @@ export default function HomePage() {
     <div className="font-[family-name:var(--font-dm-sans)]">
       <Navbar />
       <HeroSection />
+      <EcosystemSection />
       <ProductShowcase />
       <ProblemSection />
       <ValuePillars />
