@@ -18,9 +18,10 @@ type Card = {
   key: string
   title: string
   copy: string
-  count: string
+  label: string
   icon: LucideIcon
   accent: string
+  featured?: boolean
   /** Position of the card center on the desktop orbit canvas, in %. Hub is at (50,50). */
   pos: { x: number; y: number }
 }
@@ -30,7 +31,7 @@ const cards: Card[] = [
     key: "prompts",
     title: "Prompts",
     copy: "Store and share reusable prompts across your organization.",
-    count: "1,254 Prompts",
+    label: "Prompt Templates",
     icon: MessageSquareText,
     accent: "rgba(157,218,215,0.25)", // teal
     pos: { x: 21, y: 15 },
@@ -39,7 +40,7 @@ const cards: Card[] = [
     key: "images",
     title: "AI Images",
     copy: "Preserve image prompts, styles, references, and generated assets.",
-    count: "532 Images",
+    label: "Image Prompts + References",
     icon: ImageIcon,
     accent: "rgba(245,180,140,0.25)", // peach
     pos: { x: 15, y: 50 },
@@ -48,7 +49,7 @@ const cards: Card[] = [
     key: "agents",
     title: "Agents",
     copy: "Catalog custom GPTs, AI assistants, and specialized agents.",
-    count: "24 Agents",
+    label: "Custom GPTs + Assistants",
     icon: Bot,
     accent: "rgba(253,255,96,0.22)", // yellow
     pos: { x: 21, y: 85 },
@@ -57,35 +58,51 @@ const cards: Card[] = [
     key: "workflows",
     title: "Workflows",
     copy: "Capture repeatable AI processes and best practices.",
-    count: "18 Workflows",
+    label: "Repeatable AI Processes",
     icon: Workflow,
     accent: "rgba(157,218,215,0.25)", // teal
     pos: { x: 79, y: 15 },
   },
   {
-    key: "knowledge",
-    title: "Knowledge",
-    copy: "Centralize SOPs, brand context, training materials, and institutional knowledge.",
-    count: "12 Knowledge Assets",
+    key: "foundation",
+    title: "AI Foundation",
+    copy: "Centralize brand context, SOPs, training materials, approved assets, and organizational knowledge to drive more consistent AI outputs.",
+    label: "Brand Context + SOPs",
     icon: BookOpen,
-    accent: "rgba(245,180,140,0.25)", // peach
+    accent: "rgba(253,255,96,0.45)", // yellow — emphasized
+    featured: true,
     pos: { x: 85, y: 50 },
   },
   {
     key: "governance",
     title: "Governance",
     copy: "Manage approvals, policies, standards, and review workflows.",
-    count: "8 Governance Policies",
+    label: "Policies + Approvals",
     icon: ShieldCheck,
-    accent: "rgba(253,255,96,0.22)", // yellow
+    accent: "rgba(253,255,96,0.45)", // yellow — emphasized
+    featured: true,
     pos: { x: 79, y: 85 },
   },
 ]
 
 function CardBody({ card }: { card: Card }) {
   const Icon = card.icon
+  const featured = card.featured
   return (
-    <div className="group h-full rounded-2xl bg-white border border-[#E5E5E3] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ccc] hover:shadow-[0_20px_50px_rgba(20,20,20,0.10)]">
+    <div
+      className={`group h-full rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(20,20,20,0.10)] ${
+        featured
+          ? "bg-[#FDFCEF] border border-[#E6E1AE] hover:border-[#D6CE82]"
+          : "bg-white border border-[#E5E5E3] hover:border-[#ccc]"
+      }`}
+    >
+      {featured && (
+        <div className="mb-3 inline-flex items-center rounded-full bg-[#FDFF60]/60 px-2.5 py-0.5">
+          <span className="text-[9px] font-bold uppercase tracking-wider text-[#141414]">
+            Core System
+          </span>
+        </div>
+      )}
       <div className="flex items-center gap-3 mb-3">
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
@@ -97,8 +114,10 @@ function CardBody({ card }: { card: Card }) {
       </div>
       <p className="text-[13.5px] leading-relaxed text-[#666] mb-4">{card.copy}</p>
       <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#999]">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#9DDAD7]" />
-        {card.count}
+        <span
+          className={`w-1.5 h-1.5 rounded-full ${featured ? "bg-[#E0B33C]" : "bg-[#9DDAD7]"}`}
+        />
+        {card.label}
       </div>
     </div>
   )
@@ -146,9 +165,8 @@ export function EcosystemSection() {
           </AnimateOnScroll>
           <AnimateOnScroll delay={0.1}>
             <p className="text-lg text-[#666] leading-relaxed">
-              Organize the prompts, images, agents, workflows, and knowledge your
-              team creates every day — and make them accessible across your
-              organization.
+              Organize, share, and govern the prompts, AI images, agents,
+              workflows, and knowledge your organization creates every day.
             </p>
           </AnimateOnScroll>
         </div>
@@ -197,11 +215,11 @@ export function EcosystemSection() {
                 }}
               />
               <div className="relative w-44 h-44 rounded-full bg-[#141414] flex flex-col items-center justify-center text-center shadow-[0_24px_60px_-12px_rgba(20,20,20,0.45)] ring-1 ring-white/10">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FDFF60] mb-1">
+                <span className="text-xl font-bold text-white leading-tight">
                   Dispatch
                 </span>
-                <span className="text-lg font-bold text-white leading-tight px-4">
-                  Your AI Operations Hub
+                <span className="mt-1.5 text-[11px] font-medium leading-snug text-[#FDFF60] px-5">
+                  The OS for Your AI Operations
                 </span>
               </div>
             </div>
