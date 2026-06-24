@@ -1,7 +1,6 @@
-import Link from "next/link"
+import type { ReactNode } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button-variants"
 import { PLAN_LIMITS, planLabel, type PlanId } from "@/lib/pricing"
 import { cn } from "@/lib/utils"
 
@@ -21,7 +20,15 @@ const METRICS: { key: keyof Usage; label: string }[] = [
   { key: "images", label: "Image assets" },
 ]
 
-export function PlanUsageCard({ plan, usage }: { plan: string; usage: Usage }) {
+export function PlanUsageCard({
+  plan,
+  usage,
+  actions,
+}: {
+  plan: string
+  usage: Usage
+  actions?: ReactNode
+}) {
   const planId = (["personal", "starter", "team", "enterprise"].includes(plan)
     ? plan
     : "personal") as PlanId
@@ -38,11 +45,7 @@ export function PlanUsageCard({ plan, usage }: { plan: string; usage: Usage }) {
           Plan &amp; Usage
           <Badge variant="secondary">{planLabel(planId)}</Badge>
         </CardTitle>
-        {planId !== "enterprise" && (
-          <Link href="/pricing" className={buttonVariants({ size: "sm" })}>
-            Upgrade plan
-          </Link>
-        )}
+        {actions}
       </CardHeader>
       <CardContent className="space-y-4">
         {overLimit && (
