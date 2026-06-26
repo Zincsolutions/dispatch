@@ -1,13 +1,35 @@
 import type { MetadataRoute } from "next"
+import { posts } from "@/lib/blog"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.dispatchvault.com"
+
+  const blogEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${base}/blog`,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    ...posts.map((post) => ({
+      url: `${base}/blog/${post.slug}`,
+      lastModified: new Date(post.dateISO),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+  ]
+
   return [
     {
       url: `${base}/`,
       changeFrequency: "weekly",
       priority: 1,
     },
+    {
+      url: `${base}/resources`,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...blogEntries,
     {
       url: `${base}/pricing`,
       changeFrequency: "monthly",
