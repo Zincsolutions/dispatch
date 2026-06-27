@@ -10,6 +10,7 @@ export const post: BlogPost = {
   date: "April 10, 2026",
   dateISO: "2026-04-10",
   author: "Dispatch Team",
+  featured: true,
   faqs: [
     {
       q: "Why does AI adoption stall after the first few power users?",
