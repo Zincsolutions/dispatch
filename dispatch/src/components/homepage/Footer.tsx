@@ -12,7 +12,7 @@ const columns = [
     title: "Resources",
     links: [
       { label: "Blog", href: "/blog" },
-      { label: "Resources", href: "/resources" },
+      { label: "Resource Center", href: "/blog" },
     ],
   },
   {
