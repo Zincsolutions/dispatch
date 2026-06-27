@@ -20,8 +20,9 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   const featured = getFeaturedPost()
-  // Keep the featured post out of the grid below to avoid duplication.
-  const gridPosts = posts.filter((p) => p.slug !== featured.slug)
+  // Show the featured post both in the banner and the grid below, so the grid
+  // stays a full three-by-three (all 9 posts).
+  const gridPosts = posts
 
   // Blog (ItemList) structured data to help search/answer engines understand
   // this is a hub of articles.
