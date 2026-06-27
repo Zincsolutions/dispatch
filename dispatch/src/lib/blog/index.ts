@@ -1,36 +1,45 @@
 import type { BlogPost, BlogCategory } from "./types"
 
-import { post as whatIsAeo } from "./posts/what-is-answer-engine-optimization"
-import { post as aeoVsSeo } from "./posts/aeo-vs-seo"
-import { post as getCited } from "./posts/get-cited-by-ai-engines"
-import { post as geo } from "./posts/what-is-generative-engine-optimization"
-import { post as optimizeContent } from "./posts/optimize-content-for-ai-search"
-import { post as schemaMarkup } from "./posts/schema-markup-for-aeo"
-import { post as measureAeo } from "./posts/measure-aeo-success"
-import { post as faqPages } from "./posts/faq-pages-for-aeo"
-import { post as zeroClick } from "./posts/zero-click-search-aeo"
+import { post as knowledgeProblem } from "./posts/knowledge-problem-not-ai-problem"
+import { post as aiOperatingSystem } from "./posts/ai-operating-system-before-another-tool"
+import { post as hiddenCost } from "./posts/hidden-cost-of-ai-without-shared-system"
+import { post as promptChaos } from "./posts/ai-prompt-chaos"
+import { post as shareKnowledge } from "./posts/share-ai-knowledge-without-slowing-innovation"
+import { post as governanceConfidence } from "./posts/ai-governance-is-about-confidence"
+import { post as contextProblem } from "./posts/ai-context-problem"
+import { post as stopSilos } from "./posts/stop-building-ai-silos"
+import { post as findAssets } from "./posts/find-your-companys-ai-assets"
+import { post as promptLibraryToOs } from "./posts/from-prompt-library-to-ai-operating-system"
+import { post as bestEmployeeLeaves } from "./posts/what-happens-when-your-best-ai-employee-leaves"
+import { post as scaleAi } from "./posts/scale-ai-without-losing-control"
 
 export type { BlogPost, BlogCategory, Block } from "./types"
 
 // Display order on the index (newest / most important first).
 export const posts: BlogPost[] = [
-  whatIsAeo,
-  aeoVsSeo,
-  getCited,
-  geo,
-  optimizeContent,
-  schemaMarkup,
-  measureAeo,
-  faqPages,
-  zeroClick,
+  knowledgeProblem,
+  aiOperatingSystem,
+  hiddenCost,
+  promptChaos,
+  shareKnowledge,
+  governanceConfidence,
+  contextProblem,
+  stopSilos,
+  findAssets,
+  promptLibraryToOs,
+  bestEmployeeLeaves,
+  scaleAi,
 ]
 
-// Four categories, mirroring the toggle pattern on the Zinc blog.
+// Seven resource-center categories.
 export const categories: BlogCategory[] = [
-  "AEO Fundamentals",
-  "AI Search Engines",
-  "Content Strategy",
-  "Technical & Measurement",
+  "AI Governance",
+  "AI Collaboration",
+  "Prompt Management",
+  "AI Adoption",
+  "Knowledge Management",
+  "Context Engineering",
+  "AI Strategy",
 ]
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
