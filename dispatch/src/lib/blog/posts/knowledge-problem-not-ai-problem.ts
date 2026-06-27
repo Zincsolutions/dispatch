@@ -10,7 +10,6 @@ export const post: BlogPost = {
   date: "June 24, 2026",
   dateISO: "2026-06-24",
   author: "Dispatch Team",
-  featured: true,
   faqs: [
     {
       q: "Is the model I choose really not the most important factor in AI success?",
