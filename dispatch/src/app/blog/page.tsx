@@ -5,14 +5,14 @@ import { BlogIndex } from "@/components/blog/BlogIndex"
 import { posts, categories, getFeaturedPost } from "@/lib/blog"
 
 export const metadata: Metadata = {
-  title: "Blog — AEO, AI Search & GEO Guides | Dispatch",
+  title: "Resource Center — AI Governance, Collaboration & Operations | Dispatch",
   description:
-    "Practical guides on answer engine optimization (AEO), generative engine optimization (GEO), and getting your content cited by ChatGPT, Perplexity, and Google AI Overviews.",
+    "Playbooks on AI governance, collaboration, prompt management, and operations — for leaders turning scattered AI use into a system their whole organization can run on.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "The Dispatch Blog — AEO, AI Search & GEO Guides",
+    title: "Dispatch Resource Center — Building the AI-Powered Organization",
     description:
-      "Practical guides on AEO, GEO, and getting cited by AI answer engines.",
+      "Playbooks on AI governance, collaboration, and operations for modern teams.",
     url: "/blog",
     type: "website",
   },
@@ -20,19 +20,15 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   const featured = getFeaturedPost()
-  // Show the featured post both in the banner and the grid below, so the grid
-  // stays a full three-by-three (all 9 posts).
-  const gridPosts = posts
 
-  // Blog (ItemList) structured data to help search/answer engines understand
-  // this is a hub of articles.
-  const itemListLd = {
+  const blogLd = {
     "@context": "https://schema.org",
     "@type": "Blog",
-    name: "The Dispatch Blog",
+    name: "Dispatch Resource Center",
     description:
-      "Guides on answer engine optimization (AEO), AI search, and generative engine optimization (GEO).",
+      "Playbooks on AI governance, collaboration, prompt management, and operations.",
     url: "https://www.dispatchvault.com/blog",
+    publisher: { "@type": "Organization", name: "Dispatch" },
     blogPost: posts.map((p) => ({
       "@type": "BlogPosting",
       headline: p.title,
@@ -46,10 +42,10 @@ export default function BlogPage() {
     <div className="font-[family-name:var(--font-dm-sans)] bg-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogLd) }}
       />
       <Navbar />
-      <BlogIndex posts={gridPosts} featured={featured} categories={categories} />
+      <BlogIndex posts={posts} featured={featured} categories={categories} />
       <Footer />
     </div>
   )

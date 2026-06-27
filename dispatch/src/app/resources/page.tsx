@@ -7,7 +7,7 @@ import { posts, categories, getFeaturedPost } from "@/lib/blog"
 export const metadata: Metadata = {
   title: "Resources — Dispatch",
   description:
-    "Guides on answer engine optimization (AEO), AI search, and getting your content cited by ChatGPT, Perplexity, and Google AI Overviews.",
+    "Playbooks on AI governance, collaboration, prompt management, and operations — for leaders building an AI-powered organization with Dispatch.",
   // /resources and /blog render the same blog index; consolidate to /blog for SEO.
   alternates: { canonical: "/blog" },
 }
