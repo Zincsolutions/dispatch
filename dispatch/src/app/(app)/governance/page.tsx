@@ -1,9 +1,5 @@
 import Link from "next/link"
-import {
-  getDocuments,
-  getDocumentsAwaitingMyAck,
-  getTools,
-} from "@/lib/queries/governance"
+import { getDocuments, getTools } from "@/lib/queries/governance"
 import { PageHeader } from "@/components/shared/page-header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -12,13 +8,19 @@ import { getReviewQueue } from "@/lib/queries/review-queue"
 import { FileCheck2, Wrench, ArrowRight, CheckCircle2, ClipboardCheck } from "lucide-react"
 
 export default async function GovernancePage() {
-  const [documents, awaitingAck, tools, reviewQueue] = await Promise.all([
+  // getDocuments() already returns status + acked_by_me, so derive the
+  // awaiting-acknowledgment list in memory instead of re-running the full
+  // documents-with-acks query (and a second auth.getUser()) via
+  // getDocumentsAwaitingMyAck().
+  const [documents, tools, reviewQueue] = await Promise.all([
     getDocuments(),
-    getDocumentsAwaitingMyAck(),
     getTools(),
     getReviewQueue(),
   ])
 
+  const awaitingAck = documents.filter(
+    (d) => d.status === "approved" && !d.acked_by_me,
+  )
   const approved = documents.filter((d) => d.status === "approved")
   const approvedTools = tools.filter((t) => t.status === "approved")
   const bannedTools = tools.filter((t) => t.status === "not_allowed")
