@@ -59,6 +59,34 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        {/* Sitewide Organization + WebSite structured data. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": "https://www.dispatchvault.com/#organization",
+                  name: "Dispatch",
+                  url: "https://www.dispatchvault.com",
+                  logo: "https://www.dispatchvault.com/dispatch-logo.svg",
+                  description: "The system of record for AI.",
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://www.dispatchvault.com/#website",
+                  url: "https://www.dispatchvault.com",
+                  name: "Dispatch",
+                  publisher: {
+                    "@id": "https://www.dispatchvault.com/#organization",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
         <TooltipProvider>
           {children}
         </TooltipProvider>
