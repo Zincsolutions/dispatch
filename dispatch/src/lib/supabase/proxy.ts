@@ -10,6 +10,7 @@ const PUBLIC_PATHS = [
   "/contact",
   "/resources",
   "/solutions",
+  "/faq",
 ]
 // Prefix matches cover nested routes (e.g. /blog/<slug>).
 const PUBLIC_PREFIXES = ["/login", "/signup", "/auth", "/invite", "/blog"]
