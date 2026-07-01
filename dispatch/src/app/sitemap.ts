@@ -39,6 +39,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    {
+      url: `${base}/solutions/integrations`,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
     ...blogEntries,
     {
       url: `${base}/pricing`,
