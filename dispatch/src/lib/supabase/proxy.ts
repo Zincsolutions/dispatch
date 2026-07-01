@@ -9,11 +9,17 @@ const PUBLIC_PATHS = [
   "/pricing",
   "/contact",
   "/resources",
-  "/solutions",
   "/faq",
 ]
-// Prefix matches cover nested routes (e.g. /blog/<slug>).
-const PUBLIC_PREFIXES = ["/login", "/signup", "/auth", "/invite", "/blog"]
+// Prefix matches cover nested routes (e.g. /blog/<slug>, /solutions/use-cases).
+const PUBLIC_PREFIXES = [
+  "/login",
+  "/signup",
+  "/auth",
+  "/invite",
+  "/blog",
+  "/solutions",
+]
 
 function isPublicPath(path: string) {
   return (
