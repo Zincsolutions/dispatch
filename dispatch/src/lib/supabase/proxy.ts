@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server"
 // Routes reachable without a session. Everything else requires auth.
 const PUBLIC_PATHS = [
   "/",
+  "/product",
   "/privacy",
   "/terms",
   "/pricing",
