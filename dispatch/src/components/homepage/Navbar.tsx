@@ -14,7 +14,7 @@ type NavItem = {
 }
 
 const navLinks: NavItem[] = [
-  { label: "Product", href: "/#product", route: false },
+  { label: "Product", href: "/product", route: true },
   {
     label: "Solutions",
     children: [
