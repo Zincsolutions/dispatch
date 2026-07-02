@@ -4,18 +4,24 @@ import { redirect } from "next/navigation"
 import type { Organization } from "@/lib/types"
 
 // cache() dedupes per request: the layout and the page each call these
-// helpers, but only the first call pays the auth round-trip.
+// helpers, but only the first call does any work.
+//
+// getSession() reads the cookie without a network round-trip. That's safe
+// here because (a) the middleware already verified/refreshed the token with
+// the auth server on this same request, and (b) every data query re-verifies
+// the JWT at the database via RLS — a forged token yields no rows, and the
+// membership check below then bounces the request out.
 export const getCurrentUser = cache(async () => {
   const supabase = await createClient()
   const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    data: { session },
+  } = await supabase.auth.getSession()
 
-  if (!user) {
+  if (!session?.user) {
     redirect("/login")
   }
 
-  return user
+  return session.user
 })
 
 export const getCurrentUserWithOrg = cache(async () => {

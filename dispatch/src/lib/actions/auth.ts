@@ -3,7 +3,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
-import { revalidatePath } from "next/cache"
 
 export async function login(formData: FormData) {
   const supabase = await createClient()
@@ -17,7 +16,6 @@ export async function login(formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath("/", "layout")
   redirect("/dashboard")
 }
 
@@ -50,7 +48,6 @@ export async function signup(formData: FormData) {
     return result
   }
 
-  revalidatePath("/", "layout")
   redirect("/dashboard")
 }
 
@@ -85,7 +82,6 @@ export async function setupOrganization(formData: FormData) {
     return result
   }
 
-  revalidatePath("/", "layout")
   redirect("/dashboard")
 }
 

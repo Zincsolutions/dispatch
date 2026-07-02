@@ -6,6 +6,7 @@ import { signup } from "@/lib/actions/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Loader2 } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -86,7 +87,8 @@ export function SignupForm({ plan }: { plan?: string }) {
             <p className="text-sm text-destructive">{error}</p>
           )}
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Creating account..." : "Create account"}
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+            {loading ? "Creating your vault..." : "Create account"}
           </Button>
           <p className="text-xs text-muted-foreground text-center">
             By creating an account, you agree to our{" "}
