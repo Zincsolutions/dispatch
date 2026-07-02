@@ -87,7 +87,7 @@ export default function UseCasesPage() {
                   href={uc.href}
                   className="inline-flex items-center gap-1.5 text-[15px] font-semibold text-[#141414] transition-all hover:gap-2.5"
                 >
-                  Read case studies
+                  Explore the blog
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

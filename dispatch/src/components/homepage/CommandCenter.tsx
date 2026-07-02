@@ -27,7 +27,7 @@ const tabs: Tab[] = [
   {
     tab: "Prompts",
     heading: "Prompt Library",
-    copy: "Store, improve, and share prompts and master prompts so everyone can build from what already works.",
+    copy: "Store, improve, and share prompts — then run any of them in ChatGPT or Claude with one click, fill-in variables included.",
     cta: "Explore the Prompt Library",
     src: "/screenshots/prompt-detail.jpg",
     alt: "Dispatch prompt detail with Run in ChatGPT and Run in Claude buttons",
@@ -35,15 +35,15 @@ const tabs: Tab[] = [
   {
     tab: "Agents",
     heading: "Agents",
-    copy: "Build reusable AI workers from your approved context, prompts, workflows, and governance rules — so expertise scales across the organization.",
+    copy: "Keep a governed registry of your custom GPTs and assistants — what each one does, who owns it, and whether it's approved — so expertise scales across the organization.",
     cta: "Explore Agents",
     src: "/screenshots/agents.jpg",
-    alt: "Dispatch agents catalog with reusable AI workers, risk levels, and approval status",
+    alt: "Dispatch agent registry with custom GPTs, risk levels, and approval status",
   },
   {
     tab: "Workflows",
     heading: "Workflows & Loops",
-    copy: "Capture repeatable AI processes, agents, and automation loops so successful work can be reused across the organization.",
+    copy: "Document repeatable AI processes as step-by-step playbooks so successful work can be repeated by anyone on the team.",
     cta: "Explore Workflows",
     src: "/screenshots/workflow-detail.jpg",
     alt: "Dispatch workflow with documented, repeatable step-by-step process",

@@ -57,7 +57,7 @@ const cards: Card[] = [
   {
     key: "workflows",
     title: "Workflows",
-    copy: "Capture repeatable AI processes and best practices.",
+    copy: "Document repeatable AI processes and best practices.",
     label: "Repeatable AI Processes",
     icon: Workflow,
     accent: "rgba(157,218,215,0.25)", // teal

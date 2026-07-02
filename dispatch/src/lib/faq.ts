@@ -99,7 +99,6 @@ export const faqCategories: FaqCategory[] = [
           "AI governance",
           "Search",
           "User permissions",
-          "Version history",
           "Context documentation",
           "Team collaboration",
         ],
@@ -190,7 +189,7 @@ export const faqCategories: FaqCategory[] = [
       {
         id: "what-makes-a-good-prompt-library",
         q: "What makes a good prompt library?",
-        a: "A quality prompt library includes categories, tags, ownership, version history, search, descriptions, and examples.",
+        a: "A quality prompt library includes categories, tags, ownership, search, descriptions, and examples \u2014 so anyone can find and reuse the best work.",
         links: [
           {
             label: "Read: From prompt library to AI operating system",
@@ -201,7 +200,7 @@ export const faqCategories: FaqCategory[] = [
       {
         id: "should-prompts-have-version-control",
         q: "Should prompts have version control?",
-        a: "Yes. As prompts evolve, organizations should maintain revision history and document improvements over time.",
+        a: "Yes \u2014 prompts should be treated as living assets. Dispatch tracks each prompt\u2019s current approved version and when it was last updated; deeper revision history is on our roadmap.",
       },
       {
         id: "how-should-prompts-be-organized",
