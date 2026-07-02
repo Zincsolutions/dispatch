@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic"
 
-import { getCurrentUserWithOrg } from "@/lib/queries/organization"
+import { getCurrentUser, getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { createClient } from "@/lib/supabase/server"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Topbar } from "@/components/layout/topbar"
@@ -10,14 +10,18 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { user, organization } = await getCurrentUserWithOrg()
-
+  // Verify the user once (cached for the whole request), then fetch the
+  // org membership and profile concurrently — both only need user.id.
+  const user = await getCurrentUser()
   const supabase = await createClient()
-  const { data: profileRow } = await supabase
-    .from("profiles")
-    .select("full_name, avatar_url")
-    .eq("id", user.id)
-    .single()
+  const [{ organization }, { data: profileRow }] = await Promise.all([
+    getCurrentUserWithOrg(),
+    supabase
+      .from("profiles")
+      .select("full_name, avatar_url")
+      .eq("id", user.id)
+      .single(),
+  ])
 
   const profile = {
     name: profileRow?.full_name || user.user_metadata?.full_name || "",
