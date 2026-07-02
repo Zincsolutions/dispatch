@@ -63,7 +63,7 @@ const features: {
     capabilities: [
       "Store prompts with structured titles, descriptions, and tags",
       "Run any prompt directly in ChatGPT or Claude with one click",
-      "Mark assets as Approved, Draft, Experimental, or Needs Review",
+      "Mark assets as Draft, Needs Review, Approved, or Archived",
       "Improve prompts over time so everyone builds from what already works",
     ],
     benefit:
@@ -139,7 +139,7 @@ const features: {
       "Review queues showing which prompts, agents, and workflows need approval",
       "Policy acknowledgements so users accept company AI standards",
       "A tool registry tracking approved AI tools and usage rules",
-      "Clear asset statuses: Approved, Draft, Experimental, Needs Review",
+      "Clear asset statuses: Draft, Needs Review, Approved, Archived",
     ],
     benefit:
       "Leadership gets confidence and compliance; teams get clarity on exactly what's approved and how to use it.",

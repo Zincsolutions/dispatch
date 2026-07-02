@@ -41,7 +41,6 @@ export const plans: Plan[] = [
       "Basic AI Foundation",
       "Personal collections",
       "Basic search",
-      "Community templates",
     ],
   },
   {
@@ -67,9 +66,7 @@ export const plans: Plan[] = [
       "Shared team workspace",
       "AI Foundation assets",
       "Brand & context assets",
-      "Favorites and saved assets",
-      "Basic permissions",
-      "Activity history",
+      "Team member invites",
     ],
   },
   {
@@ -89,15 +86,12 @@ export const plans: Plan[] = [
     features: [
       "Up to 50 users",
       "Governance Center",
-      "Approval workflows",
+      "Owner-approved publishing",
       "Review queues",
       "Policy acknowledgements",
       "Tool registry",
-      "Department workspaces",
-      "Advanced permissions",
       "Organization dashboard",
-      "Usage reporting",
-      "Status labels (Approved, Draft, Experimental, Needs Review)",
+      "Status labels (Draft, Needs Review, Approved, Archived)",
       "Priority support",
     ],
   },
@@ -178,22 +172,19 @@ export const comparisonRows: ComparisonRow[] = [
 
   // Collaboration
   { group: "Collaboration", feature: "Shared workspace", personal: false, starter: true, team: true, enterprise: true },
-  { group: "Collaboration", feature: "Favorites & saved assets", personal: false, starter: true, team: true, enterprise: true },
-  { group: "Collaboration", feature: "Activity history", personal: false, starter: true, team: true, enterprise: true },
+  { group: "Collaboration", feature: "Team member invites", personal: false, starter: true, team: true, enterprise: true },
   { group: "Collaboration", feature: "Team sharing", personal: false, starter: true, team: true, enterprise: true },
-  { group: "Collaboration", feature: "Department workspaces", personal: false, starter: false, team: true, enterprise: true },
 
   // Governance
   { group: "Governance", feature: "Governance Center", personal: false, starter: false, team: true, enterprise: true },
-  { group: "Governance", feature: "Approval workflows", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Governance", feature: "Owner-approved publishing", personal: false, starter: false, team: true, enterprise: true },
   { group: "Governance", feature: "Review queues", personal: false, starter: false, team: true, enterprise: true },
   { group: "Governance", feature: "Policy acknowledgements", personal: false, starter: false, team: true, enterprise: true },
   { group: "Governance", feature: "Tool registry", personal: false, starter: false, team: true, enterprise: true },
   { group: "Governance", feature: "Status labels", personal: false, starter: false, team: true, enterprise: true },
 
   // Security & Admin
-  { group: "Security & Admin", feature: "Basic permissions", personal: false, starter: true, team: true, enterprise: true },
-  { group: "Security & Admin", feature: "Advanced permissions", personal: false, starter: false, team: true, enterprise: true },
+  { group: "Security & Admin", feature: "Owner & member roles", personal: false, starter: true, team: true, enterprise: true },
   { group: "Security & Admin", feature: "Organization dashboard", personal: false, starter: false, team: true, enterprise: true },
   { group: "Security & Admin", feature: "Custom roles", personal: false, starter: false, team: false, enterprise: true },
   { group: "Security & Admin", feature: "SSO", personal: false, starter: false, team: false, enterprise: true },
@@ -247,7 +238,7 @@ export const faqs = [
   {
     question: "Does Dispatch support approval workflows?",
     answer:
-      "Yes, on Team and Enterprise. Assets can move through Draft, Needs Review, and Approved, with review queues so the right people sign off before anything is used in production.",
+      "Yes, on Team and Enterprise. Foundation assets, agents, workflows, and images move through Draft, Needs Review, and Approved — with a review queue where organization owners approve or send work back before it's used in production.",
   },
   {
     question: "Is there an Enterprise plan?",
@@ -262,7 +253,7 @@ export const faqs = [
   {
     question: "Can ZINC help set up Dispatch for my company?",
     answer:
-      "Yes. ZINC can help build your initial AI Foundation, agents, workflows, and governance framework so Dispatch reflects how your organization actually works.",
+      "Yes. ZINC — the AI consultancy that built Dispatch — offers implementation services to build your initial AI Foundation, agents, workflows, and governance framework so Dispatch reflects how your organization actually works.",
   },
   {
     question: "Can I cancel anytime?",

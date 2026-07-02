@@ -22,7 +22,7 @@ const features = [
   {
     icon: BadgeCheck,
     title: "Approval Status",
-    text: "Clearly mark assets as Approved, Draft, Experimental, or Needs Review.",
+    text: "Clearly mark assets as Draft, Needs Review, Approved, or Archived.",
   },
 ]
 

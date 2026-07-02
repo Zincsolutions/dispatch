@@ -15,7 +15,7 @@ export function PricingHero() {
           workflows, assets, agents, and governance needs grow.
         </p>
         <p className="text-[15px] font-medium text-[#999] mb-10">
-          Annual billing saves up to 20%.
+          Annual billing saves 20%.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link

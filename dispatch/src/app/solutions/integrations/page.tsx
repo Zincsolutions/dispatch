@@ -48,7 +48,7 @@ const groups: {
   {
     title: "Large language models",
     intro:
-      "Run your prompts and workflows on any leading LLM. Dispatch keeps them portable, so your team can pick the best model for the job.",
+      "Your prompts and workflows stay portable across every leading LLM, so your team can pick the best model for the job — without rebuilding your library.",
     items: [
       { name: "OpenAI", detail: "GPT-4 & GPT-5 family, custom GPTs", mark: "AI" },
       { name: "Anthropic Claude", detail: "Claude Opus, Sonnet & Haiku", mark: "C" },
@@ -92,7 +92,8 @@ export default function IntegrationsPage() {
           <p className="text-lg leading-relaxed text-[#666]">
             Dispatch is the system of record that sits above your AI tools - so
             your prompts, context, and governance work across every model and
-            platform your team uses.
+            platform your team uses. Run prompts in ChatGPT and Claude with one
+            click; keep everything else organized, approved, and portable.
           </p>
         </div>
 
