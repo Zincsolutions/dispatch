@@ -6,6 +6,7 @@ import { login } from "@/lib/actions/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Loader2 } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -62,8 +63,12 @@ export function LoginForm() {
           {error && (
             <p className="text-sm text-destructive">{error}</p>
           )}
+          {/* The action signs in AND renders the dashboard redirect, so this
+              pending state has to survive the whole trip — an animated
+              spinner makes the wait legible in a way a text swap doesn't. */}
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Signing in..." : "Sign in"}
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+            {loading ? "Signing you in..." : "Sign in"}
           </Button>
         </form>
       </CardContent>
