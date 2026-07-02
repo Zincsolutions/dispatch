@@ -29,7 +29,41 @@ function isPublicPath(path: string) {
   )
 }
 
+// Supabase SSR stores the session as `sb-<project-ref>-auth-token` cookies
+// (chunked into `.0`, `.1`, ... suffixes when large). Presence is a cheap
+// local signal that lets us skip the auth server round-trip entirely for
+// anonymous visitors.
+function hasSessionCookie(request: NextRequest) {
+  return request.cookies
+    .getAll()
+    .some((c) => c.name.startsWith("sb-") && c.name.includes("-auth-token"))
+}
+
 export async function updateSession(request: NextRequest) {
+  const path = request.nextUrl.pathname
+  const isPublic = isPublicPath(path)
+  const isAuthPage = path === "/login" || path === "/signup"
+
+  // Anonymous visitor: nothing to verify or refresh. Public pages pass
+  // straight through; protected pages bounce to /login. Either way the
+  // response is not gated on a Supabase round-trip.
+  if (!hasSessionCookie(request)) {
+    if (isPublic) {
+      return NextResponse.next({ request })
+    }
+    const url = request.nextUrl.clone()
+    url.pathname = "/login"
+    url.search = ""
+    return NextResponse.redirect(url)
+  }
+
+  // Signed-in visitor on a public page: only /login and /signup change
+  // behavior based on auth state, so everything else skips verification.
+  // The session refreshes on the next app-route request instead.
+  if (isPublic && !isAuthPage) {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -63,16 +97,14 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const path = request.nextUrl.pathname
-
-  if (!user && !isPublicPath(path)) {
+  if (!user && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = "/login"
     url.search = ""
     return NextResponse.redirect(url)
   }
 
-  if (user && (path === "/login" || path === "/signup")) {
+  if (user && isAuthPage) {
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
     url.search = ""

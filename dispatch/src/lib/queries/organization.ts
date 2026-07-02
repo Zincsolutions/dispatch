@@ -1,8 +1,11 @@
+import { cache } from "react"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import type { Organization } from "@/lib/types"
 
-export async function getCurrentUserWithOrg() {
+// cache() dedupes per request: the layout and the page each call these
+// helpers, but only the first call pays the auth round-trip.
+export const getCurrentUser = cache(async () => {
   const supabase = await createClient()
   const {
     data: { user },
@@ -12,35 +15,35 @@ export async function getCurrentUserWithOrg() {
     redirect("/login")
   }
 
-  // Query membership directly — the RLS policy on organization_members
-  // uses user_id = auth.uid() (no recursion, fixed in migration 00002).
+  return user
+})
+
+export const getCurrentUserWithOrg = cache(async () => {
+  const user = await getCurrentUser()
+  const supabase = await createClient()
+
+  // Membership + organization in a single round-trip via the FK embed.
+  // The RLS policy on organization_members uses user_id = auth.uid()
+  // (no recursion, fixed in migration 00002).
   const { data: membership } = await supabase
     .from("organization_members")
-    .select("organization_id, role")
+    .select("organization_id, role, organizations(*)")
     .eq("user_id", user.id)
     .single()
 
-  if (!membership) {
-    redirect("/signup")
-  }
+  const organization = (membership?.organizations ?? null) as Organization | null
 
-  const { data: organization } = await supabase
-    .from("organizations")
-    .select("*")
-    .eq("id", membership.organization_id as string)
-    .single()
-
-  if (!organization) {
+  if (!membership || !organization) {
     redirect("/signup")
   }
 
   return {
     user,
     organizationId: membership.organization_id as string,
-    organization: organization as Organization,
+    organization,
     role: membership.role as string,
   }
-}
+})
 
 // Org-wide counts for the Plan & Usage card (RLS-scoped to the user's org).
 export async function getPlanUsage() {
