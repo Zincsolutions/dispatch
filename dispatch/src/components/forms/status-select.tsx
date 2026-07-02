@@ -22,7 +22,11 @@ export function StatusSelect({
   options = STATUSES,
 }: StatusSelectProps) {
   return (
-    <Select value={value} onValueChange={(v) => onValueChange(v ?? "draft")}>
+    <Select
+      value={value}
+      onValueChange={(v) => onValueChange(v ?? "draft")}
+      items={options}
+    >
       <SelectTrigger>
         <SelectValue placeholder="Select status" />
       </SelectTrigger>

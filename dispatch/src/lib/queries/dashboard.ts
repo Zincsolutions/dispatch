@@ -11,7 +11,7 @@ interface DashboardItem {
 export async function getDashboardData() {
   const supabase = await createClient()
 
-  const [prompts, contextAssets, agents, workflows] = await Promise.all([
+  const [prompts, contextAssets, agents, workflows, images] = await Promise.all([
     supabase
       .from("prompts")
       .select("id, title, status, created_at")
@@ -32,6 +32,11 @@ export async function getDashboardData() {
       .select("id, title, status, created_at")
       .order("created_at", { ascending: false })
       .limit(5),
+    supabase
+      .from("library_images")
+      .select("id, title, status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(5),
   ])
 
   return {
@@ -39,6 +44,7 @@ export async function getDashboardData() {
     contextAssets: (contextAssets.data || []) as DashboardItem[],
     agents: (agents.data || []) as DashboardItem[],
     workflows: (workflows.data || []) as DashboardItem[],
+    images: (images.data || []) as DashboardItem[],
   }
 }
 

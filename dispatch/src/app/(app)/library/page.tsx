@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getLibraryImages, getCollections } from "@/lib/queries/library"
 import { PageHeader } from "@/components/shared/page-header"
@@ -12,6 +13,8 @@ import { Suspense } from "react"
 interface Props {
   searchParams: Promise<{ search?: string; collection?: string; tag?: string }>
 }
+
+export const metadata: Metadata = { title: "Image Library" }
 
 export default async function LibraryPage({ searchParams }: Props) {
   const params = await searchParams

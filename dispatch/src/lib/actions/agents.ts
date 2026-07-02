@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { agentSchema } from "@/lib/validations/agents"
+import { canApprove, APPROVAL_DENIED_ERROR } from "@/lib/authz"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
@@ -25,12 +26,16 @@ function parseAgentFields(formData: FormData) {
 
 export async function createAgent(formData: FormData) {
   const supabase = await createClient()
-  const { user, organizationId } = await getCurrentUserWithOrg()
+  const { user, organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = agentSchema.safeParse(parseAgentFields(formData))
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
+  }
+
+  if (parsed.data.status === "approved" && !canApprove(role)) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
   }
 
   const { data: created, error } = await supabase
@@ -60,17 +65,31 @@ export async function createAgent(formData: FormData) {
   }
 
   revalidatePath("/agents")
-  redirect("/agents")
+  redirect(`/agents/${created.id}?flash=created`)
 }
 
 export async function updateAgent(id: string, formData: FormData) {
   const supabase = await createClient()
-  await getCurrentUserWithOrg()
+  const { role } = await getCurrentUserWithOrg()
 
   const parsed = agentSchema.safeParse(parseAgentFields(formData))
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
+  }
+
+  // Only owners can move an asset into the approved state.
+  const { data: existing } = await supabase
+    .from("agents")
+    .select("status")
+    .eq("id", id)
+    .single()
+  if (
+    parsed.data.status === "approved" &&
+    existing?.status !== "approved" &&
+    !canApprove(role)
+  ) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
   }
 
   const { error } = await supabase
@@ -98,7 +117,7 @@ export async function updateAgent(id: string, formData: FormData) {
 
   revalidatePath("/agents")
   revalidatePath(`/agents/${id}`)
-  redirect(`/agents/${id}`)
+  redirect(`/agents/${id}?flash=saved`)
 }
 
 export async function deleteAgent(id: string) {
@@ -112,5 +131,5 @@ export async function deleteAgent(id: string) {
   }
 
   revalidatePath("/agents")
-  redirect("/agents")
+  redirect("/agents?flash=deleted")
 }

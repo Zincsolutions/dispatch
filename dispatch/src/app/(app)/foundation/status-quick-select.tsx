@@ -15,12 +15,26 @@ import { cn } from "@/lib/utils"
 import { ChevronDown, Check, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
-export function StatusQuickSelect({ id, status }: { id: string; status: string }) {
+export function StatusQuickSelect({
+  id,
+  status,
+  canApprove = true,
+}: {
+  id: string
+  status: string
+  // Members can move assets between draft/needs_review/archived, but only
+  // owners may publish to "approved" (enforced server-side as well).
+  canApprove?: boolean
+}) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   // Reflect the new status on the badge immediately; reverts automatically if
   // the server rejects it (the `status` prop stays unchanged).
   const [optimisticStatus, setOptimisticStatus] = useOptimistic(status)
+
+  const statuses = FOUNDATION_STATUSES.filter(
+    (s) => canApprove || s.value !== "approved" || s.value === optimisticStatus
+  )
 
   function choose(next: string) {
     if (next === optimisticStatus || isPending) return
@@ -54,7 +68,7 @@ export function StatusQuickSelect({ id, status }: { id: string; status: string }
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {FOUNDATION_STATUSES.map((s) => (
+        {statuses.map((s) => (
           <DropdownMenuItem
             key={s.value}
             onClick={() => choose(s.value)}

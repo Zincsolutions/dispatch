@@ -1,9 +1,12 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { getContextAssetById } from "@/lib/queries/context-assets"
 import { updateContextAsset } from "@/lib/actions/context-assets"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { PageHeader } from "@/components/shared/page-header"
 import { ContextAssetForm } from "@/components/forms/context-asset-form"
+
+export const metadata: Metadata = { title: "Edit Foundation Asset" }
 
 interface Props {
   params: Promise<{ id: string }>

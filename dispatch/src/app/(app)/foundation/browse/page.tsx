@@ -1,5 +1,8 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getContextAssets } from "@/lib/queries/context-assets"
+import { getCurrentUserWithOrg } from "@/lib/queries/organization"
+import { canApprove } from "@/lib/authz"
 import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { StatusQuickSelect } from "../status-quick-select"
@@ -10,21 +13,26 @@ import { FOUNDATION_CATEGORIES, FOUNDATION_STATUSES } from "@/lib/constants"
 import { ArrowLeft, Image as ImageIcon } from "lucide-react"
 import { Suspense } from "react"
 
+export const metadata: Metadata = { title: "Browse Foundation Assets" }
+
 interface Props {
   searchParams: Promise<{ search?: string; status?: string; category?: string; tag?: string }>
 }
 
 export default async function FoundationBrowsePage({ searchParams }: Props) {
   const params = await searchParams
-  const contextAssets = await getContextAssets(
-    {
-      search: params.search,
-      status: params.status,
-      category: params.category,
-      tag: params.tag,
-    },
-    { withCover: true }
-  )
+  const [contextAssets, { role }] = await Promise.all([
+    getContextAssets(
+      {
+        search: params.search,
+        status: params.status,
+        category: params.category,
+        tag: params.tag,
+      },
+      { withCover: true }
+    ),
+    getCurrentUserWithOrg(),
+  ])
   const hasFilters = Boolean(params.search || params.status || params.category || params.tag)
   const activeCategory = FOUNDATION_CATEGORIES.find((c) => c.value === params.category)
 
@@ -108,7 +116,11 @@ export default async function FoundationBrowsePage({ searchParams }: Props) {
                   </div>
                 </div>
               </Link>
-              <StatusQuickSelect id={asset.id} status={asset.status} />
+              <StatusQuickSelect
+                id={asset.id}
+                status={asset.status}
+                canApprove={canApprove(role)}
+              />
             </div>
           ))}
         </div>

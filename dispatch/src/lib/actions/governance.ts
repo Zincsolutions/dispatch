@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { documentSchema, toolSchema } from "@/lib/validations/governance"
+import { canApprove, APPROVAL_DENIED_ERROR } from "@/lib/authz"
 import type {
   GovDocumentInsert,
   GovDocumentUpdate,
@@ -35,11 +36,15 @@ function parseDocumentFields(formData: FormData) {
 
 export async function createDocument(formData: FormData) {
   const supabase = await createClient()
-  const { user, organizationId } = await getCurrentUserWithOrg()
+  const { user, organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = documentSchema.safeParse(parseDocumentFields(formData))
   if (!parsed.success) {
     return { error: { _form: [parsed.error.issues[0]?.message || "Invalid input"] } }
+  }
+
+  if (parsed.data.status === "approved" && !canApprove(role)) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
   }
 
   // The browser uploads under its own org prefix (storage RLS); don't
@@ -66,12 +71,12 @@ export async function createDocument(formData: FormData) {
   }
 
   revalidatePath("/governance")
-  redirect(`/governance/policies/${data.id}`)
+  redirect(`/governance/policies/${data.id}?flash=created`)
 }
 
 export async function updateDocument(id: string, formData: FormData) {
   const supabase = await createClient()
-  const { organizationId } = await getCurrentUserWithOrg()
+  const { organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = documentSchema.safeParse(parseDocumentFields(formData))
   if (!parsed.success) {
@@ -89,10 +94,19 @@ export async function updateDocument(id: string, formData: FormData) {
   // replaced or removed in this edit.
   const { data: existing } = await supabase
     .from("documents")
-    .select("attachment_path")
+    .select("attachment_path, status")
     .eq("id", id)
     .single()
   const oldAttachmentPath = existing?.attachment_path as string | null
+
+  // Only owners can move an asset into the approved state.
+  if (
+    parsed.data.status === "approved" &&
+    existing?.status !== "approved" &&
+    !canApprove(role)
+  ) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
+  }
 
   const { error } = await supabase
     .from("documents")
@@ -110,7 +124,7 @@ export async function updateDocument(id: string, formData: FormData) {
 
   revalidatePath("/governance")
   revalidatePath(`/governance/policies/${id}`)
-  redirect(`/governance/policies/${id}`)
+  redirect(`/governance/policies/${id}?flash=saved`)
 }
 
 export async function deleteDocument(id: string) {
@@ -134,7 +148,7 @@ export async function deleteDocument(id: string) {
   }
 
   revalidatePath("/governance")
-  redirect("/governance/policies")
+  redirect("/governance/policies?flash=deleted")
 }
 
 export async function acknowledgeDocument(id: string) {

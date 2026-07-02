@@ -1,5 +1,9 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getReviewQueue, REVIEW_TYPE_OPTIONS } from "@/lib/queries/review-queue"
+import { getCurrentUserWithOrg } from "@/lib/queries/organization"
+import { canApprove } from "@/lib/authz"
+import { ReviewActions } from "./review-actions"
 import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { StatusBadge } from "@/components/shared/status-badge"
@@ -12,9 +16,15 @@ interface Props {
   searchParams: Promise<{ type?: string }>
 }
 
+export const metadata: Metadata = { title: "Review Queue" }
+
 export default async function ReviewQueuePage({ searchParams }: Props) {
   const { type } = await searchParams
-  const items = await getReviewQueue(type)
+  const [items, { role }] = await Promise.all([
+    getReviewQueue(type),
+    getCurrentUserWithOrg(),
+  ])
+  const isReviewer = canApprove(role)
   const hasFilter = Boolean(type && type !== "all")
 
   return (
@@ -67,6 +77,7 @@ export default async function ReviewQueuePage({ searchParams }: Props) {
               <div className="flex items-center gap-2 shrink-0">
                 <Badge variant="outline">{item.typeLabel}</Badge>
                 <StatusBadge status={item.status} />
+                {isReviewer && <ReviewActions type={item.type} id={item.id} />}
               </div>
             </Link>
           ))}

@@ -105,7 +105,11 @@ export function AgentForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label>Platform</Label>
-          <Select value={platform} onValueChange={(v) => setPlatform(v ?? "")}>
+          <Select
+            value={platform}
+            onValueChange={(v) => setPlatform(v ?? "")}
+            items={AGENT_PLATFORMS}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select platform" />
             </SelectTrigger>
@@ -132,7 +136,11 @@ export function AgentForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label>Department</Label>
-          <Select value={department} onValueChange={(v) => setDepartment(v ?? "")}>
+          <Select
+            value={department}
+            onValueChange={(v) => setDepartment(v ?? "")}
+            items={DEPARTMENTS}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select department" />
             </SelectTrigger>
@@ -177,7 +185,11 @@ export function AgentForm({
         </div>
         <div className="space-y-2">
           <Label>Risk level</Label>
-          <Select value={riskLevel} onValueChange={(v) => setRiskLevel(v ?? "")}>
+          <Select
+            value={riskLevel}
+            onValueChange={(v) => setRiskLevel(v ?? "")}
+            items={RISK_LEVELS}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select risk" />
             </SelectTrigger>

@@ -76,7 +76,16 @@ export function RelatedItemSelector({
       )}
 
       {availableItems.length > 0 && (
-        <Select key={selectKey} onValueChange={(v: string | null) => v && handleAdd(v)}>
+        <Select
+          key={selectKey}
+          onValueChange={(v: string | null) => v && handleAdd(v)}
+          // Item values are ids — map them to titles so the trigger never
+          // flashes a raw id before the key-remount resets it.
+          items={availableItems.map((item) => ({
+            value: item.id,
+            label: getItemLabel(item),
+          }))}
+        >
           <SelectTrigger>
             <SelectValue placeholder={`Add ${label.toLowerCase()}...`} />
           </SelectTrigger>

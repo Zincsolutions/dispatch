@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getDocuments } from "@/lib/queries/governance"
 import { PageHeader } from "@/components/shared/page-header"
@@ -19,6 +20,8 @@ const DOC_TYPES = [
 interface Props {
   searchParams: Promise<{ search?: string; status?: string; doc_type?: string; tag?: string }>
 }
+
+export const metadata: Metadata = { title: "Policies & SOPs" }
 
 export default async function PoliciesPage({ searchParams }: Props) {
   const params = await searchParams

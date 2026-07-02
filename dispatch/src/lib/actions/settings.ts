@@ -125,3 +125,45 @@ export async function updateProfile(formData: FormData) {
   revalidatePath("/", "layout")
   return { success: true }
 }
+
+export async function changePassword(formData: FormData) {
+  const supabase = await createClient()
+  const { user } = await getCurrentUserWithOrg()
+
+  const current = formData.get("current_password") as string
+  const next = formData.get("new_password") as string
+  const confirm = formData.get("confirm_password") as string
+
+  if (!current || !next || !confirm) {
+    return { error: "All fields are required" }
+  }
+  if (next !== confirm) {
+    return { error: "New passwords do not match" }
+  }
+  if (next.length < 8) {
+    return { error: "New password must be at least 8 characters" }
+  }
+  if (next === current) {
+    return { error: "New password must be different from your current password" }
+  }
+  if (!user.email) {
+    return { error: "Your account has no email login" }
+  }
+
+  // Supabase has no dedicated "verify password" endpoint; re-authenticating
+  // is the supported way to confirm the current password before changing it.
+  const { error: verifyError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: current,
+  })
+  if (verifyError) {
+    return { error: "Current password is incorrect" }
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: next })
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { success: true }
+}

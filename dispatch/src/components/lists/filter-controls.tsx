@@ -36,6 +36,16 @@ export function FilterControls({
   // so no loading.tsx fallback appears — the spinner is the only signal.
   const [isPending, startTransition] = useTransition()
 
+  // Passed to the Select roots so the closed trigger shows the option's
+  // label (e.g. "All statuses") instead of the raw value (e.g. "all").
+  const statusItems = [{ value: "all", label: "All statuses" }, ...statusOptions]
+  const categoryItems = categoryOptions
+    ? [
+        { value: "all", label: `All ${categoryLabel.toLowerCase()}s` },
+        ...categoryOptions,
+      ]
+    : []
+
   function updateFilter(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString())
     if (value && value !== "all") {
@@ -54,6 +64,7 @@ export function FilterControls({
       <Select
         value={searchParams.get("status") || "all"}
         onValueChange={(v) => updateFilter("status", v)}
+        items={statusItems}
       >
         <SelectTrigger className="w-[140px]">
           <SelectValue placeholder="Status" />
@@ -72,6 +83,7 @@ export function FilterControls({
         <Select
           value={searchParams.get(categoryParam) || "all"}
           onValueChange={(v) => updateFilter(categoryParam, v)}
+          items={categoryItems}
         >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder={categoryLabel} />

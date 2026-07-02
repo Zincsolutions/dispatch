@@ -1,5 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { getCurrentUserWithOrg } from "@/lib/queries/organization"
+import { canApprove } from "@/lib/authz"
 import { getContextAssetById } from "@/lib/queries/context-assets"
 import { deleteContextAsset } from "@/lib/actions/context-assets"
 import { StatusBadge } from "@/components/shared/status-badge"
@@ -17,13 +19,28 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params
+  const { createClient } = await import("@/lib/supabase/server")
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("context_assets")
+    .select("title")
+    .eq("id", id)
+    .maybeSingle()
+  return { title: data?.title ?? "Not found" }
+}
+
 function fmt(d: string | null | undefined) {
   return d ? new Date(d).toLocaleDateString() : "—"
 }
 
 export default async function ContextAssetDetailPage({ params }: Props) {
   const { id } = await params
-  const asset = await getContextAssetById(id)
+  const [asset, { role }] = await Promise.all([
+    getContextAssetById(id),
+    getCurrentUserWithOrg(),
+  ])
   if (!asset) return notFound()
 
   const categoryLabel =
@@ -212,7 +229,11 @@ export default async function ContextAssetDetailPage({ params }: Props) {
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-muted-foreground">Status</span>
-                <StatusQuickSelect id={asset.id} status={asset.status} />
+                <StatusQuickSelect
+                  id={asset.id}
+                  status={asset.status}
+                  canApprove={canApprove(role)}
+                />
               </div>
               {meta.map((row) => (
                 <div key={row.label} className="flex items-center justify-between gap-3">

@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { getAgents } from "@/lib/queries/agents"
 import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
@@ -16,6 +17,8 @@ interface Props {
     tag?: string
   }>
 }
+
+export const metadata: Metadata = { title: "Agents" }
 
 export default async function AgentsPage({ searchParams }: Props) {
   const params = await searchParams

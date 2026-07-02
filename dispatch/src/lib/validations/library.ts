@@ -9,7 +9,7 @@ export const libraryImageSchema = z.object({
   sref: z.string().max(500).nullable(),
   parameters: z.string().max(1000).nullable(),
   tool: z.enum(["midjourney", "dalle", "firefly", "other"]),
-  status: z.enum(["draft", "needs_review", "approved", "archived"]).default("approved"),
+  status: z.enum(["draft", "needs_review", "approved", "archived"]).default("draft"),
   negative_prompt: z.string().max(10000).nullable(),
   cref: z.string().max(500).nullable(),
   seed: z.string().max(100).nullable(),

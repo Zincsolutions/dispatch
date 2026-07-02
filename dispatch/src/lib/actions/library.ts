@@ -7,6 +7,7 @@ import {
   libraryImageUpdateSchema,
   collectionSchema,
 } from "@/lib/validations/library"
+import { canApprove, APPROVAL_DENIED_ERROR } from "@/lib/authz"
 import type { LibraryImageInsert, LibraryImageUpdate } from "@/lib/types"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
@@ -53,7 +54,7 @@ function safeParseTags(raw: FormDataEntryValue | null): string[] {
 // (RLS-scoped to the org's folder); this records the metadata row.
 export async function createLibraryImage(formData: FormData) {
   const supabase = await createClient()
-  const { user, organizationId } = await getCurrentUserWithOrg()
+  const { user, organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = libraryImageSchema.safeParse({
     storage_path: formData.get("storage_path"),
@@ -62,6 +63,10 @@ export async function createLibraryImage(formData: FormData) {
 
   if (!parsed.success) {
     return { error: { _form: [parsed.error.issues[0]?.message || "Invalid input"] } }
+  }
+
+  if (parsed.data.status === "approved" && !canApprove(role)) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
   }
 
   // The browser can only upload under its own org prefix (storage RLS),
@@ -101,12 +106,12 @@ export async function createLibraryImage(formData: FormData) {
   }
 
   revalidatePath("/library")
-  redirect("/library")
+  redirect(`/library/${created.id}?flash=created`)
 }
 
 export async function updateLibraryImage(id: string, formData: FormData) {
   const supabase = await createClient()
-  const { organizationId } = await getCurrentUserWithOrg()
+  const { organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = libraryImageUpdateSchema.safeParse(parseImageFields(formData))
 
@@ -125,10 +130,19 @@ export async function updateLibraryImage(id: string, formData: FormData) {
   // replaced or removed in this edit.
   const { data: existing } = await supabase
     .from("library_images")
-    .select("reference_storage_path")
+    .select("reference_storage_path, status")
     .eq("id", id)
     .single()
   const oldReferencePath = existing?.reference_storage_path as string | null
+
+  // Only owners can move an asset into the approved state.
+  if (
+    parsed.data.status === "approved" &&
+    existing?.status !== "approved" &&
+    !canApprove(role)
+  ) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
+  }
 
   const { error } = await supabase
     .from("library_images")
@@ -158,7 +172,7 @@ export async function updateLibraryImage(id: string, formData: FormData) {
 
   revalidatePath("/library")
   revalidatePath(`/library/${id}`)
-  redirect(`/library/${id}`)
+  redirect(`/library/${id}?flash=saved`)
 }
 
 export async function deleteLibraryImage(id: string) {
@@ -186,7 +200,7 @@ export async function deleteLibraryImage(id: string) {
   }
 
   revalidatePath("/library")
-  redirect("/library")
+  redirect("/library?flash=deleted")
 }
 
 export async function createCollection(formData: FormData) {

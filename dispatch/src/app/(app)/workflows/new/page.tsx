@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { PageHeader } from "@/components/shared/page-header"
 import { WorkflowForm } from "@/components/forms/workflow-form"
 import { createWorkflow } from "@/lib/actions/workflows"
@@ -8,6 +9,8 @@ import { getAgents } from "@/lib/queries/agents"
 interface Props {
   searchParams: Promise<{ type?: string }>
 }
+
+export const metadata: Metadata = { title: "New Workflow" }
 
 export default async function NewWorkflowPage({ searchParams }: Props) {
   const { type } = await searchParams
