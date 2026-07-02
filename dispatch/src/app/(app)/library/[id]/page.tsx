@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getLibraryImageById } from "@/lib/queries/library"
@@ -25,6 +27,17 @@ function buildFullPrompt(image: {
   if (image.sref) parts.push(`--sref ${image.sref.trim()}`)
   if (image.parameters) parts.push(image.parameters.trim())
   return parts.filter(Boolean).join(" ")
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("library_images")
+    .select("title")
+    .eq("id", id)
+    .maybeSingle()
+  return { title: data?.title ?? "Not found" }
 }
 
 export default async function LibraryImageDetailPage({ params }: Props) {

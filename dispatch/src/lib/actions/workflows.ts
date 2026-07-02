@@ -3,13 +3,14 @@
 import { createClient } from "@/lib/supabase/server"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { workflowSchema } from "@/lib/validations/workflows"
+import { canApprove, APPROVAL_DENIED_ERROR } from "@/lib/authz"
 import type { WorkflowInsert, WorkflowUpdate } from "@/lib/types"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function createWorkflow(formData: FormData) {
   const supabase = await createClient()
-  const { user, organizationId } = await getCurrentUserWithOrg()
+  const { user, organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = workflowSchema.safeParse({
     title: formData.get("title"),
@@ -42,6 +43,10 @@ export async function createWorkflow(formData: FormData) {
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
+  }
+
+  if (parsed.data.status === "approved" && !canApprove(role)) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
   }
 
   const {
@@ -96,12 +101,12 @@ export async function createWorkflow(formData: FormData) {
   }
 
   revalidatePath("/workflows")
-  redirect("/workflows")
+  redirect(`/workflows/${workflowId}?flash=created`)
 }
 
 export async function updateWorkflow(id: string, formData: FormData) {
   const supabase = await createClient()
-  await getCurrentUserWithOrg()
+  const { role } = await getCurrentUserWithOrg()
 
   const parsed = workflowSchema.safeParse({
     title: formData.get("title"),
@@ -134,6 +139,20 @@ export async function updateWorkflow(id: string, formData: FormData) {
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
+  }
+
+  // Only owners can move an asset into the approved state.
+  const { data: existing } = await supabase
+    .from("workflows")
+    .select("status")
+    .eq("id", id)
+    .single()
+  if (
+    parsed.data.status === "approved" &&
+    existing?.status !== "approved" &&
+    !canApprove(role)
+  ) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
   }
 
   const {
@@ -188,7 +207,7 @@ export async function updateWorkflow(id: string, formData: FormData) {
 
   revalidatePath("/workflows")
   revalidatePath(`/workflows/${id}`)
-  redirect(`/workflows/${id}`)
+  redirect(`/workflows/${id}?flash=saved`)
 }
 
 export async function deleteWorkflow(id: string) {
@@ -202,5 +221,5 @@ export async function deleteWorkflow(id: string) {
   }
 
   revalidatePath("/workflows")
-  redirect("/workflows")
+  redirect("/workflows?flash=deleted")
 }

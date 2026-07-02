@@ -69,7 +69,7 @@ export function LibraryImageForm({
   const [fileInputKey, setFileInputKey] = useState(0)
   const [tags, setTags] = useState<string[]>(defaultValues?.tags || [])
   const [tool, setTool] = useState(defaultValues?.tool || "midjourney")
-  const [status, setStatus] = useState(defaultValues?.status || "approved")
+  const [status, setStatus] = useState(defaultValues?.status || "draft")
   const [collectionId, setCollectionId] = useState(
     defaultValues?.collection_id || NO_COLLECTION
   )
@@ -134,6 +134,13 @@ export function LibraryImageForm({
 
   const showExistingReference = keepExistingReference && Boolean(defaultReferenceUrl)
   const referenceThumb = referencePreviewUrl ?? (showExistingReference ? defaultReferenceUrl : null)
+
+  // Passed to the collection Select root so the closed trigger shows the
+  // collection's name instead of its raw id.
+  const collectionItems = [
+    { value: NO_COLLECTION, label: "No collection" },
+    ...collections.map((c) => ({ value: c.id, label: c.name })),
+  ]
 
   async function handleSubmit(formData: FormData) {
     formData.set("tags", JSON.stringify(tags))
@@ -292,7 +299,11 @@ export function LibraryImageForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="tool-select">Tool</Label>
-          <Select value={tool} onValueChange={(v) => setTool(v ?? "midjourney")}>
+          <Select
+            value={tool}
+            onValueChange={(v) => setTool(v ?? "midjourney")}
+            items={TOOLS}
+          >
             <SelectTrigger id="tool-select">
               <SelectValue placeholder="Tool" />
             </SelectTrigger>
@@ -310,6 +321,7 @@ export function LibraryImageForm({
           <Select
             value={collectionId}
             onValueChange={(v) => setCollectionId(v ?? NO_COLLECTION)}
+            items={collectionItems}
           >
             <SelectTrigger id="collection-select">
               <SelectValue placeholder="No collection" />

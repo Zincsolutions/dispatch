@@ -1,7 +1,10 @@
+import type { Metadata } from "next"
 import { PageHeader } from "@/components/shared/page-header"
 import { AgentForm } from "@/components/forms/agent-form"
 import { createAgent } from "@/lib/actions/agents"
 import { getFoundationAssetOptions } from "@/lib/queries/context-assets"
+
+export const metadata: Metadata = { title: "New Agent" }
 
 export default async function NewAgentPage() {
   const foundationAssets = await getFoundationAssetOptions()

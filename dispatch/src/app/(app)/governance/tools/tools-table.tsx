@@ -87,7 +87,11 @@ function ToolFormDialog({ open, onOpenChange, tool }: ToolFormDialogProps) {
             </div>
             <div className="space-y-2">
               <Label>Status</Label>
-              <Select value={status} onValueChange={(v) => setStatus(v ?? "experimental")}>
+              <Select
+                value={status}
+                onValueChange={(v) => setStatus(v ?? "experimental")}
+                items={TOOL_STATUSES}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>

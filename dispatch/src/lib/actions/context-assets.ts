@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { contextAssetSchema } from "@/lib/validations/context-assets"
+import { canApprove, APPROVAL_DENIED_ERROR } from "@/lib/authz"
 import type { ContextAssetInsert, ContextAssetUpdate } from "@/lib/types"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
@@ -63,11 +64,15 @@ function parseNewFiles(formData: FormData, organizationId: string): NewFile[] {
 
 export async function createContextAsset(formData: FormData) {
   const supabase = await createClient()
-  const { user, organizationId } = await getCurrentUserWithOrg()
+  const { user, organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = contextAssetSchema.safeParse(parseFields(formData))
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
+  }
+
+  if (parsed.data.status === "approved" && !canApprove(role)) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
   }
 
   const { data: created, error } = await supabase
@@ -91,12 +96,12 @@ export async function createContextAsset(formData: FormData) {
   await saveChildren(supabase, created.id, organizationId, user.id, formData)
 
   revalidatePath("/foundation")
-  redirect(`/foundation/${created.id}`)
+  redirect(`/foundation/${created.id}?flash=created`)
 }
 
 export async function updateContextAsset(id: string, formData: FormData) {
   const supabase = await createClient()
-  const { user, organizationId } = await getCurrentUserWithOrg()
+  const { user, organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = contextAssetSchema.safeParse(parseFields(formData))
   if (!parsed.success) {
@@ -111,6 +116,12 @@ export async function updateContextAsset(id: string, formData: FormData) {
     .single()
   const nowApproved = parsed.data.status === "approved"
   const wasApproved = existing?.status === "approved"
+
+  // Only owners can move an asset into the approved state.
+  if (nowApproved && !wasApproved && !canApprove(role)) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
+  }
+
   const approvalFields = nowApproved
     ? wasApproved
       ? {}
@@ -130,7 +141,7 @@ export async function updateContextAsset(id: string, formData: FormData) {
 
   revalidatePath("/foundation")
   revalidatePath(`/foundation/${id}`)
-  redirect(`/foundation/${id}`)
+  redirect(`/foundation/${id}?flash=saved`)
 }
 
 // Inserts new files + links; on edit, replaces links and removes deleted files.
@@ -196,7 +207,7 @@ async function saveChildren(
 // Quick status change from the list/detail views (no full form submit).
 export async function updateFoundationAssetStatus(id: string, status: string) {
   const supabase = await createClient()
-  const { user } = await getCurrentUserWithOrg()
+  const { user, role } = await getCurrentUserWithOrg()
 
   if (!["draft", "needs_review", "approved", "archived"].includes(status)) {
     return { error: "Invalid status" }
@@ -209,6 +220,12 @@ export async function updateFoundationAssetStatus(id: string, status: string) {
     .single()
   const nowApproved = status === "approved"
   const wasApproved = existing?.status === "approved"
+
+  // Only owners can move an asset into the approved state.
+  if (nowApproved && !wasApproved && !canApprove(role)) {
+    return { error: APPROVAL_DENIED_ERROR }
+  }
+
   const approvalFields = nowApproved
     ? wasApproved
       ? {}
@@ -250,5 +267,5 @@ export async function deleteContextAsset(id: string) {
   if (paths.length) await supabase.storage.from("library").remove(paths)
 
   revalidatePath("/foundation")
-  redirect("/foundation")
+  redirect("/foundation?flash=deleted")
 }

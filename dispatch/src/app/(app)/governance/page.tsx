@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getDocuments, getTools } from "@/lib/queries/governance"
 import { PageHeader } from "@/components/shared/page-header"
@@ -6,6 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button-variants"
 import { getReviewQueue } from "@/lib/queries/review-queue"
 import { FileCheck2, Wrench, ArrowRight, CheckCircle2, ClipboardCheck } from "lucide-react"
+
+export const metadata: Metadata = { title: "Governance" }
 
 export default async function GovernancePage() {
   // getDocuments() already returns status + acked_by_me, so derive the

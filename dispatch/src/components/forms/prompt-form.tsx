@@ -183,12 +183,20 @@ export function PromptForm({
           required
           className="font-mono text-sm"
         />
+        <p className="text-xs text-muted-foreground">
+          Tip: write {"{{variable}}"} placeholders (e.g. {"{{client_name}}"})
+          and Dispatch will ask you to fill them in when running the prompt.
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label>Category</Label>
-          <Select value={category} onValueChange={(v) => setCategory(v ?? "")}>
+          <Select
+            value={category}
+            onValueChange={(v) => setCategory(v ?? "")}
+            items={PROMPT_CATEGORIES}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select category" />
             </SelectTrigger>

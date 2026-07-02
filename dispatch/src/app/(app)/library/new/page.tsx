@@ -1,8 +1,11 @@
+import type { Metadata } from "next"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { getCollections } from "@/lib/queries/library"
 import { getFoundationAssetOptions } from "@/lib/queries/context-assets"
 import { createLibraryImage } from "@/lib/actions/library"
 import { LibraryImageForm } from "@/components/forms/library-image-form"
+
+export const metadata: Metadata = { title: "Add Image" }
 
 export default async function NewLibraryImagePage() {
   const [{ organizationId }, collections, foundationAssets] = await Promise.all([

@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getAgentById } from "@/lib/queries/agents"
@@ -12,6 +14,17 @@ import { Pencil, Trash2, ArrowLeft } from "lucide-react"
 
 interface Props {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("agents")
+    .select("name")
+    .eq("id", id)
+    .maybeSingle()
+  return { title: data?.name ?? "Not found" }
 }
 
 export default async function AgentDetailPage({ params }: Props) {

@@ -3,13 +3,14 @@
 import { createClient } from "@/lib/supabase/server"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { promptSchema } from "@/lib/validations/prompts"
+import { canApprove, APPROVAL_DENIED_ERROR } from "@/lib/authz"
 import type { PromptInsert, PromptUpdate } from "@/lib/types"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function createPrompt(formData: FormData) {
   const supabase = await createClient()
-  const { user, organizationId } = await getCurrentUserWithOrg()
+  const { user, organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = promptSchema.safeParse({
     title: formData.get("title"),
@@ -23,6 +24,10 @@ export async function createPrompt(formData: FormData) {
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors }
+  }
+
+  if (parsed.data.status === "approved" && !canApprove(role)) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
   }
 
   // The browser uploads under its own org prefix (storage RLS); don't
@@ -67,12 +72,12 @@ export async function createPrompt(formData: FormData) {
   }
 
   revalidatePath("/prompts")
-  redirect("/prompts")
+  redirect(`/prompts/${created.id}?flash=created`)
 }
 
 export async function updatePrompt(id: string, formData: FormData) {
   const supabase = await createClient()
-  const { organizationId } = await getCurrentUserWithOrg()
+  const { organizationId, role } = await getCurrentUserWithOrg()
 
   const parsed = promptSchema.safeParse({
     title: formData.get("title"),
@@ -99,10 +104,19 @@ export async function updatePrompt(id: string, formData: FormData) {
   // replaced or removed in this edit.
   const { data: existing } = await supabase
     .from("prompts")
-    .select("sample_output_path")
+    .select("sample_output_path, status")
     .eq("id", id)
     .single()
   const oldSamplePath = existing?.sample_output_path as string | null
+
+  // Only owners can move an asset into the approved state.
+  if (
+    parsed.data.status === "approved" &&
+    existing?.status !== "approved" &&
+    !canApprove(role)
+  ) {
+    return { error: { _form: [APPROVAL_DENIED_ERROR] } }
+  }
 
   const { error } = await supabase
     .from("prompts")
@@ -140,7 +154,7 @@ export async function updatePrompt(id: string, formData: FormData) {
 
   revalidatePath("/prompts")
   revalidatePath(`/prompts/${id}`)
-  redirect(`/prompts/${id}`)
+  redirect(`/prompts/${id}?flash=saved`)
 }
 
 export async function deletePrompt(id: string) {
@@ -167,5 +181,5 @@ export async function deletePrompt(id: string) {
   }
 
   revalidatePath("/prompts")
-  redirect("/prompts")
+  redirect("/prompts?flash=deleted")
 }

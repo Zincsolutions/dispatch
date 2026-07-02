@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getDashboardData, getDashboardMetrics } from "@/lib/queries/dashboard"
 import { getReviewQueue } from "@/lib/queries/review-queue"
@@ -12,6 +13,7 @@ import {
   FileText,
   Bot,
   Workflow,
+  Images,
   Layers,
   CheckCircle2,
   AlertCircle,
@@ -19,6 +21,8 @@ import {
   ArrowRight,
   type LucideIcon,
 } from "lucide-react"
+
+export const metadata: Metadata = { title: "Dashboard" }
 
 export default async function DashboardPage() {
   const [data, metrics, reviewQueue, awaitingAck] = await Promise.all([
@@ -41,6 +45,7 @@ export default async function DashboardPage() {
       value: metrics.approved,
       icon: CheckCircle2,
       sub: "Approved and ready to use",
+      href: "/governance",
     },
     {
       label: "Needs Review",
@@ -97,6 +102,19 @@ export default async function DashboardPage() {
       viewAllHref: "/workflows",
       createHref: "/workflows/new",
       emptyDescription: "No workflows yet. Define repeatable AI processes.",
+    },
+    {
+      title: "Image Library",
+      icon: Images,
+      items: data.images.map((i) => ({
+        id: i.id,
+        name: i.title || "Untitled image",
+        status: i.status,
+        href: `/library/${i.id}`,
+      })),
+      viewAllHref: "/library",
+      createHref: "/library/new",
+      emptyDescription: "No images yet. Save your AI imagery with the prompts that made them.",
     },
   ]
 

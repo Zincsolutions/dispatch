@@ -163,7 +163,11 @@ export function DocumentForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label>Type</Label>
-          <Select value={docType} onValueChange={(v) => setDocType(v ?? "policy")}>
+          <Select
+            value={docType}
+            onValueChange={(v) => setDocType(v ?? "policy")}
+            items={DOC_TYPES}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Type" />
             </SelectTrigger>

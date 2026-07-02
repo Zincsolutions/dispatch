@@ -185,7 +185,11 @@ export function ContextAssetForm({
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="space-y-2">
           <Label>Category</Label>
-          <Select value={category} onValueChange={(v) => setCategory(v ?? "")}>
+          <Select
+            value={category}
+            onValueChange={(v) => setCategory(v ?? "")}
+            items={FOUNDATION_CATEGORIES}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
@@ -201,7 +205,11 @@ export function ContextAssetForm({
 
         <div className="space-y-2">
           <Label>Asset Type</Label>
-          <Select value={assetType} onValueChange={(v) => setAssetType(v ?? "")}>
+          <Select
+            value={assetType}
+            onValueChange={(v) => setAssetType(v ?? "")}
+            items={CONTEXT_ASSET_TYPES}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select asset type" />
             </SelectTrigger>

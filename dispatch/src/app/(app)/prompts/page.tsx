@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getPrompts } from "@/lib/queries/prompts"
 import { PageHeader } from "@/components/shared/page-header"
@@ -12,6 +13,8 @@ import { Suspense } from "react"
 interface Props {
   searchParams: Promise<{ search?: string; status?: string; category?: string; tag?: string }>
 }
+
+export const metadata: Metadata = { title: "Prompts" }
 
 export default async function PromptsPage({ searchParams }: Props) {
   const params = await searchParams

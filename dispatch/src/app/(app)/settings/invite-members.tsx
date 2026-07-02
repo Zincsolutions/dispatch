@@ -18,6 +18,11 @@ import { CopyButton } from "@/components/shared/copy-button"
 import { toast } from "sonner"
 import type { Invitation } from "@/lib/types"
 
+const ROLES = [
+  { value: "member", label: "Member" },
+  { value: "owner", label: "Owner" },
+]
+
 interface InviteMembersProps {
   invitations: Invitation[]
 }
@@ -73,13 +78,20 @@ export function InviteMembers({ invitations }: InviteMembersProps) {
           </div>
           <div className="space-y-2 w-full sm:w-36">
             <Label htmlFor="invite-role">Role</Label>
-            <Select value={role} onValueChange={(v) => setRole(v ?? "member")}>
+            <Select
+              value={role}
+              onValueChange={(v) => setRole(v ?? "member")}
+              items={ROLES}
+            >
               <SelectTrigger id="invite-role">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="member">Member</SelectItem>
-                <SelectItem value="owner">Owner</SelectItem>
+                {ROLES.map((r) => (
+                  <SelectItem key={r.value} value={r.value}>
+                    {r.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

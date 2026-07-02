@@ -1,6 +1,9 @@
+import type { Metadata } from "next"
 import { createDocument } from "@/lib/actions/governance"
 import { DocumentForm } from "@/components/forms/document-form"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
+
+export const metadata: Metadata = { title: "New Document" }
 
 export default async function NewDocumentPage() {
   const { organizationId } = await getCurrentUserWithOrg()

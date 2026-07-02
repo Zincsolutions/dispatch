@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getWorkflows } from "@/lib/queries/workflows"
 import { EmptyState } from "@/components/shared/empty-state"
@@ -19,6 +20,8 @@ interface Props {
     tag?: string
   }>
 }
+
+export const metadata: Metadata = { title: "Workflows & Loops" }
 
 export default async function WorkflowsPage({ searchParams }: Props) {
   const params = await searchParams

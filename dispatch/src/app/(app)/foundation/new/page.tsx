@@ -1,7 +1,10 @@
+import type { Metadata } from "next"
 import { PageHeader } from "@/components/shared/page-header"
 import { ContextAssetForm } from "@/components/forms/context-asset-form"
 import { createContextAsset } from "@/lib/actions/context-assets"
 import { getCurrentUserWithOrg } from "@/lib/queries/organization"
+
+export const metadata: Metadata = { title: "Add Foundation Asset" }
 
 export default async function NewContextAssetPage() {
   const { organizationId } = await getCurrentUserWithOrg()

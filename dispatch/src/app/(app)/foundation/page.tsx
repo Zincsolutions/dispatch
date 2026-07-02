@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getFoundationOverview, getCategoryImagePreviews } from "@/lib/queries/context-assets"
 import { PageHeader } from "@/components/shared/page-header"
@@ -18,6 +19,8 @@ import {
   CalendarClock,
   type LucideIcon,
 } from "lucide-react"
+
+export const metadata: Metadata = { title: "AI Foundation" }
 
 const CATEGORY_META: Record<string, { icon: LucideIcon; description: string }> = {
   brand_identity: {

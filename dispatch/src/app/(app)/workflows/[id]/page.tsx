@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getWorkflowById } from "@/lib/queries/workflows"
@@ -15,6 +17,17 @@ import type { WorkflowStep } from "@/lib/types"
 
 interface Props {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("workflows")
+    .select("title")
+    .eq("id", id)
+    .maybeSingle()
+  return { title: data?.title ?? "Not found" }
 }
 
 export default async function WorkflowDetailPage({ params }: Props) {

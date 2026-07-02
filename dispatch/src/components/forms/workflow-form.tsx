@@ -138,7 +138,11 @@ export function WorkflowForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label>Type</Label>
-          <Select value={type} onValueChange={(v) => setType(v ?? "workflow")}>
+          <Select
+            value={type}
+            onValueChange={(v) => setType(v ?? "workflow")}
+            items={WORKFLOW_TYPES}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Type" />
             </SelectTrigger>
@@ -164,7 +168,11 @@ export function WorkflowForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label>Department</Label>
-          <Select value={department} onValueChange={(v) => setDepartment(v ?? "")}>
+          <Select
+            value={department}
+            onValueChange={(v) => setDepartment(v ?? "")}
+            items={DEPARTMENTS}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select department" />
             </SelectTrigger>
@@ -200,7 +208,11 @@ export function WorkflowForm({
         </div>
         <div className="space-y-2">
           <Label>Risk level</Label>
-          <Select value={riskLevel} onValueChange={(v) => setRiskLevel(v ?? "")}>
+          <Select
+            value={riskLevel}
+            onValueChange={(v) => setRiskLevel(v ?? "")}
+            items={RISK_LEVELS}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select risk" />
             </SelectTrigger>

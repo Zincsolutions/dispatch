@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { getCurrentUserWithOrg, getPlanUsage } from "@/lib/queries/organization"
 import { getPendingInvitations } from "@/lib/queries/invitations"
 import { isStripeConfigured } from "@/lib/stripe"
@@ -9,6 +10,9 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SettingsForm } from "./settings-form"
 import { InviteMembers } from "./invite-members"
+import { ChangePassword } from "./change-password"
+
+export const metadata: Metadata = { title: "Settings" }
 
 export default async function SettingsPage() {
   const { user, organization, role } = await getCurrentUserWithOrg()
@@ -54,6 +58,7 @@ export default async function SettingsPage() {
           userEmail={user.email || ""}
         />
         {role === "owner" && <InviteMembers invitations={invitations} />}
+        <ChangePassword />
         <Separator />
         <form action={signout}>
           <Button variant="outline" type="submit">

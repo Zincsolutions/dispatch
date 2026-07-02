@@ -1,9 +1,21 @@
 export const dynamic = "force-dynamic"
 
+import { Suspense } from "react"
+import type { Metadata } from "next"
 import { getCurrentUser, getCurrentUserWithOrg } from "@/lib/queries/organization"
 import { createClient } from "@/lib/supabase/server"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Topbar } from "@/components/layout/topbar"
+import { FlashToast } from "@/components/shared/flash-toast"
+
+// Pages under the app set short titles ("Prompts") and render in the tab
+// as "Prompts · Dispatch" — without this, every tab shows the marketing tagline.
+export const metadata: Metadata = {
+  title: {
+    template: "%s · Dispatch",
+    default: "Dispatch",
+  },
+}
 
 export default async function AppLayout({
   children,
@@ -40,6 +52,9 @@ export default async function AppLayout({
           avatarUrl={profile.avatarUrl}
         />
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <Suspense>
+          <FlashToast />
+        </Suspense>
       </div>
     </div>
   )

@@ -1,7 +1,10 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getTools } from "@/lib/queries/governance"
 import { ToolsTable } from "./tools-table"
 import { ArrowLeft } from "lucide-react"
+
+export const metadata: Metadata = { title: "Tool Registry" }
 
 export default async function ToolsPage() {
   const tools = await getTools()

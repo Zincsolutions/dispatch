@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getDocumentById } from "@/lib/queries/governance"
@@ -13,6 +15,17 @@ import { Pencil, Trash2, ArrowLeft, Download, FileText } from "lucide-react"
 
 interface Props {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("documents")
+    .select("title")
+    .eq("id", id)
+    .maybeSingle()
+  return { title: data?.title ?? "Not found" }
 }
 
 export default async function DocumentDetailPage({ params }: Props) {
